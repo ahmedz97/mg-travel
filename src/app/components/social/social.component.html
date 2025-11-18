@@ -1,0 +1,15 @@
+<ul class="social list-unstyled d-flex flex-wrap mb-0">
+  <li
+    *ngFor="let link of socialLinks"
+    class="flexCenter rounded-2 me-2 cPointer flex-shrink-0"
+  >
+    <a
+      class="text-decoration-none"
+      [href]="link.url"
+      target="_blank"
+      rel="noopener"
+    >
+      <i class="fa-brands" [ngClass]="getIconClass(link.type)"></i>
+    </a>
+  </li>
+</ul>

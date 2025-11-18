@@ -1,0 +1,102 @@
+<div
+  [routerLink]="['/tour', tour.slug]"
+  role="button"
+  [ngClass]="
+    layoutType === 'grid'
+      ? 'row gx-3 mb-3 flex-column'
+      : 'row gx-3 mb-3 flex-wrap'
+  "
+  class="item align-items-center rounded-4 overflow-hidden border transition bg-white mx-2"
+>
+  <div [ngClass]="layoutType === 'grid' ? '' : ' col-md-5'" class="px-2">
+    <!-- destination - duration -->
+    <div class="destination-duration text-white my-1 flexBetween gap-2">
+      <span
+        class="bgSecondColor rounded-3 px-2 py-1 me-2 my-1 d-flex gap-2 overflow-hidden"
+      >
+        <i class="fa fa-location-dot pt-1"></i>
+        {{ getDestinationText() }}
+      </span>
+      <span
+        class="bgSecondColor rounded-3 px-2 py-1 me-2 my-1 d-flex gap-2 overflow-hidden"
+      >
+        <i class="fa fa-calendar-days pt-1"></i>
+        {{ tour.duration }}
+      </span>
+    </div>
+    <figure class="rounded-2 overflow-hidden position-relative mb-0">
+      <img
+        [src]="tour.featured_image"
+        class="w-100"
+        height="200px"
+        [alt]="tour.title"
+        [title]="tour.title"
+        loading="lazy"
+      />
+      <button
+        (click)="addFav(tour.id, $event)"
+        class="mainBtn Btn border-0 position-absolute top-0 end-0 p-0 m-2 rounded-circle"
+      >
+        <!-- 'text-white': favouriteIds.includes(tour.id), -->
+        <i
+          [ngClass]="{
+            'fa-heart': true,
+            'fa-regular': !favouriteIds.includes(tour.id),
+            'fa-solid': favouriteIds.includes(tour.id)
+          }"
+          class="fa fa-heart bg-transparent"
+        ></i>
+      </button>
+
+      <!-- @if (tour.featured) {
+      <span
+        class="text-uppercase text-whit py-0 px-2 m-1 m-2 secBtn Btn position-absolute top-0 start-0"
+        >{{ 'common.featured' | translate }}</span
+      >
+      } -->
+    </figure>
+  </div>
+
+  <div [ngClass]="layoutType === 'grid' ? '' : ' col-md-7'" class="p-2">
+    <figcaption>
+      <!-- <div class="my-2">
+        <span *ngFor="let filled of getStars(tour.rate)">
+          <i
+            [ngClass]="
+              filled
+                ? 'fa fa-star text-warning'
+                : 'fa-regular fa-star text-warning'
+            "
+          ></i>
+        </span>
+        <span class="textMainColor text-capitalize mx-2">{{
+          getReviewQualityText()
+        }}</span>
+        <span class="textSecondColor"> ({{ getReviewCount() }} Reviews)</span>
+      </div> -->
+
+      <h3
+        [routerLink]="['/tour', tour.slug]"
+        class="text-capitalize transition cPointer"
+      >
+        {{ tour.title }}
+      </h3>
+
+      <div
+        class="textSecondColor pt-2 border-top flexBetween flex-wrap flex-colum text-capitalize"
+      >
+        <p class="mb-0">
+          <span>{{ "common.perPersonFrom" | translate }}:</span><br />
+          <b class="textMainColor fs-5">{{ tour.start_from | currency }}</b>
+        </p>
+        <button
+          class="secBtn Btn fs-5 py-1"
+          [routerLink]="['/tour', tour.slug]"
+        >
+          {{ "common.seeMore" | translate }}
+          <!-- <i class="fa fa-arrow-right ms-1 rounded-circle"></i> -->
+        </button>
+      </div>
+    </figcaption>
+  </div>
+</div>

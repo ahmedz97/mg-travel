@@ -1,0 +1,142 @@
+@import '../../../styles/variables.scss';
+
+.topNav{
+    border-bottom: 1px solid #eeeeee5f;
+    transition: all 2s ease;
+    &.scroll{display: none !important;}
+    a{
+        color: white;
+        transition: all $transition;
+        &:hover{color: $primary-color;}
+    }
+}
+
+// Minimal custom styles for Bootstrap navbar
+.navbar {
+  // height: 70px;
+  z-index: 1030;
+  .navbar-brand{
+    width: 200px;
+    height: 70px;
+  }
+}
+
+.whiteNav {
+  background: #EDF2F1 !important;
+
+  .nav-link {
+    color: #000 !important;
+    // font-size: 18px;
+  }
+}
+
+.navbar-nav .nav-link{
+// color: #fff !important;
+transition: $transition;
+  &.active , .dropdown-item.active , & span.active {
+    background-color: $secondary-color !important;
+    color: white !important;
+    border-radius: 50rem;
+    padding-inline: 25px !important;
+  }
+  &:hover:not(.active) {
+    color: $primary-color !important;
+    
+  }
+}
+
+// Custom offcanvas styling
+.offcanvas {
+  width: 300px !important;
+  z-index: 1045;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+
+  &.show {
+    transform: translateX(0);
+  }
+}
+
+.offcanvas-backdrop {
+  z-index: 1040;
+  transition: opacity 0.3s ease-in-out;
+
+  &.show {
+    opacity: 0.5 !important;
+  }
+
+  &:not(.show) {
+    opacity: 0 !important;
+  }
+}
+
+.offcanvas-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+}
+
+// Ensure proper transitions and visibility
+.offcanvas {
+  &:not(.show) {
+    visibility: hidden !important;
+  }
+
+  &.show {
+    visibility: visible !important;
+  }
+}
+
+.custom-dropdown {
+  position: relative;
+  .dropdown-submenu {
+    position: relative;
+
+    .dropdown-menu {
+      top: 0;
+      left: 50%; 
+      margin-top: 0;
+      margin-left: 0.1rem;
+      display: none;
+      position: absolute;
+    }
+
+    &:hover > .dropdown-menu {
+      display: block;
+    }
+  }
+}
+
+.custom-dropdown:hover .dropdown-menu {
+  display: block;
+  top: 100%;
+  left: 0;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  background-color: white;
+  min-width: 180px;
+  padding: 0.5rem 0;
+  border-radius: 0.5rem;
+}
+
+
+.fixed-top{inset:0 auto auto 0; width:100%; z-index:1030}
+.top-label{
+  max-height:120px; padding-block:10px; opacity:1; overflow:hidden;
+  transition:max-height .5s ease,padding .5s ease,opacity .5s ease;
+}
+.compact .top-label{max-height:0; padding-block:0; opacity:0}
+.compact ~ .header-spacer{height:65px}/* navbar only */
+
+@media screen and (min-width:992px) {
+  .header-spacer{height:100px}          /* banner + navbar */
+
+}
+
+

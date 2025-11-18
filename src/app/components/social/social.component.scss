@@ -1,0 +1,21 @@
+@import '../../../styles/variables';
+ul.social{
+  li.flexCenter{
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid $border-color;
+    transition:  all 1s;
+    a{
+      color: #fff;
+      transition:  all 1s;
+    }
+  }
+  li.flexCenter:hover{
+    a{color: $primary-color;}
+    background-color: #fff;
+    border-color: #fff;
+    margin-left: 0px;
+    transform: scale(1.1) rotate(30deg);
+    }
+
+}

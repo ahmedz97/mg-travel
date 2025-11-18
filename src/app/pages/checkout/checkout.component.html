@@ -1,0 +1,284 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5">
+  <div class="container">
+    <!--  -->
+    <form
+      [formGroup]="checkoutForm"
+      (ngSubmit)="(checkoutForm)"
+      class="row g-3"
+    >
+      <div class="col-lg-8">
+        <div class="sideBar p-3 rounded-3">
+          <h2 class="text-capitalize textMainColor mb-3 fw-bold h4">
+            {{ 'checkout.bookingPersonalInfo' | translate }}
+          </h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div>
+                <label
+                  for="first_name"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.firstName' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="text"
+                    id="first_name"
+                    formControlName="first_name"
+                    placeholder="{{ 'checkout.firstName' | translate }}"
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa-regular fa-user textMainColor"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div>
+                <label
+                  for="last_name"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.lastName' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="text"
+                    id="last_name"
+                    formControlName="last_name"
+                    placeholder="{{ 'checkout.lastName' | translate }}"
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa-regular fa-user textMainColor"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div>
+                <label
+                  for="phone"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.phone' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="tel"
+                    id="phone"
+                    formControlName="phone"
+                    placeholder="{{ 'contact.yourPhone' | translate }}"
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa fa-phone textMainColor"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div>
+                <label
+                  for="email"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.email' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="email"
+                    id="email"
+                    formControlName="email"
+                    placeholder="{{ 'contact.yourEmail' | translate }}"
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa-regular fa-envelope textMainColor"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div>
+                <label
+                  for="country"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.country' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <select
+                    id="country"
+                    formControlName="country"
+                    class="form-control p-2 ps-5 rounded-3"
+                  >
+                    @for (item of countries; track $index) {
+
+                    <option disabled selected>{{ 'checkout.selectCountry' | translate }}</option>
+                    <option [value]="item.name">{{ item.name }}</option>
+                    }
+                  </select>
+                  <i class="fa fa-globe textMainColor"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div>
+                <label
+                  for="state"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.state' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="text"
+                    id="state"
+                    formControlName="state"
+                    placeholder="{{ 'checkout.yourState' | translate }}"
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa fa-location-dot textMainColor"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div>
+                <label
+                  for="coupon_id"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.couponCode' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="text"
+                    id="coupon_id"
+                    formControlName="coupon_id"
+                    placeholder="{{ 'checkout.yourCouponCode' | translate }}"
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa fa-code textMainColor"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div>
+                <label
+                  for="notes"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >{{ 'checkout.additionalInfo' | translate }}</label
+                >
+                <div class="item position-relative">
+                  <textarea
+                    id="notes"
+                    rows="5"
+                    formControlName="notes"
+                    placeholder="{{ 'checkout.yourAdditionalInfo' | translate }}"
+                    class="form-control p-2 ps-5 rounded-3"
+                  ></textarea>
+                  <i class="fa fa-pen textMainColor"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- payment choose -->
+          <div class="my-4 text-capitalize">
+            <h2 class="textMainColor mb-3 fw-bold h4">{{ 'checkout.paymentMethod' | translate }}</h2>
+            <mat-radio-group
+              aria-label="payment_method"
+              formControlName="payment_method"
+            >
+              <mat-radio-button value="cash">{{ 'checkout.cash' | translate }}</mat-radio-button>
+              <mat-radio-button value="visa master">
+                {{ 'checkout.visaMaster' | translate }}</mat-radio-button
+              >
+              <mat-radio-button value="paypal">{{ 'checkout.paypal' | translate }}</mat-radio-button>
+            </mat-radio-group>
+            <!-- -->
+            <button
+              (click)="getCheckoutData()"
+              type="submit"
+              class="mainBtn Btn w-100 mt-2"
+            >
+              {{ 'checkout.placeOrder' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <!-- your order -->
+        <div class="text-capitalize pb-4 border-bottom">
+          <h2 class="text-capitalize textSecondColor mb-3 fw-bold h4">
+            {{ 'checkout.bookingSummary' | translate }}
+          </h2>
+
+          @if (tourCart.length>0) {
+          <ngx-slick-carousel
+            #ordersCarousel="slick-carousel"
+            [config]="ordersOptions"
+          >
+            @for (cart of tourCart; track $index) {
+            <div ngxSlickItem>
+              <div class="p-2 order rounded-3">
+                <figure class="specialBorder overflow-hidden mb-2">
+                  <img
+                    [src]="cart.tour.featured_image"
+                    height="250px"
+                    class="w-100"
+                    [alt]="cart.tour.title"
+                  />
+                </figure>
+                <h3 class="h6 fw-bold pe-2 textSecondColor">
+                  {{ cart.tour.title }}
+                </h3>
+                <div>
+                  <span
+                    class="bgSecondColor specialBorder text-white px-2 py-1"
+                  >
+                    <i class="fa fa-star me-2"></i>
+                    {{ cart.tour.rate }}
+                  </span>
+                  <span class="mx-2"
+                    >({{ cart.tour.reviews_number }} reviews)</span
+                  >
+                </div>
+
+                <div class="text-capitalize mt-3">
+                  <p class="mb-1 flexBetween">
+                    <span class="textSecondColor">{{ 'checkout.checkIn' | translate }}:</span>
+                    {{ cart.start_date.slice(0, 10) }}
+                  </p>
+                  <p class="mb-1 flexBetween">
+                    <span class="textSecondColor">{{ 'checkout.guests' | translate }}:</span>
+                    @if (cart.adults>0) {
+                    {{ cart.adults }} {{ 'checkout.adults' | translate }} } @if (cart.children>0) {
+                    {{ cart.children }} {{ 'checkout.children' | translate }} } @if (cart.infants>0) {
+                    {{ cart.infants }} {{ 'checkout.infants' | translate }} }
+                  </p>
+                  <p class="mb-1 flexBetween">
+                    <span class="textSecondColor">{{ 'checkout.stay' | translate }}:</span>
+                    {{ cart.tour.duration }}
+                  </p>
+
+                  <h4 class="h6 fw-bolder flexBetween">
+                    <span class="textSecondColor">{{ 'checkout.totalPrice' | translate }}:</span>
+                    {{ cart.totalPrice | currency }}
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            }
+          </ngx-slick-carousel>
+          }@else {
+          <h5 class="text-capitalize text-danger">{{ 'checkout.cartIsEmpty' | translate }}</h5>
+          }
+        </div>
+
+        <!-- price -->
+        <div class="fw-bolder flexBetween textMainColor text-uppercase mt-3">
+          <span>{{ 'checkout.total' | translate }}:</span>
+          <span> {{ getTotalPrice() | currency }}</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

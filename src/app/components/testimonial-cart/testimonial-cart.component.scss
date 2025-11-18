@@ -1,0 +1,78 @@
+@import '../../../styles/variables';
+
+.testimonial{
+
+
+.item{
+        // padding: 20px 20px 20px 10px;
+        // gap: 15px;
+        figure{
+            width: 180px;
+            height: 180px;
+            padding: 10px;
+
+            &::before{
+                content: "";
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                border:  4px solid $primary-color;
+                border-top-color: #fff;
+                border-right-color: #fff;
+                transition: $transition;
+            }
+        }
+        &:hover{
+            figure::before{    transform: rotate(45deg);}
+        }
+
+        figcaption{
+            p{
+                font-size: 2rem;
+            }
+        }
+    }
+
+    .img1 , .img2{
+        width: 120px;
+        height: 120px;
+        animation: bounce-y 7s infinite  ease-in-out;
+    }
+    .img1{
+        top: 14%;
+        left: 4%;
+    }
+    .img2{
+      top: 40%;
+      right: 30%;
+    }
+    @media screen and (max-width:767px) {
+        .img1 , .img2{
+            width: 80px;
+            height: 80px;
+        }
+
+        .item figcaption{
+            p{
+                font-size: 1.2rem;
+            }
+        }
+    }
+}
+
+// Navigation buttons use shared styles from styles.scss
+
+::ng-deep{
+    ngx-slick-carousel {
+      position: relative;
+    }
+
+    .slick-arrow {
+        display: none !important;
+    }
+}
+
+

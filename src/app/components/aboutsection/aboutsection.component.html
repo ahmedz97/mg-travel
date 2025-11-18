@@ -1,0 +1,62 @@
+<section class="about my-5">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-6">
+        <figure>
+          <img
+            src="../../../assets/image/about-img-3.webp"
+            class="w-100"
+            alt="about image"
+          />
+        </figure>
+      </div>
+      <div class="col-lg-6">
+        <div>
+          <div class="secTitle">
+            <h2 class="my-3 textSecondColor fw-bold">
+              {{ "aboutSection.planTripLifetime" | translate }}
+            </h2>
+          </div>
+          <div class="flexCenter gap-3 text-center my-4">
+            <div
+              class="counterBox border rounded-circle p-3 flexCenter flex-column text-capitalize fw-bold"
+            >
+              <h3 class="textMainColor fw-bold">
+                <span ngxCountAnimation="34"></span>
+                k+
+              </h3>
+              <p class="mb-1">
+                {{ "aboutSection.satisfiedCustomers" | translate }}
+              </p>
+            </div>
+            <div
+              class="counterBox border rounded-circle p-3 flexCenter flex-column text-capitalize fw-bold"
+            >
+              <h3 class="textMainColor fw-bold">
+                <span ngxCountAnimation="4"></span>
+                k+
+              </h3>
+              <p class="mb-1">{{ "aboutSection.tourSuccess" | translate }}</p>
+            </div>
+            <div
+              class="counterBox border rounded-circle p-3 flexCenter flex-column text-capitalize fw-bold"
+            >
+              <h3 class="textMainColor fw-bold">
+                <span ngxCountAnimation="22"></span>
+                k+
+              </h3>
+              <p class="mb-1">{{ "aboutSection.yearInService" | translate }}</p>
+            </div>
+          </div>
+          <p>
+            {{ "aboutSection.description" | translate }}
+          </p>
+
+          <button routerLink="/makeTrip" class="mainBtn Btn">
+            {{ "aboutSection.makeTrip" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

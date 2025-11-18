@@ -1,0 +1,21 @@
+@import '../../../styles/variables';
+
+.item{
+
+        h4 {      transform: rotate(-90deg); }
+
+        figcaption{
+          h5{
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            height: 60px;
+        }
+        .description{
+          height: 80px;
+    overflow: hidden;
+        }
+        }
+    }

@@ -1,0 +1,8 @@
+.facilities{
+    figcaption{
+        top: 50%;
+        left: -5%;
+        transform: translate(5% , -50%);
+        animation: bounce-y 7s ease-in-out infinite;
+    }
+}

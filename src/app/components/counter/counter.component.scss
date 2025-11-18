@@ -1,0 +1,31 @@
+.row > div{
+    
+    @media (min-width: 1200px) {
+        &:not(:last-child) .item{
+            border-right: 1px dashed #aaa;
+        }
+        
+    }
+    @media (min-width: 767px) {
+        & .item{border-right: none;}
+        &:nth-child(1) .item,
+        &:nth-child(3) .item {
+            border-right: 1px dashed #aaa;
+        }
+    }
+    @media (max-width: 766px) {
+        & .item {
+            border-right: none;
+        }
+    }
+}
+
+.item {
+  h4 {
+    -webkit-text-stroke: 1px #090A09;
+    -webkit-text-fill-color: transparent;
+    font-size: 60px;
+  }
+
+
+}

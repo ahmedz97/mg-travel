@@ -1,0 +1,418 @@
+@import '../../../styles/variables.scss';
+
+.topsec{
+    margin-top: -70px;
+
+    .mainContentImg{
+      background: url('../../../assets/image/mg/hero-bg-1.webp') center no-repeat;
+      background-size: cover;
+      height: 100vh;
+      padding: 194px 0 210px;
+      img {
+          max-width: 100% ;
+          height: auto ;
+          display: inline-block ;
+      }
+      .shape2{
+        top: 18%;
+        left: 6%;
+        animation: moveX 5s infinite ease-in-out;
+      }
+      .boatBox{
+        bottom: -10px;
+        max-width: 30%;
+        animation: moveY 5s infinite ease-in-out;
+        .circle{
+          top: 10%;
+          left: 5%;
+        }
+      }
+      .mainContentText{
+        animation: moveY 5s infinite ease-in-out;
+      }
+
+      @media screen and (max-width:767px) {
+        .shape2{
+          top: 18%;
+          left: 8%;
+          max-width: 100px;
+        }
+
+        .boatBox {
+            max-width: 150px;
+        }
+      }
+    }
+    .formBox{
+      transform: translateY(-44%);
+      position: relative;
+      z-index: 994;
+      margin-bottom: -150px;
+      form{
+        select{
+          display: block;
+          width: 100%;
+          &:focus{border-color: $secondary-color ;}
+        }
+
+        .item {
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        right: -30px;
+        top: 70%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 60%;
+        background-color: #dee2e6;
+        z-index: 1;
+      }
+      @media (max-width: 1200px) {
+        &::after {
+          right: -16px;
+    top: 70%;
+        }
+      }
+      @media (max-width: 992px) {
+        &::after {
+          display: none;
+        }
+      }
+    }
+
+      }
+
+    ::ng-deep {
+      .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs>.mat-mdc-tab-header .mat-mdc-tab{
+      flex-grow: 0 !important;
+    }
+
+    .mat-mdc-tab-header{
+      margin-bottom: 20px;
+    }
+
+    .mat-mdc-tab-body-content{
+      overflow: hidden !important;
+    }
+
+    .mat-mdc-tab .mdc-tab-indicator__content--underline{
+      border-color: $secondary-color ;
+    }
+
+   .mat-mdc-tab:hover{
+     .mdc-tab__ripple::before {
+          opacity: .05;
+      }
+     .mdc-tab__text-label{
+      color: $secondary-color;
+     }
+     background-color: transparent ;
+
+   }
+    .mat-mdc-tab.mdc-tab--active{
+          background-color: $secondary-color;
+          border-radius: 5px;
+          .mdc-tab__text-label{color: #fff;}
+          .mdc-tab-indicator__content--underline{border-color: #fff; padding-bottom: 3px;}
+    }
+
+     }
+
+    }
+}
+
+@keyframes moveX {
+  0% {
+    transform: translateX(0);
+
+}
+  50% {
+    transform: translateX(-20px);
+}
+  100% {
+    transform: translateX(0%);
+}
+}
+@keyframes moveY {
+  0% {
+    transform: translateY(0);
+}
+  50% {
+    transform: translateY(-10px);
+}
+  100% {
+    transform: translateY(0%);
+}
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.travel-agency-intro {
+  .title {
+      font-size: 2.5rem;
+      line-height: 1.4;
+      margin: 0;
+
+      img {
+          display: inline-block;
+          vertical-align: middle;
+          margin: 0 8px;
+      }
+
+      // Large screens (desktop)
+      @media screen and (min-width: 1200px) {
+          font-size: 2.75rem;
+      }
+
+      // Medium screens (tablets)
+      @media screen and (max-width: 991px) {
+          font-size: 2rem;
+
+          img {
+              width: 45px;
+              margin: 0 6px;
+          }
+      }
+
+      // Small screens (mobile)
+      @media screen and (max-width: 767px) {
+          font-size: 1.5rem;
+          line-height: 1.5;
+
+          img {
+              width: 40px;
+              margin: 0 5px;
+          }
+      }
+
+      // Extra small screens
+      @media screen and (max-width: 575px) {
+          font-size: 1.25rem;
+          line-height: 1.6;
+
+          img {
+              width: 35px;
+              margin: 0 4px;
+          }
+      }
+  }
+}
+
+.travel-agency-intro-content {
+  figure {
+    &::before {
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: "";
+        width: 70%;
+        height: 100%;
+        border-radius: 42px;
+        background-color: rgba($secondary-color, 0.26);
+        z-index: -1;
+
+    }
+  }
+}
+
+.popTours{
+  // background-color: rgba($secondary-color, 0.1);
+  position: relative;
+
+  // Prevent flickering during carousel initialization
+  .carousel-loading-placeholder {
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in forwards;
+  }
+
+  // Navigation buttons use shared styles from styles.scss
+
+  // Hide default slick arrows
+  ::ng-deep {
+    ngx-slick-carousel {
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-in forwards;
+
+      &.slick-initialized {
+        opacity: 1;
+      }
+    }
+
+    .slick-arrow {
+      display: none !important;
+    }
+  }
+
+  // Adjust title container
+  .title-box {
+    margin-bottom: 40px;
+    flex-wrap: nowrap !important;
+
+    @media screen and (max-width: 767px) {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.carts{
+    .iconBox{
+        border-radius:50px 50px 50px 0px ;
+        img{
+            width: 35px;
+            filter: brightness(0) invert(1);
+            }
+    }
+
+    @media screen and (min-width:992px) {
+
+        p{
+            line-clamp: 6;
+            -webkit-line-clamp: 6;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+        }
+    }
+}
+
+// .video{
+//     .videoBox{
+//         background: url('../../../assets/image/blog2.jpg') center no-repeat;
+//         background-size: cover;
+//         height: 350px;
+
+
+//         .ripple-wrapper {
+
+//             .play-btn {
+//             position: relative;
+//             border: 1px solid $primary-color;
+//             border-radius: 50%;
+//             width: 70px;
+//             height: 70px;
+//             font-size: 28px;
+//             transition: all 0.3s ease;
+//             z-index: 3;
+//             box-shadow: 0 0 10px $primary-color;
+//             background-color: #fff;
+//             color: $primary-color;
+
+//             &:hover {
+//                 background-color: $primary-color;
+//                 color: rgba(255, 255, 255, 0.8);
+//                 transform:  scale(1.1);
+//             }
+//             }
+//             .ripple {
+//             position: absolute;
+//             top: 50%;
+//             left: 50%;
+//             width: 100px;
+//             height: 100px;
+//             background: $primary-color;
+//             border-radius: 50%;
+//             transform: translate(-50%, -50%) scale(0.1);
+//             animation: rippleWave 5s infinite;
+//             z-index: 1;
+//             }
+
+//             .ripple:nth-child(2) {
+//             animation-delay: 0.6s;
+//             }
+
+//             .ripple:nth-child(3) {
+//             animation-delay: 1.2s;
+//             }
+//         }
+//         .btn-close{
+//             top: -50px;
+//             left: 50%;
+//             transform: translateX(-50%);
+
+//         }
+//     }
+
+
+//     @keyframes rippleWave {
+//         0% {
+//             transform: translate(-50%, -50%) scale(0.5);
+//             opacity: 0.6;
+//         }
+//         100% {
+//             transform: translate(-50%, -50%) scale(2.5);
+//             opacity: 0;
+//         }
+//     }
+
+// }
+
+// .offers{
+//     figure{
+//         height: 300px;
+
+//         .content{
+//             inset: 0;
+//             button{width: fit-content;}
+//         }
+//         &:hover{
+//             img{transform: scale(1.1) rotate(1deg);}
+//         }
+
+
+//     }
+// }
+
+// .travelDeal{
+//     .sideBar , figure{
+//     border-radius: 50px 50px 50px 0px;
+//     }
+
+//     .sideBar figcaption p{
+//         line-clamp: 2;
+//         -webkit-line-clamp: 2;
+//         overflow: hidden;
+//         -webkit-box-orient: vertical;
+//         display: -webkit-box;
+//     }
+// }
+
+// to convert the grid to carousel on small screens
+.tours-carousel { display: none; }
+@media (max-width: 767px) {
+  .tours-grid { display: none; }
+  .tours-carousel { display: block; }
+}
+
+
+
+.blogs{
+    .sideBar{
+        border-radius: 50px 50px 50px 0px;
+        figure{
+            span{transform: translate(-50%, -50%); }
+            img{border-radius: 40px 40px 40px 0px;}
+        }
+
+        figcaption h5{
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+        }
+    }
+
+}
+
+

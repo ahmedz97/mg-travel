@@ -1,0 +1,56 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="facilities my-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-xl-6">
+        <div>
+          <h2 class="text-capitalize fw-bold">
+            {{ 'about.weProvideBestTourFacilities' | translate }}
+          </h2>
+          <p>
+            {{ 'about.description' | translate }}
+          </p>
+
+          <app-about-category></app-about-category>
+        </div>
+      </div>
+      <div class="col-xl-6">
+        <figure class="position-relative ms-xl-0 ms-5">
+          <img
+            src="../../../assets/image/about-img-21.webp"
+            class="w-100 rounded-2"
+            alt="about image"
+          />
+          <figcaption
+            class="bgMainColor text-white text-capitalize border border-5 border-white rounded-4 position-absolute p-3 text-center"
+          >
+            <h4 class="h1 fw-bolder">25</h4>
+            <h6>{{ 'about.yearsOfExperience' | translate }}</h6>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <app-counter></app-counter>
+  </div>
+</section>
+
+<app-why-booking-with-us></app-why-booking-with-us>
+
+<app-aboutsection></app-aboutsection>
+
+<app-testimonial-cart></app-testimonial-cart>
+
+<!-- <section class="team my-5 py-5">
+  <div class="container">
+
+    <app-team-cart></app-team-cart>
+  </div>
+</section> -->
+
+<app-make-trip-form></app-make-trip-form>
+
+<app-partner-slider></app-partner-slider>

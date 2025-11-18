@@ -1,0 +1,55 @@
+@import '../../../styles/variables';
+
+.item{
+  .destination-duration{
+    span{
+      height: 30px;
+      font-size: 13px;
+
+    }
+    span:first-child{
+      width: 40%;
+    }
+    span:last-child{
+      width: 60%;
+    }
+  }
+    &:hover{
+        transform: translateY(5px) scale(1.01);
+        figure .caption{
+            background-color: $primary-color;
+        }
+        figure button.mainBtn.Btn {
+            background-color: $primary-color;
+        }
+    }
+    figure{
+        button.mainBtn.Btn i{
+            color: white;
+        }
+        .caption{
+            background-color: $secondary-color;
+            left: 5%;
+            width: 90%;
+            transition: $transition;
+            font-size: 13px !important;
+        }
+    }
+    figcaption{
+        h3{
+            color: $secondary-color;
+            height: 55px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            font-size: 20px;
+
+            &:hover{
+                color: $primary-color;
+            }
+        }
+
+    }
+}

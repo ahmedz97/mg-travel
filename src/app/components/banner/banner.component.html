@@ -1,0 +1,40 @@
+<div class="banner position-relative z-1">
+  <div class="container text-center">
+    <h2 class="text-capitalize fw-bold text-white">{{ bannerTitle }}</h2>
+    <nav style="--bs-breadcrumb-divider: '✈️'" aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center">
+        <li class="breadcrumb-item fw-bold fs-5">
+          <a [routerLink]="['/']" class="text-decoration-none text-white"
+            >{{ 'banner.home' | translate }}</a
+          >
+        </li>
+        <li
+          class="breadcrumb-item fw-bold fs-5 active text-capitalize text-white"
+          aria-current="page"
+        >
+          {{ bannerTitle }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <!-- <img
+    src="../../../assets/image/banner/banner-line-shape-2.webp"
+    class="position-absolute top-50 z-n1 w-100"
+    alt="shape banner"
+  /> -->
+  <!-- <img
+    src="../../../assets/image/banner/banner-shape-1.webp"
+    class="shape1 position-absolute z-n1"
+    alt="shape banner"
+  />
+  <img
+    src="../../../assets/image/banner/banner-shape-2.webp"
+    class="shape2 position-absolute z-n1"
+    alt="shape banner"
+  /> -->
+  <img
+    src="../../../assets/image/banner/banner-bg-shape.webp"
+    class="position-absolute bottom-0 start-0 w-100"
+    alt="shape banner"
+  />
+</div>

@@ -1,0 +1,35 @@
+@import '../../../styles/variables';
+
+.item{
+    figure {
+      height: 350px;
+        .layer{
+            background: url('../../../assets/image/mg/gradient-bg.webp') center no-repeat;
+            background-size: cover;
+            background-color: #fff;
+            inset: 0;
+            transform: translateX(-110%);
+            transition: all 2s ease-in-out;
+            z-index: 999;
+            &>div{
+              width: 150px;
+              height: 150px;
+            }
+        }
+    }
+
+    &:hover{
+        figure .layer{
+                opacity: 1;
+                transform: translateX(0);
+                -webkit-transform: translateX(0);
+                -moz-transform: translateX(0);
+                -ms-transform: translateX(0);
+                -o-transform: translateX(0);
+}
+        figcaption h5{
+            color: $secondary-color;
+        }
+
+    }
+}

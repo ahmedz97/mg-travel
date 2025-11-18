@@ -1,0 +1,98 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5">
+  <div class="container">
+    <ngx-slick-carousel
+      #galleryCarousel="slick-carousel"
+      [config]="galleryOptions"
+    >
+      <ng-container *ngFor="let slide of destinationDetails.gallery">
+        <div ngxSlickItem>
+          <figure class="rounded-3 overflow-hidden imgHover">
+            <img
+              loading="lazy"
+              height="300px"
+              class="w-100"
+              [src]="slide"
+              [alt]="destinationDetails?.title"
+              [title]="destinationDetails?.title"
+            />
+          </figure>
+        </div>
+      </ng-container>
+    </ngx-slick-carousel>
+  </div>
+</section>
+
+<section class="my-5">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-8 order-2 order-lg-1">
+        <div>
+          <h5 class="fw-bold text-black text-capitalize">description</h5>
+          <p
+            [innerHTML]="getSanitizedHtml(destinationDetails?.description)"
+          ></p>
+        </div>
+      </div>
+      <div class="col-lg-4 order-1 order-lg-2">
+        <div class="text-capitalize bg-white p-4 rounded-3 sideBar">
+          <h5 class="pb-3 border-bottom fw-bold text-black">Information</h5>
+          <ul class="list-unstyled mb-5">
+            <li
+              [routerLink]="['/destination', destinationDetails.slug]"
+              class="py-2 border-bottom cPointer bg-secondary bg-opacity-25 text-sm-center rounded-3"
+            >
+              <span class="textMainColor fs-5">{{
+                destinationDetails.title
+              }}</span>
+            </li>
+            @for (des of AllDestination; track $index) {
+            <li
+              *ngIf="destinationDetails.title !== des.title"
+              class="py-2 border-bottom cPointer"
+              [routerLink]="['/destination', des.slug]"
+            >
+              <span class="textMainColor fs-5">{{ des.title }}</span>
+            </li>
+            }
+          </ul>
+          <h5 class="pb-1 fw-bold text-black">share</h5>
+          <div class="p-3 rounded-3 bgMainColor opacity-50">
+            <app-social></app-social>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="my-5 pt-5">
+  <div class="container">
+    <!-- related tour -->
+    <div class="row g-3 mb-5">
+      <ng-container *ngIf="filteredTours.length != 0; else elseTemplate">
+        <div
+          class="col-xl-4 col-lg-6 px-3"
+          *ngFor="let tour of filteredTours.slice(0, 9); let i = index"
+        >
+          <app-tour-cart [tour]="tour"></app-tour-cart>
+        </div>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <h2 class="text-danger text-capitalize">
+          not tour avaliable in this destination '{{
+            destinationDetails.title
+          }}'
+        </h2>
+      </ng-template>
+    </div>
+
+    <!-- faqs -->
+    <app-faq-content></app-faq-content>
+  </div>
+</section>
+<app-make-trip-form></app-make-trip-form>
+<app-partner-slider></app-partner-slider>

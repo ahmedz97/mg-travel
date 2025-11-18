@@ -1,0 +1,181 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-8 align-self-center">
+        <div class="bgPrimaryWhiteColor rounded-3 p-3">
+          <h5 class="text-capitalize fw-bold h2 my-4 text-center">
+            {{ "contact.haveQuestions" | translate }}
+          </h5>
+
+          <form
+            [formGroup]="contactForm"
+            (ngSubmit)="getContactData()"
+            class="row g-3"
+          >
+            <div class="col-md-6">
+              <div>
+                <input
+                  type="text"
+                  formControlName="name"
+                  class="form-control p-2 rounded-3"
+                  placeholder="{{ 'contact.yourName' | translate }}"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div>
+                <input
+                  type="email"
+                  formControlName="email"
+                  class="form-control p-2 rounded-3"
+                  placeholder="{{ 'contact.yourEmail' | translate }}"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div>
+                <input
+                  type="tel"
+                  formControlName="phone"
+                  class="form-control p-2 rounded-3"
+                  placeholder="{{ 'contact.yourPhone' | translate }}"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div>
+                <input
+                  type="text"
+                  formControlName="subject"
+                  class="form-control p-2 rounded-3"
+                  placeholder="{{ 'contact.yourSubject' | translate }}"
+                />
+              </div>
+            </div>
+            <div class="col-12">
+              <div>
+                <select
+                  formControlName="country"
+                  class="form-control p-2 rounded-3"
+                >
+                  <option value="" class="bg-dark" disabled>
+                    {{ "contact.selectCountry" | translate }}
+                  </option>
+                  <option *ngFor="let item of countryList" [value]="item.name">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div>
+                <textarea
+                  rows="5"
+                  formControlName="message"
+                  class="form-control p-2 rounded-3"
+                  placeholder="{{ 'contact.writeMessage' | translate }}"
+                ></textarea>
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="mainBtn Btn">
+                {{ "contact.sendMessage" | translate }}
+                <i
+                  class="fa fa-paper-plane fa-rotate-by rounded-circle ms-2"
+                ></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div>
+          <ul class="list-unstyled">
+            <li
+              class="d-flex align-items-center mb-4 py-4 bg-secondary bg-opacity-10 p-3 rounded-3"
+            >
+              <i
+                class="fa fa-location-dot rounded-circle transition fs-4 flexCenter flex-shrink-0 me-3"
+              ></i>
+              <div>
+                <h6 class="textSecondColor text-capitalize h5 fw-bold mb-2">
+                  {{ "contact.officeAddress" | translate }}
+                </h6>
+                <p class="mb-1 transition">
+                  {{ userAddress || "fayoum , cairo , egypt" }}
+                </p>
+              </div>
+            </li>
+
+            <li
+              class="d-flex align-items-center mb-4 py-4 bg-secondary bg-opacity-10 p-3 rounded-3"
+            >
+              <i
+                class="fa fa-phone-volume rounded-circle transition fs-4 flexCenter flex-shrink-0 me-3"
+              ></i>
+              <div>
+                <h6 class="textSecondColor text-capitalize h5 fw-bold mb-2">
+                  {{ "contact.callUs" | translate }}
+                </h6>
+                <a
+                  href="tel:{{ phoneNumber }} || {{ 01000000000 }}"
+                  class="mb-1 transition"
+                  >{{ phoneNumber || "01000000000" }}</a
+                >
+              </div>
+            </li>
+
+            <li
+              class="d-flex align-items-center mb-4 py-4 bg-secondary bg-opacity-10 p-3 rounded-3"
+            >
+              <i
+                class="fa fa-envelope rounded-circle transition fs-4 flexCenter flex-shrink-0 me-3"
+              ></i>
+              <div>
+                <h6 class="textSecondColor text-capitalize h5 fw-bold mb-2">
+                  {{ "contact.emailUs" | translate }}
+                </h6>
+                <a
+                  href="mailTo:{{ userEmail }} || info@mg-travel.com"
+                  class="mb-1 transition"
+                  >{{ userEmail || "info@mg-travel.com" }}</a
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="my-5 pt-5">
+  <div class="container-fluid">
+    <iframe
+      *ngIf="
+        userLocation ||
+        'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.223093450459!2d30.87755907479765!3d29.31633967602293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145840e33ebad6a9%3A0x3611c2e067ee576a!2sFayoum%20Governorate%2C%20Egypt!5e0!3m2!1sen!2sus!4v1731856800000!5m2!1sen!2sus'
+      "
+      [src]="
+        userLocation ||
+          'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.223093450459!2d30.87755907479765!3d29.31633967602293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145840e33ebad6a9%3A0x3611c2e067ee576a!2sFayoum%20Governorate%2C%20Egypt!5e0!3m2!1sen!2sus!4v1731856800000!5m2!1sen!2sus'
+          | safeUrl
+      "
+      class="w-100 rounded-3"
+      height="450"
+      style="border: 0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </div>
+</section>
+
+<app-make-trip-form></app-make-trip-form>
+
+<app-partner-slider></app-partner-slider>

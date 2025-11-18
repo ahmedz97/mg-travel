@@ -1,0 +1,76 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5">
+  <div *ngIf="haveData" class="container">
+    @for (tour of tourCart; track $index) {
+    <div class="row align-items-center g-3 mt-4 p-3 border specialBorder">
+      <h5 class="fw-bold text-capitalize h3 text-black">
+        {{ 'cart.tour' | translate }} ({{ $index + 1 }})
+      </h5>
+      <div class="col-md-3 flex-shrink-0">
+        <figure class="specialBorder overflow-hidden imgHover">
+          <img
+            [src]="tour.tour.featured_image"
+            class="w-100"
+            height="200px"
+            [alt]="tour.tour.title"
+            [title]="tour.tour.title"
+            loading="lazy"
+          />
+        </figure>
+      </div>
+      <div class="col-md-9">
+        <figcaption class="textSecondColor">
+          <div class="flexBetween">
+            <h2 class="fw-bold text-capitalize h4 pe-3">
+              {{ tour.tour.title }}
+            </h2>
+            <i
+              (click)="deleteCart(tour.tour.id)"
+              class="fa fa-trash-can text-danger fs-5 flex-shrink-0 cPointer"
+            ></i>
+          </div>
+          <div class="flexBetween text-capitalize">
+            <div>
+              <p class="mb-0">
+                {{ 'cart.reservation' | translate }}: {{ tour.start_date | date : "dd/MM/yyyy" }}
+              </p>
+              <p class="mb-0">
+                {{ 'cart.guests' | translate }}: @if (tour.adults>0) {
+                {{ tour.adults }} {{ 'cart.adults' | translate }} } @if (tour.children>0) {
+                {{ tour.children }} {{ 'cart.children' | translate }} } @if (tour.infants>0) {
+                {{ tour.infants }} {{ 'cart.infants' | translate }} }
+              </p>
+            </div>
+            <span
+              class="textSecondColor fw-bolder fs-5 flex-shrink-0 cPointer align-self-end"
+              >$ {{ tour.totalPrice }}</span
+            >
+          </div>
+        </figcaption>
+      </div>
+    </div>
+    }
+    <div class="flexCenter my-4">
+      <button
+        (click)="clearCart()"
+        class="btn btn-danger rounded-pill text-capitalize py-2"
+      >
+        {{ 'cart.clearCart' | translate }}
+      </button>
+      <button
+        [routerLink]="['/checkout']"
+        class="mainBtn Btn flexCenter gap-2 m-2 mb-2"
+      >
+        {{ 'cart.checkout' | translate }}
+      </button>
+    </div>
+  </div>
+  <ng-container *ngIf="!haveData">
+    <p class="text-capitalize text-danger fs-1 text-center">
+      {{ 'cart.noCartAvailable' | translate }}
+    </p>
+  </ng-container>
+</section>

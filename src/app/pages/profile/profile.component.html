@@ -1,0 +1,387 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-4">
+        <div class="border specialBorder bg-white p-3">
+          <div class="imgBox mx-auto">
+            <ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+              <!-- لو في صورة محفوظة من السيرفر -->
+              @if (profilemeData?.image) {
+              <div class="dz-thumb existing text-center">
+                <img
+                  [src]="profilemeData.image"
+                  [alt]="profilemeData.name"
+                  class="w-100 rounded"
+                />
+              </div>
+              } @else {
+              <!-- اعرض بريفيهات الملفات اللي اختارها المستخدم (File) -->
+              @for (file of files(); track file) {
+              <ngx-dropzone-label>Upload Your Image</ngx-dropzone-label>
+
+              <ngx-dropzone-image-preview
+                [file]="file"
+                [removable]="true"
+                (removed)="onRemove(file)"
+                class="dz-thumb"
+              ></ngx-dropzone-image-preview>
+              } }
+            </ngx-dropzone>
+          </div>
+
+          <!-- <div class="imgBox mx-auto">
+            <ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+              <ngx-dropzone-label>Upload Your Image</ngx-dropzone-label>
+
+              @for (file of files(); track file) { @if (profilemeData.image) {
+              <ngx-dropzone-image-preview
+                [file]="profilemeData.image"
+                [removable]="true"
+                (removed)="onRemove(file)"
+                class="dz-thumb"
+              >
+              </ngx-dropzone-image-preview>
+              }@else {
+              <ngx-dropzone-image-preview
+                [file]="file"
+                [removable]="true"
+                (removed)="onRemove(file)"
+                class="dz-thumb"
+              >
+              </ngx-dropzone-image-preview>
+              } }
+            </ngx-dropzone>
+          </div> -->
+          <!-- user name and email -->
+          <div class="textSecondColor text-center mt-2 pb-3 bs-popover-bottom">
+            <h5 class="text-capitalize mb-0 fw-bold">Antoni Jonson</h5>
+            <p class="">jonsonexample.com</p>
+          </div>
+
+          <ul class="list-unstyled text-capitalize">
+            <li
+              role="button"
+              [class.bg-transparent]="selectedTab !== 'dashboard'"
+              [class.bgMainColor]="selectedTab === 'dashboard'"
+              (click)="selectedTab = 'dashboard'"
+              class="mb-2 p-2 specialBorder"
+            >
+              <i
+                [class.textMainColor]="selectedTab !== 'dashboard'"
+                [class.text-white]="selectedTab === 'dashboard'"
+                class="fa fa-gauge me-2"
+              ></i>
+              <span
+                [class.textSecondColor]="selectedTab !== 'dashboard'"
+                [class.text-white]="selectedTab === 'dashboard'"
+                >dashboard</span
+              >
+            </li>
+            <li
+              role="button"
+              [class.bg-transparent]="selectedTab !== 'myProfile'"
+              [class.bgMainColor]="selectedTab === 'myProfile'"
+              (click)="selectedTab = 'myProfile'"
+              class="mb-2 p-2 specialBorder"
+            >
+              <i
+                [class.textMainColor]="selectedTab !== 'myProfile'"
+                [class.text-white]="selectedTab === 'myProfile'"
+                class="fa fa-id-card me-2"
+              ></i>
+              <span
+                [class.textSecondColor]="selectedTab !== 'myProfile'"
+                [class.text-white]="selectedTab === 'myProfile'"
+                >my profile</span
+              >
+            </li>
+            <li
+              role="button"
+              [class.bg-transparent]="selectedTab !== 'myBooking'"
+              [class.bgMainColor]="selectedTab === 'myBooking'"
+              (click)="selectedTab = 'myBooking'"
+              class="mb-2 p-2 specialBorder"
+            >
+              <i
+                [class.textMainColor]="selectedTab !== 'myBooking'"
+                [class.text-white]="selectedTab === 'myBooking'"
+                class="fa fa-clipboard-list me-2"
+              ></i>
+              <span
+                [class.textSecondColor]="selectedTab !== 'myBooking'"
+                [class.text-white]="selectedTab === 'myBooking'"
+                >my booking</span
+              >
+            </li>
+            <li
+              role="button"
+              [class.bg-transparent]="selectedTab !== 'myWishlist'"
+              [class.bgMainColor]="selectedTab === 'myWishlist'"
+              (click)="selectedTab = 'myWishlist'"
+              class="mb-2 p-2 specialBorder"
+            >
+              <i
+                [class.textMainColor]="selectedTab !== 'myWishlist'"
+                [class.text-white]="selectedTab === 'myWishlist'"
+                class="fa fa-heart-circle-plus me-2"
+              ></i>
+              <span
+                [class.textSecondColor]="selectedTab !== 'myWishlist'"
+                [class.text-white]="selectedTab === 'myWishlist'"
+                >my wishlist</span
+              >
+            </li>
+            <li
+              role="button"
+              [class.bg-transparent]="selectedTab !== 'setting'"
+              [class.bgMainColor]="selectedTab === 'setting'"
+              (click)="selectedTab = 'setting'"
+              class="mb-2 p-2 specialBorder"
+            >
+              <i
+                [class.textMainColor]="selectedTab !== 'setting'"
+                [class.text-white]="selectedTab === 'setting'"
+                class="fa fa-gear me-2"
+              ></i>
+              <span
+                [class.textSecondColor]="selectedTab !== 'setting'"
+                [class.text-white]="selectedTab === 'setting'"
+                >settings</span
+              >
+            </li>
+            <li
+              role="button"
+              [class.bg-transparent]="selectedTab !== 'logout'"
+              [class.bgMainColor]="selectedTab === 'logout'"
+              (click)="logout()"
+              (click)="selectedTab = 'logout'"
+              class="mb-2 p-2 specialBorder"
+            >
+              <i
+                [class.textMainColor]="selectedTab !== 'logout'"
+                [class.text-white]="selectedTab === 'logout'"
+                class="fa fa-arrow-right-from-bracket me-2"
+              ></i>
+              <span
+                [class.textSecondColor]="selectedTab !== 'logout'"
+                [class.text-white]="selectedTab === 'logout'"
+                >logout</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div>
+          @if (selectedTab==='dashboard') {
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3 specialBorder border flexBetween">
+                <div class="textSecondColor">
+                  <b class="fs-3">{{ tourCart.length }}</b>
+                  <p class="mb-1 text-capitalize">total booking</p>
+                </div>
+                <div class="iconBox m-0 bg-transparent text-danger">
+                  <i class="fa fa-shopping-cart"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 specialBorder border flexBetween">
+                <div class="textSecondColor">
+                  <b class="fs-3">{{ favList.length }}</b>
+                  <p class="mb-1 text-capitalize">favorite tour</p>
+                </div>
+                <div class="iconBox m-0 bg-white text-danger">
+                  <i class="fa fa-heart-circle-plus"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          } @if (selectedTab==='myProfile') {
+          <div
+            class="p-4 border sideBar rounded-3 textSecondColor text-capitalize"
+          >
+            <h5 class="fw-bold mb-3 pb-3 border-bottom">profile info</h5>
+
+            <p><b class="me-5">Full Name:</b> Antoni Jonson</p>
+            <p><b class="me-5">Email:</b> jonsonexample.com</p>
+            <p><b class="me-5">Phone:</b>+2 134 562 458</p>
+            <p><b class="me-5">Address:</b>New York, USA</p>
+            <p><b class="me-5">Join Date:</b>21 August, 2025</p>
+          </div>
+          } @if (selectedTab==='myBooking') { @if (haveData) {
+          <ngx-slick-carousel
+            #bookingCarousel="slick-carousel"
+            [config]="bookingOptions"
+          >
+            @for (cart of tourCart; track $index) {
+            <div ngxSlickItem>
+              <app-tour-cart [tour]="cart.tour"></app-tour-cart>
+              <div class="text-capitalize textSecondColor mt-4">
+                <h6>
+                  guest:
+                  <b *ngIf="cart.adults" class="textMainColor"
+                    >{{ cart.adults }} adults</b
+                  >
+                  ,<b *ngIf="cart.children" class="textMainColor"
+                    >{{ cart.children }} children</b
+                  >
+                  ,<b *ngIf="cart.infants" class="textMainColor"
+                    >{{ cart.infants }} infants</b
+                  >
+                </h6>
+                <h6>
+                  total price :
+                  <b class="textMainColor">{{ cart.totalPrice | currency }}</b>
+                </h6>
+                <h6>
+                  booking date :<b class="textMainColor">{{
+                    cart.start_date | date
+                  }}</b>
+                </h6>
+              </div>
+            </div>
+            }
+          </ngx-slick-carousel>
+          }@else {
+          <h2 class="text-danger text-capitalize">no tour in booking cart</h2>
+          } } @if (selectedTab==='myWishlist') { @if (haveData) {
+          <ngx-slick-carousel
+            #wishlistCarousel="slick-carousel"
+            [config]="bookingOptions"
+          >
+            @for (cart of favList; track $index) {
+            <div ngxSlickItem>
+              <app-tour-cart [tour]="cart.tour"></app-tour-cart>
+            </div>
+            }
+          </ngx-slick-carousel>
+          }@else {
+          <h2 class="text-danger text-capitalize">no tour in wishlist</h2>
+          } } @if (selectedTab==='setting') {
+          <form
+            [formGroup]="updateProfile"
+            (ngSubmit)="submitProfileData()"
+            class="row g-3"
+          >
+            <div class="col-md-6">
+              <div class="mb-2">
+                <label
+                  for="name"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >full name</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="text"
+                    id="name"
+                    formControlName="name"
+                    placeholder="Your Full Name "
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa fa-file-signature textMainColor"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-2">
+                <label
+                  for="phone"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                >
+                  phone</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="tel"
+                    id="phone"
+                    formControlName="phone"
+                    placeholder="Your phone "
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa fa-phone-volume textMainColor"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-2">
+                <label
+                  for="password"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >password</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="password"
+                    id="password"
+                    formControlName="password"
+                    placeholder="Your Password "
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa fa-lock textMainColor"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-2">
+                <label
+                  for="password_confirmation"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >password_confirmation</label
+                >
+                <div class="item position-relative">
+                  <input
+                    type="password"
+                    id="password_confirmation"
+                    formControlName="password_confirmation"
+                    placeholder="Your Password Confirmation "
+                    class="form-control p-2 ps-5 rounded-3"
+                  />
+                  <i class="fa fa-lock textMainColor"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mb-2">
+                <label
+                  for="nationality"
+                  class="textSecondColor text-capitalize fw-bold mb-2"
+                  >nationality</label
+                >
+                <div class="item position-relative">
+                  <select
+                    id="nationality"
+                    formControlName="nationality"
+                    class="form-control p-2 ps-5 rounded-3"
+                  >
+                    <option selected disabled>select your nationality</option>
+                    @for (item of countriesList; track $index) {
+
+                    <option [value]="item.name">{{ item.name }}</option>
+                    }
+                  </select>
+                  <i class="fa fa-globe textMainColor"></i>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="Btn mainBtn">
+                update profile info
+              </button>
+            </div>
+          </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-make-trip-form></app-make-trip-form>

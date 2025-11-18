@@ -1,0 +1,205 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5 py-5 tourSearchBox">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-xl-3 col-lg-4">
+        <div
+          class="sideBar p-3 rounded-3 bg-white text-capitalize textSecondColor"
+        >
+          <!-- category -->
+          <div class="mb-4">
+            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">{{ 'tour.tourCategory' | translate }}</h4>
+            <div
+              *ngFor="let type of allCategories"
+              class="flexBetween listFilter p-1 rounded-2"
+            >
+              <mat-checkbox
+                class="cPointer"
+                [checked]="isChecked('selectedTripType', type.id)"
+                (change)="toggle('selectedTripType', type.id, $event.checked)"
+              >
+                {{ type.title }}
+              </mat-checkbox>
+              <span class="flexCenter rounded-circle">{{
+                type.tours_count
+              }}</span>
+            </div>
+          </div>
+
+          <!-- price -->
+          <div class="mb-4">
+            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">{{ 'tour.tourPrice' | translate }}</h4>
+            <div>
+              <p class="mb-0 text-capitalize">
+                {{ 'tour.priceFrom' | translate }}:
+                <span class="textMainColor"> {{ minBudget | currency }} </span>
+                {{ 'tour.to' | translate }}:
+                <span class="textMainColor"> {{ maxBudget | currency }} </span>
+              </p>
+
+              <mat-slider class="w-100 mainSliderColor" [min]="0" [max]="9000">
+                <input
+                  [(ngModel)]="minBudget"
+                  name="minBudget"
+                  matSliderStartThumb
+                  (change)="filterTours()"
+                />
+                <input
+                  [(ngModel)]="maxBudget"
+                  name="maxBudget"
+                  matSliderEndThumb
+                  (change)="filterTours()"
+                />
+              </mat-slider>
+            </div>
+          </div>
+
+          <!-- duartion -->
+          <div class="mb-4">
+            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">{{ 'tour.tourDuration' | translate }}</h4>
+
+            <div
+              *ngFor="let d of allDurations"
+              class="flexBetween listFilter p-1 rounded-2"
+            >
+              <mat-checkbox
+                class="cPointer"
+                [checked]="isChecked('selectedDuration', d.id)"
+                (change)="toggle('selectedDuration', d.id, $event.checked)"
+              >
+                {{ d.title }}
+              </mat-checkbox>
+
+              <span class="flexCenter rounded-circle">{{ d.tours_count }}</span>
+            </div>
+          </div>
+
+          <!-- destination -->
+          <div class="mb-4">
+            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">{{ 'tour.tourDestination' | translate }}</h4>
+            <div
+              *ngFor="let dest of allDestinations"
+              class="flexBetween listFilter p-2 rounded-2"
+            >
+              <mat-checkbox
+                class="cPointer"
+                [checked]="isChecked('selectedDestination', dest.id)"
+                (change)="
+                  toggle('selectedDestination', dest.id, $event.checked)
+                "
+              >
+                {{ dest.title }}
+              </mat-checkbox>
+              <span class="flexCenter textMainColor rounded-circle">{{
+                dest.tours_count
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-9 col-lg-8">
+        <div>
+          <div
+            class="flexBetween flex-wrap p-3 py-2 sideBar rounded-3 bg-white"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <h6 class="textSecondColor fw-bold mb-0">
+                {{ filteredTours.length }} {{ 'tour.resultsFound' | translate }}
+              </h6>
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                (click)="clearAllFilters()"
+                *ngIf="
+                  selectedTripType.length > 0 ||
+                  selectedDestination.length > 0 ||
+                  selectedDuration.length > 0 ||
+                  minBudget > 0 ||
+                  maxBudget < 5000
+                "
+              >
+                {{ 'tour.clearFilters' | translate }}
+              </button>
+            </div>
+            <!-- style toggle -->
+            <div>
+              <i
+                class="fa-regular fa-table-cells mx-1 fs-5 fw-bold cPointer rounded-2"
+                [ngClass]="{
+                  'borderMainColor textMainColor border  py-1':
+                    layoutType === 'grid',
+                  'borderSecondColor textSecondColor': layoutType !== 'grid'
+                }"
+                (click)="setLayout('grid')"
+              >
+              </i>
+
+              <i
+                class="fa-regular fa-table-list mx-1 fs-5 fw-bold cPointer rounded-2"
+                [ngClass]="{
+                  'borderMainColor textMainColor border py-1 ':
+                    layoutType === 'list',
+                  'borderSecondColor textSecondColor': layoutType !== 'list'
+                }"
+                (click)="setLayout('list')"
+              >
+              </i>
+            </div>
+            <select
+              (change)="onSortChange($event)"
+              class="text-capitalize form-control wfit"
+            >
+              <option value="" selected disabled>-- {{ 'tour.sortBy' | translate }} --</option>
+              <option value="recent">{{ 'tour.mostRecent' | translate }}</option>
+              <option value="seller">{{ 'tour.mostSeller' | translate }}</option>
+              <option value="priceLowToHigh">{{ 'tour.priceLowToHigh' | translate }}</option>
+              <option value="priceHighToLow">{{ 'tour.priceHighToLow' | translate }}</option>
+            </select>
+          </div>
+
+          <div class="row g-4 my-3">
+            <div
+              class="mt-0"
+              [ngClass]="
+                layoutType === 'grid' ? 'col-xl-6 col-lg-12 col-md-6' : 'col-12'
+              "
+              *ngFor="
+                let tour of filteredTours
+                  | paginate
+                    : {
+                        id: 'tour-pagination',
+                        currentPage: currentPage,
+                        itemsPerPage: itemsPerPage,
+                        totalItems: totalItems
+                      };
+                let i = index
+              "
+            >
+              <app-tour-cart
+                [tour]="tour"
+                [layoutType]="layoutType"
+              ></app-tour-cart>
+            </div>
+          </div>
+
+          @if (filteredTours.length==0) {
+          <p class="text-capitalize text-danger fs-2 text-center">
+            {{ 'tour.noDataMatched' | translate }}
+          </p>
+          } @else if (filteredTours.length >= 9) {
+          <app-pagination
+            [currentPage]="currentPage"
+            [itemsPerPage]="itemsPerPage"
+            [totalItems]="totalItems"
+            (pageChanged)="onPageChange($event)"
+          ></app-pagination>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-make-trip-form></app-make-trip-form>

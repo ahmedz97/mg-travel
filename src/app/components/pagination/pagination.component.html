@@ -1,0 +1,11 @@
+<pagination-controls
+  (pageChange)="pageChanged.emit($event)"
+  id="tour-pagination"
+  [maxSize]="7"
+  [directionLinks]="true"
+  [responsive]="true"
+  screenReaderPaginationLabel="Pagination"
+  screenReaderPageLabel="page"
+  screenReaderCurrentLabel="You're on page"
+  [autoHide]="true"
+></pagination-controls>

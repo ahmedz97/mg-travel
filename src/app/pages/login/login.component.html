@@ -1,0 +1,114 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5 py-5">
+  <div class="container">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <div class="specialBorder bg-white p-4 sideBar">
+        <div class="text-center">
+          <img
+            [src]="logo"
+            [alt]="siteTitle"
+            [title]="siteTitle"
+            width="200px"
+            height="70px"
+          />
+          <p class="fs-5">{{ 'login.loginByAccount' | translate }}</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="handleLoginForm()" class="">
+          <div class="mb-3">
+            <label
+              for="email"
+              class="textSecondColor text-capitalize fw-bold mb-2"
+              >{{ 'login.emailAddress' | translate }}</label
+            >
+            <div class="item position-relative">
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                placeholder="{{ 'login.yourEmail' | translate }}"
+                class="form-control p-2 ps-5 rounded-3"
+              />
+              <i class="fa-regular fa-envelope textMainColor"></i>
+            </div>
+            <!-- show validators -->
+            <div
+              *ngIf="
+                loginForm.get('email')?.errors &&
+                loginForm.get('email')?.touched
+              "
+              class="alert alert-danger mt-2"
+            >
+              <span *ngIf="loginForm.get('email')?.getError('required')"
+                >{{ 'login.emailRequired' | translate }}</span
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label
+              for="password"
+              class="textSecondColor text-capitalize fw-bold mb-2"
+              >{{ 'login.password' | translate }}</label
+            >
+            <div class="item position-relative">
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                placeholder="{{ 'login.yourPassword' | translate }}"
+                class="form-control p-2 ps-5 rounded-3"
+              />
+              <i class="fa fa-lock textMainColor"></i>
+            </div>
+            <!-- show validators -->
+            <div
+              *ngIf="
+                loginForm.get('password')?.errors &&
+                loginForm.get('password')?.touched
+              "
+              class="alert alert-danger mt-2"
+            >
+              <span *ngIf="loginForm.get('password')?.getError('required')"
+                >{{ 'login.passwordRequired' | translate }}</span
+              >
+            </div>
+          </div>
+
+          <p
+            (click)="handleForgetPass(loginForm.get('email')?.value)"
+            routerLink="/forgetPassword"
+            class="my-2 textMainColor fw-bold cPointer text-capitalize"
+          >
+            {{ 'login.forgotPassword' | translate }}
+          </p>
+
+          <button
+            [disabled]="loginForm.invalid"
+            type="submit"
+            class="mainBtn Btn mb-3 w-100"
+          >
+            <i
+              *ngIf="isLoading"
+              class="fa-solid fa-spinner fa-spin me-1 border-0 bg-transparent text-white"
+            ></i>
+            <i
+              class="fa fa-paper-plane mx-2 border-0 bg-transparent text-white"
+            ></i>
+            {{ 'login.login' | translate }}
+          </button>
+        </form>
+        <div></div>
+        <p class="my-2 text-center">
+          {{ 'login.dontHaveAccount' | translate }}
+          <span routerLink="/signup" class="textMainColor fw-bold cPointer"
+            >{{ 'login.signUp' | translate }}.</span
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

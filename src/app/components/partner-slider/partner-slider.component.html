@@ -1,0 +1,20 @@
+<div class="mt-5 sideBar bg-secondary bg-opacity-10 py-5">
+  <div class="container">
+    <ngx-slick-carousel
+      *ngIf="partnerImg.length > 0"
+      #partnerCarousel="slick-carousel"
+      [config]="partnersOptions"
+    >
+      @for (image of partnerImg; track $index) {
+      <div class="mx-2" ngxSlickItem>
+        <img
+          [src]="image.src"
+          width="150px"
+          height="80px"
+          alt="partners image"
+        />
+      </div>
+      }
+    </ngx-slick-carousel>
+  </div>
+</div>

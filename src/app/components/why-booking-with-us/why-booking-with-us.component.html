@@ -1,0 +1,38 @@
+<section class="mb-5 pb-5">
+  <div class="container">
+    <div class="secTitle">
+      <h2 class="my-3 textSecondColor fw-bold text-center">
+        {{ "whyBooking.whyBookingWithUs" | translate }}
+      </h2>
+    </div>
+
+    <div class="mt-4">
+      <ngx-slick-carousel
+        #bookingCarousel="slick-carousel"
+        [config]="bookingOptions"
+      >
+        @for (item of bookingItems; track $index) {
+        <div ngxSlickItem>
+          <div class="item p-3 py-4 transition mx-2">
+            <i class="fa {{ item.icon }} fs-1 textMainColor"></i>
+            <h3 class="text-capitalize fw-bold my-3 h4">
+              @if (item.titleIsTranslation) {
+              {{ item.title | translate }}
+              } @else {
+              {{ item.title }}
+              }
+            </h3>
+            <p class="mb-1">
+              @if (item.descriptionIsTranslation) {
+              {{ item.description | translate }}
+              } @else {
+              {{ item.description }}
+              }
+            </p>
+          </div>
+        </div>
+        }
+      </ngx-slick-carousel>
+    </div>
+  </div>
+</section>

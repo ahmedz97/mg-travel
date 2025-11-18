@@ -1,0 +1,87 @@
+<footer class="footer-container">
+  <div class="container-fluid">
+    <div class="footer-content">
+      <!-- Logo Section -->
+      <div class="footer-logo mb-5">
+        <img
+          src=" '../../../assets/image/logo-MG-Travel.webp'"
+          alt="MG travel "
+          title="MG travel "
+          class="logo-img"
+          (error)="
+            $any($event.target).src =
+              '../../../assets/image/logo-MG-Travel.webp'
+          "
+        />
+      </div>
+
+      <!-- Navigation Links - Two Rows -->
+      <div class="footer-nav mb-4">
+        <div class="nav-row mb-3">
+          <a routerLink="/about" class="nav-link">{{
+            "footer.aboutUs" | translate
+          }}</a>
+          <a routerLink="/contact" class="nav-link">{{
+            "footer.contactUs" | translate
+          }}</a>
+          <a routerLink="/destination" class="nav-link">{{
+            "footer.destination" | translate
+          }}</a>
+          <a routerLink="/tour" class="nav-link">{{
+            "footer.popularTour" | translate
+          }}</a>
+          <a routerLink="/blog" class="nav-link">{{
+            "footer.ourBlog" | translate
+          }}</a>
+          <a routerLink="/faq" class="nav-link">{{
+            "footer.faqs" | translate
+          }}</a>
+        </div>
+
+        <!-- contact information -->
+        <div class="nav-row mb-3">
+          <h6 class="mb-2 d-flex align-items-center nav-link">
+            <i class="fa fa-headphones-alt me-2"></i>
+            <a
+              href="tel:{{ phoneNumber }} || {{ 01000000000 }}"
+              class="fw-bold fs-4 text-decoration-none"
+              >{{ phoneNumber || "01000000000" }}</a
+            >
+          </h6>
+          <h6 class="mb-2 d-flex align-items-center nav-link">
+            <i class="fa fa-location-dot me-2"></i>
+            <a
+              href="{{ userLocation }} || fayoum , cairo , egypt"
+              target="_blank"
+              >{{ userAddress || "fayoum , cairo , egypt" }}</a
+            >
+          </h6>
+          <h6 class="mb-2 d-flex align-items-center nav-link">
+            <i class="fa fa-envelopes-bulk me-2"></i>
+            <a href="mailTo:{{ userEmail }} || info@mg-travel.com">{{
+              userEmail || "info@mg-travel.com"
+            }}</a>
+          </h6>
+        </div>
+      </div>
+
+      <!-- Social Media Icons -->
+      <div class="mb-4 gap-3">
+        <app-social></app-social>
+      </div>
+
+      <!-- Copyright -->
+      <div class="footer-copyright pt-4 border-top w-100">
+        <p class="textMaincolor text-center text-capitalize">
+          {{ "footer.copyright" | translate }}
+          <a
+            href="https://perfectsolution4u.net/"
+            class="fw-bolder textMainColor mx-2"
+            >{{ "footer.perfectSolution" | translate }}</a
+          >
+          {{ "footer.allRightsReserved" | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

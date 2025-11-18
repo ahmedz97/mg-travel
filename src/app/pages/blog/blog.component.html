@@ -1,0 +1,52 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="blogs my-5 py-5">
+  <div class="container">
+    <div class="secTitle text-center">
+      <span
+        class="box bgMainColor text-white text-uppercase border rounded-pill p-2 transition"
+      >
+        <span
+          class="bg-white textMainColor rounded-circle transition d-inline-block"
+          ><i class="fa fa-plane me-2 ps-1"></i
+        ></span>
+
+        our blog
+      </span>
+      <h2 class="my-3 textSecondColor fw-bold">Our Latest Blog & News</h2>
+    </div>
+
+    <div *ngIf="totalItems; else noData">
+      <app-blog-cart
+        [blogs]="
+          allBlogs
+            | paginate
+              : {
+                  id: 'blog-pagination',
+                  currentPage: currentPage,
+                  itemsPerPage: itemsPerPage
+                }
+        "
+      >
+      </app-blog-cart>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [itemsPerPage]="itemsPerPage"
+        [totalItems]="totalItems"
+        (pageChanged)="onPageChange($event)"
+      >
+      </app-pagination>
+    </div>
+
+    <ng-template #noData>
+      <p class="text-capitalize text-danger fs-2 text-center">
+        no data matched
+      </p>
+    </ng-template>
+  </div>
+</section>
+
+<app-make-trip-form></app-make-trip-form>

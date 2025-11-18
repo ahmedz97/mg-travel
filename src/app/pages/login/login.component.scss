@@ -1,0 +1,27 @@
+.item{
+    i{
+        position: absolute;
+        top: 12px;
+        left: 15px;
+    }
+
+    /* hide native date text until focus or value */
+input[type="date"]::-webkit-datetime-edit { color: transparent; }
+input[type="date"]:focus::-webkit-datetime-edit,
+input[type="date"].filled::-webkit-datetime-edit { color: inherit; }
+
+/* fake placeholder */
+input[type="date"] {
+  position: relative;
+}
+input[type="date"]::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  left: 2.5rem; /* match your ps-5 padding */
+  top: 50%; transform: translateY(-50%);
+  color: #616879;
+}
+input[type="date"]:focus::before,
+input[type="date"].filled::before { content: ""; }
+
+}

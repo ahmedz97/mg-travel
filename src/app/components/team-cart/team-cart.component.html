@@ -1,0 +1,22 @@
+<div class="row g-3 mt-4">
+  @for (team of teamData ; track $index) {
+
+  <div class="col-lg-4 col-md-6">
+    <div role="button" class="p-2">
+      <figure class="overflow-hidden rounded-3">
+        <img
+          [src]="team.src"
+          class="w-100"
+          height="350px"
+          [alt]="team.name"
+          [title]="team.name"
+        />
+      </figure>
+      <figcaption class="text-capitalize">
+        <h5 class="textSecondColor fw-bold">{{ team.name }}</h5>
+        <h6 class="textMainColor">{{ team.jobTitle }}</h6>
+      </figcaption>
+    </div>
+  </div>
+  }
+</div>

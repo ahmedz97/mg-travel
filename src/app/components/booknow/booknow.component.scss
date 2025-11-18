@@ -1,0 +1,14 @@
+figure{
+    height: 400px;
+    background: url('../../../assets/image/blog2.webp') center no-repeat;
+    
+    background-size: cover;
+    
+    .item{
+        transform: translateY(-50%);
+        background: url('../../../assets/image/booknow\ bg.webp') center no-repeat;
+        
+        background-size: cover;
+        
+     }
+}

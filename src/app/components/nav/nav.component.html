@@ -1,0 +1,386 @@
+<div class="fixed-top bg-transparent">
+  <!-- Main Navbar -->
+  <nav
+    class="navbar navbar-expand-lg bg-white bg-opacity-50"
+    [class.whiteNav]="scrolled"
+    [class.sidebar-open]="isSidebarOpen"
+  >
+    <div class="container-fluid">
+      <!-- Logo Section -->
+      <div routerLink="/" class="navbar-brand cPointer">
+        <img
+          src="'../../../assets/image/logo-MG-Travel.webp'"
+          alt="MG travel "
+          title="MG travel "
+          class="me-2 w-100 h-100"
+          (error)="
+            $any($event.target).src =
+              '../../../assets/image/logo-MG-Travel.webp'
+          "
+        />
+      </div>
+
+      <!-- Navigation Links (Desktop) -->
+      <div class="navbar-nav mx-auto d-none d-lg-flex bg-white rounded-pill">
+        <ng-container *ngFor="let link of navigationLinks">
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+            class="nav-link px-3 fw-bold text-dark position-relative"
+          >
+            {{ link.label | translate }}
+          </a>
+
+          <!-- Dropdown categories -->
+          <ng-container *ngIf="link.path === '/' && allCategories?.length">
+            <div
+              class="nav-link px-3 fw-bold text-dark position-relative dropdown custom-dropdown"
+            >
+              <span
+                role="button"
+                routerLink="/tour"
+                routerLinkActive="active"
+                class="d-block text-capitalize"
+                >{{ "nav.tours" | translate }}</span
+              >
+              <ul class="dropdown-menu border-0 shadow">
+                <li *ngFor="let cat of allCategories">
+                  <a
+                    class="dropdown-item"
+                    [routerLink]="['/tour']"
+                    routerLinkActive="active"
+                    [queryParams]="{ type: cat.id }"
+                  >
+                    {{ cat.title }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="link.path === '/' && allDestinations?.length">
+            <div
+              class="nav-link px-3 fw-bold text-dark position-relative dropdown custom-dropdown"
+            >
+              <span
+                role="button"
+                routerLink="/destination"
+                routerLinkActive="active"
+                class="d-block"
+                >{{ "nav.destinations" | translate }}</span
+              >
+              <ul class="dropdown-menu border-0 shadow">
+                <li
+                  *ngFor="let dest of allDestinations"
+                  class="dropdown-submenu"
+                >
+                  <!-- ✅ if egypt-->
+                  <a
+                    *ngIf="!isEgypt(dest)"
+                    class="dropdown-item"
+                    [routerLink]="['/destination', dest.slug]"
+                    routerLinkActive="active"
+                  >
+                    {{ dest.title }}
+                  </a>
+
+                  <!-- ✅ if not egypt submenu -->
+                  <ng-container *ngIf="isEgypt(dest)">
+                    <a
+                      [routerLink]="['/destination', dest.slug]"
+                      class="dropdown-item dropdown-toggle cPointer"
+                    >
+                      {{ dest.title }}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li *ngFor="let cat of egyptCategories">
+                        <a
+                          class="dropdown-item"
+                          [routerLink]="['/tour']"
+                          routerLinkActive="active"
+                          [queryParams]="{ type: cat.id }"
+                        >
+                          {{ cat.title }}
+                        </a>
+                      </li>
+                    </ul>
+                  </ng-container>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+
+          <!-- Dropdown Destinations -->
+          <!-- <ng-container *ngIf="link.path === '/' && allDestinations?.length">
+            <div
+              class="nav-link px-1 mx-2 fw-bold text-white position-relative dropdown custom-dropdown"
+            >
+              <span class="d-block">Destinations</span>
+              <ul class="dropdown-menu border-0 shadow">
+                <li *ngFor="let dest of allDestinations">
+                  <a
+                    class="dropdown-item"
+                    [routerLink]="['/destination', dest.slug]"
+                  >
+                    {{ dest.title }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </ng-container> -->
+        </ng-container>
+      </div>
+
+      <!-- Right Section -->
+      <div class="d-flex align-items-center g-1">
+        <div
+          class="dropdown position-relative custom-dropdown d-none d-lg-block pb-0 pt-1 px-1 rounded-2"
+        >
+          <span
+            role="button"
+            class="fa fa-gear fs-5 textSecondColor border-0"
+          ></span>
+
+          <ul class="dropdown-menu border-0 shadow">
+            <li class="dropdown-item">
+              <div>
+                <i
+                  routerLink="/signup"
+                  routerLinkActive="textMainColor"
+                  class="fa fa-circle-user textSecondColor me-2 fw-bold cPointer"
+                  title="Sign up now"
+                ></i>
+
+                <i
+                  routerLink="/cart"
+                  routerLinkActive=" textMainColor "
+                  class="fa fa-cart-plus textSecondColor me-2 fw-bold cPointer"
+                  title="Tours cart"
+                ></i>
+
+                <i
+                  routerLink="/profile"
+                  routerLinkActive=" textMainColor "
+                  class="fa fa-address-book textSecondColor me-2 fw-bold cPointer"
+                  title="My profile"
+                ></i>
+              </div>
+            </li>
+            <li class="dropdown-item">
+              <!-- select language -->
+              <select
+                name="language"
+                id="language"
+                (change)="onLangChange($event)"
+                class="p-1 py-2 rounded-2 text-capitalize border-0 textMainColor cPointer bg-transparent"
+              >
+                <option value="" selected disabled>
+                  {{ "common.selectLanguage" | translate }}
+                </option>
+                <option class="text-dark" value="en">
+                  {{ "common.english" | translate }}
+                </option>
+                <option class="text-dark" value="es">
+                  {{ "common.spanish" | translate }}
+                </option>
+              </select>
+            </li>
+          </ul>
+        </div>
+
+        <!-- make trip Button -->
+        <button
+          routerLink="/makeTrip"
+          class="mainBtn Btn d-none d-lg-flex align-items-center gap-2 mx-2"
+        >
+          {{ "common.makeTrip" | translate }}
+          <i
+            class="fas fa-plane-up fa-rotate-by bgPrimaryWhiteColor rounded-circle overflow-hidden"
+          ></i>
+        </button>
+
+        <!-- Toggle Button -->
+        <button
+          class="mainBtn Btn rounded-2 d-lg-none pb-0 pt-1 px-1"
+          (click)="toggleSidebar()"
+          type="button"
+          aria-label="Toggle navigation"
+        >
+          <span class="fa fa-bars fs-5 border-0"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div
+    class="offcanvas offcanvas-end"
+    id="sidebarOffcanvas"
+    tabindex="-1"
+    aria-labelledby="sidebarOffcanvasLabel"
+    [class.show]="isSidebarOpen"
+    [style.visibility]="isSidebarOpen ? 'visible' : 'hidden'"
+  >
+    <div class="offcanvas-header border-bottom flexBetween">
+      <div class="d-flex align-items-center">
+        <img
+          src="'../../../assets/image/logo-MG-Travel.webp'"
+          alt="MG travel "
+          title="MG travel "
+          class="me-2"
+          style="width: 140px; height: 40px; object-fit: contain"
+          (error)="
+            $any($event.target).src =
+              '../../../assets/image/logo-MG-Travel.webp'
+          "
+        />
+      </div>
+      <button
+        class="btn-close wfit mx-auto"
+        (click)="closeSidebar()"
+        type="button"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <div class="offcanvas-body">
+      <div class="navbar-nav flex-column">
+        <ng-container *ngFor="let link of navigationLinks">
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+            class="nav-link px-1 mx-2 fw-bold text-dark position-relative"
+          >
+            {{ link.label | translate }}
+          </a>
+
+          <!-- Dropdown categories -->
+          <ng-container *ngIf="link.path === '/' && allCategories?.length">
+            <div
+              class="nav-link px-1 mx-2 fw-bold text-dark position-relative dropdown custom-dropdown"
+            >
+              <span class="d-block text-capitalize">tours</span>
+              <ul class="dropdown-menu border-0 shadow">
+                <li *ngFor="let cat of allCategories">
+                  <a
+                    class="dropdown-item"
+                    [routerLink]="['/tour']"
+                    routerLinkActive="active"
+                    [queryParams]="{ type: cat.id }"
+                  >
+                    {{ cat.title }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+
+          <!-- Dropdown Destinations -->
+          <ng-container *ngIf="link.path === '/' && allDestinations?.length">
+            <div
+              class="nav-link px-1 mx-2 fw-bold text-dark position-relative dropdown custom-dropdown"
+            >
+              <span class="d-block">Destinations</span>
+              <ul class="dropdown-menu border-0 shadow">
+                <li
+                  *ngFor="let dest of allDestinations"
+                  class="dropdown-submenu"
+                >
+                  <!-- ✅ if egypt-->
+                  <a
+                    *ngIf="!isEgypt(dest)"
+                    class="dropdown-item"
+                    [routerLink]="['/destination', dest.slug]"
+                    routerLinkActive="active"
+                  >
+                    {{ dest.title }}
+                  </a>
+
+                  <!-- ✅ if not egypt submenu -->
+                  <ng-container *ngIf="isEgypt(dest)">
+                    <a
+                      [routerLink]="['/destination', dest.slug]"
+                      routerLinkActive="active"
+                      class="dropdown-item dropdown-toggle cPointer"
+                    >
+                      {{ dest.title }}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li *ngFor="let cat of egyptCategories">
+                        <a
+                          class="dropdown-item"
+                          [routerLink]="['/tour']"
+                          routerLinkActive="active"
+                          [queryParams]="{ type: cat.id }"
+                        >
+                          {{ cat.title }}
+                        </a>
+                      </li>
+                    </ul>
+                  </ng-container>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="offcanvas-footer border-top p-3">
+      <div>
+        <i
+          routerLink="/signup"
+          routerLinkActive="textMainColor"
+          class="fa fa-circle-user textSecondColor me-2 fw-bold cPointer"
+          title="Sign up now"
+        ></i>
+
+        <i
+          routerLink="/cart"
+          routerLinkActive=" textMainColor "
+          class="fa fa-cart-plus textSecondColor me-2 fw-bold cPointer"
+          title="Tours cart"
+        ></i>
+
+        <i
+          routerLink="/profile"
+          routerLinkActive=" textMainColor "
+          class="fa fa-address-book textSecondColor me-2 fw-bold cPointer"
+          title="My profile"
+        ></i>
+      </div>
+
+      <!-- select language -->
+      <select
+        name="language"
+        id="language"
+        (change)="onLangChange($event)"
+        class="p-2 m-2 rounded-2 text-capitalize border cPointer w-100"
+      >
+        <option value="" selected disabled>
+          {{ "common.selectLanguage" | translate }}
+        </option>
+        <option value="en">{{ "common.english" | translate }}</option>
+        <option value="es">{{ "common.spanish" | translate }}</option>
+      </select>
+      <button
+        class="mainBtn Btn w-100 d-flex align-items-center justify-content-center gap-2"
+      >
+        {{ "common.makeTrip" | translate }}
+        <i
+          class="fas fa-map-marker-alt fa-rotate-by textMainColor bgPrimaryWhiteColor rounded-circle overflow-hidden"
+        ></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Backdrop -->
+  <div
+    class="offcanvas-backdrop fade"
+    [class.show]="isSidebarOpen"
+    (click)="closeSidebar()"
+    [style.display]="isSidebarOpen ? 'block' : 'none'"
+  ></div>
+</div>

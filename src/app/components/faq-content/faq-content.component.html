@@ -1,0 +1,21 @@
+<mat-accordion>
+  <!-- @for (item of faqs; let i = $index) {
+    
+  } -->
+  @for (item of faqs; track $index) {
+  <mat-expansion-panel class="my-4" #panel (opened)="openPanel($index)">
+    <mat-expansion-panel-header class="bgPrimaryWhiteColor border rounded-2">
+      <mat-panel-title class="h5 mb-0 fw-bold">
+        0{{ $index + 1 }} - {{ item.question }}
+      </mat-panel-title>
+
+      <mat-panel-description>
+        <i *ngIf="!panel.expanded" class="fa fa-angle-up fs-5 fw-bold"></i>
+        <i *ngIf="panel.expanded" class="fa fa-angle-down fs-5 fw-bold"></i>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <h6 class="mt-4" [innerHTML]="item.answer"></h6>
+  </mat-expansion-panel>
+  }
+</mat-accordion>

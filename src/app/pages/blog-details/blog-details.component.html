@@ -1,0 +1,278 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="my-5">
+  <div class="container">
+    <div class="row g-3 justify-content-center">
+      <div class="col-xl-8 col-lg-10 pe-3">
+        <div class="pb-4 border-bottom">
+          <figure class="mb-4 specialBorder overflow-hidden imgHovver">
+            <img
+              [src]="blogDetails.featured_image"
+              class="w-100"
+              [title]="blogDetails.title"
+              [alt]="blogDetails.title"
+            />
+          </figure>
+          <!-- blog name  -->
+          <div class="mb-4">
+            <h2 class="text-black text-capitalize fw-bold">
+              {{ blogDetails.title }}
+            </h2>
+            <div class="flexBetween flex-wrap mb-3 mt-0 py-3 border-bottom">
+              <div class="me-3">
+                <i class="fa fa-calendar-days me-2"></i>
+                <span>{{ blogDetails.created_at }}</span>
+              </div>
+              <div class="me-3">
+                <i class="fa fa-comment-alt me-2"></i>
+                <span>Comments ( {{ blogDetails.display_order }} )</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- top description -->
+          <div
+            class="mb-4"
+            [innerHTML]="getSanitizedHtml(blogDetails.description)"
+          ></div>
+          <!-- two image gallery -->
+          <div class="row g-3 mb-4">
+            @for (item of blogDetails.gallery?.slice(0,2) ||[]; track $index) {
+            <div class="col-lg-6">
+              <figure class="imgHover mb-0 rounded-3 overflow-hidden">
+                <img
+                  [src]="blogDetails.gallery[0]"
+                  class="w-100"
+                  [alt]="blogDetails.title"
+                  [title]="blogDetails.title"
+                  height="400px"
+                />
+              </figure>
+            </div>
+            }
+          </div>
+        </div>
+        <!-- tags -->
+        <div>
+          <h5 class="pt-3 h4 fw-bold text-black mb-0">Popular Tags</h5>
+          <div class="py-3 flexCenter justify-content-start flex-wrap gap-3">
+            @for (tag of tags; track $index) {
+            <button class="Btn mainBtn px-3 py-1 text-capitalize">
+              {{ tag }}
+            </button>
+            }
+          </div>
+        </div>
+        <!-- follow us -->
+        <div>
+          <h5 class="pt-3 h4 fw-bold text-black mb-3">share</h5>
+          <div class="bgMainColor rounded-3 p-3">
+            <app-social></app-social>
+          </div>
+        </div>
+
+        <!-- related blogs -->
+        <div class="row g-3 my-4">
+          @for (blog of blogs.slice(-2); track $index) {
+          <div class="col-md-6">
+            <div class="d-flex">
+              <figure
+                class="mb-0 rounded-3 overflow-hidden imgHover flex-shrink-0"
+              >
+                <img
+                  [src]="blog.featured_image"
+                  width="100px"
+                  class="h-100"
+                  [alt]="blog.title"
+                  [title]="blog.title"
+                />
+              </figure>
+              <figcaption class="ps-3">
+                <div class="me-3">
+                  <i class="fa fa-calendar-days me-2"></i>
+                  <span>{{ blog.created_at | date : "dd-MMM-YYYY" }}</span>
+                </div>
+                <h4 class="text-capitalize fw-bold cPointer h5">
+                  {{ blog.title }}
+                </h4>
+              </figcaption>
+            </div>
+          </div>
+          }
+          <!-- <div class="col-md-6">
+            <div class="d-flex">
+              <figure
+                class="mb-0 rounded-3 overflow-hidden imgHover flex-shrink-0"
+              >
+                <img
+                  src="../../../assets/image/blog3.webp"
+                  width="100px"
+                  height="100px"
+                  alt="blog image"
+                />
+              </figure>
+              <figcaption class="ps-3">
+                <div class="me-3">
+                  <i class="fa fa-calendar-days me-2"></i>
+                  <span>20 March 2025</span>
+                </div>
+                <h4 class="text-capitalize fw-bold cPointer h5">
+                  Leverage Social Media Brand Tips business
+                </h4>
+              </figcaption>
+            </div>
+          </div> -->
+        </div>
+
+        <!-- comment form -->
+        <div class="p-sm-5 p-3 rounded-3 shadow-lg">
+          <h5 class="pb-3 fw-bold text-black">Leave A Comments</h5>
+          <p>
+            Your email address will not be published. Required fields are marked
+            *
+          </p>
+          <form
+            [formGroup]="writeReview"
+            (ngSubmit)="getWriteReview()"
+            class="row g-3 mt-4"
+          >
+            <div class="col-md-6">
+              <div>
+                <input
+                  type="text"
+                  formControlName="reviewer_name"
+                  placeholder="Name..."
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div>
+                <input
+                  type="number"
+                  placeholder="Rate..."
+                  class="form-control"
+                  formControlName="rate"
+                />
+              </div>
+            </div>
+            <div class="col-12">
+              <div>
+                <textarea
+                  placeholder="Message..."
+                  class="form-control"
+                  name="message"
+                  rows="5"
+                  formControlName="content"
+                ></textarea>
+              </div>
+            </div>
+            <div>
+              <button
+                type="submit"
+                class="mainBtn Btn flexCenter gap-2 mx-2 mb-2"
+              >
+                send comment
+                <i
+                  class="fa fa-arrow-right fa-rotate-by bgPrimaryWhiteColor rounded-circle overflow-hidden"
+                ></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-lg-10">
+        <div>
+          <!-- <div class="input-group mb-4 sideBar p-4 rounded-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Keywords"
+              aria-label="keywords"
+              aria-describedby="button-addon2"
+            />
+            <button class="mainBtn Btn" type="button" id="button-addon2">
+              <i
+                class="fa fa-magnifying-glass bg-transparent text-black border-0"
+              ></i>
+            </button>
+          </div> -->
+
+          <div class="text-capitalize p-4 rounded-3 sideBar mb-4">
+            <h5 class="headTitle pb-2 mb-2 fw-bold text-black">Categories</h5>
+            <ul class="list-unstyled categoryList">
+              @for (item of blogCategories; track $index) {
+              <li
+                [routerLink]="['/blog', item.id]"
+                class="flexBetween py-2 border-bottom cPointer"
+              >
+                <p class="mb-0">
+                  <i class="fa fa-angle-double-right me-2 textSecondColor"></i>
+                  <span>{{ item.title }}</span>
+                </p>
+                <!-- <span
+                  class="bgPrimaryWhiteColor rounded-circle flex-shrink-0 flexCenter"
+                  >5</span
+                > -->
+              </li>
+              }
+            </ul>
+          </div>
+
+          <div class="sideBar mb-4 p-4 rounded-3">
+            <h5 class="headTitle pb-2 mb-2 fw-bold text-black">Recent News</h5>
+
+            @for (item of blogs.slice(-2); track $index) {
+            <div [routerLink]="['/blog', item.slug]" class="d-flex mt-3">
+              <figure class="overflow-hidden flex-shrink-0">
+                <img
+                  [src]="item.featured_image"
+                  width="100px"
+                  height="90px"
+                  class="specialBorder"
+                  [alt]="item.title"
+                  [title]="item.title"
+                />
+              </figure>
+              <figcaption class="ps-3">
+                <div class="me-3">
+                  <i class="fa fa-calendar-days me-2"></i>
+                  <span>{{ item.created_at | date : "dd-MMM-YYYY" }}</span>
+                </div>
+                <h4 class="text-capitalize fw-bold cPointer h6">
+                  {{ item.title }}
+                </h4>
+              </figcaption>
+            </div>
+            }
+          </div>
+
+          <div class="sideBar p-4 rounded-3 my-4">
+            <h5 class="headTitle pb-2 mb-2 fw-bold text-black">follow us</h5>
+            <div class="bgMainColor rounded-3 p-3">
+              <app-social></app-social>
+            </div>
+          </div>
+
+          <div class="sideBar p-4 rounded-3 my-4">
+            <h5 class="headTitle pb-2 mb-2 fw-bold text-black">Popular Tags</h5>
+            <div
+              class="py-3 flexCenter justify-content-start flex-wrap gap-2 row-gap-3"
+            >
+              @for (tag of tags; track $index) {
+              <button class="Btn mainBtn px-3 py-1 text-capitalize">
+                {{ tag }}
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-make-trip-form></app-make-trip-form>

@@ -1,0 +1,96 @@
+@import '../../../styles/variables';
+
+.iconBox{
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+}
+.fixedNav{z-index: 2000;}
+.gallery figure{
+  height: 400px;
+}
+
+@media screen and (max-width:600px) {
+  .gallery figure{
+    height: 350px;
+  }
+}
+
+::ng-deep .itinerary-info  {
+  p.lead.text-justify{
+    font-family: none;
+    font-size: 16px !important;
+  }
+}
+::ng-deep .mat-content {
+    flex-direction: row-reverse !important;
+}
+::ng-deep {
+  .mdc-line-ripple::before, .mdc-line-ripple::after {
+       border-bottom-style: none !important;
+  }
+
+  * .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled{border: none !important; padding-inline: 0px !important;}
+
+}
+::ng-deep .mat-expansion-panel.mat-expansion-panel {
+    box-shadow: none !important;
+    border: 1px solid #eee;
+}
+
+.rateText{
+  font-size: 90px;
+  line-height: 0.9;
+}
+
+.comments {
+  figure {
+    width: 90px;
+    height: 90px;
+  }
+
+}
+::ng-deep .cdk-overlay-container { z-index: 2000 !important; }
+.AsideBar {
+  position: sticky;
+  top: 90px;
+  z-index: 1030;
+
+  ul{
+    .iconBox{
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+  }
+
+}
+.tickets {
+  label.label{margin-top: -25px !important;}
+
+  .setCount {
+    width: 20px;
+    color: $primary-color;
+  }
+  .dropdown-toggle::after{display: none;}
+  button.Btn{
+    background-color: #fff;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+    transition: all 1s;
+
+    &:hover{
+        color: #fff;
+        border: 1px solid #fff;
+        background-color: $primary-color;
+    }
+
+  }
+}
+
+::ng-deep .owl-nav{
+  display: flex !important;
+    justify-content: space-between !important;
+    transform: translateY(-580%) !important;
+
+}

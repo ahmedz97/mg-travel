@@ -1,0 +1,26 @@
+// ::ng-deep {
+//   ngx-slick-carousel {
+//     .slick-slide {
+//       padding: 0 10px;
+//     }
+//   }
+// }
+
+.item{
+    border-top-right-radius: 70px;
+    background-color: #F9F6F1;
+
+    h3{
+        height: 50px;
+    }
+
+    &:hover{
+        border-top-right-radius: 0px;
+        border-radius: 20px;
+    }
+
+    @media screen and (max-width:568px) {
+        h3{font-size: 16px !important; height: auto;}
+        p{font-size: 13px !important;}
+    }
+}

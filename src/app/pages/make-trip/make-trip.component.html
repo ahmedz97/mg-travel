@@ -1,0 +1,324 @@
+<div class="mb-5">
+  <app-banner [bannerTitle]="bannerTitle"></app-banner>
+</div>
+
+<section class="" id="makeTrip">
+  <div class="container">
+    <mat-stepper class="text-capitalize" #stepper>
+      <!-- Step 1: Choose Destinations -->
+      <mat-step
+        class="flyBtnsBox"
+        [stepControl]="firstFormGroup"
+        [completed]="prefilled"
+        [editable]="!prefilled"
+      >
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>Choose Your Destinations</ng-template>
+          <div class="row gy-3 gx-4 my-4 chooseDestination">
+            <div
+              class="js-check col-lg-4 col-md-6"
+              *ngFor="let destination of destinationList.reverse()"
+            >
+              <input
+                type="radio"
+                hidden
+                [id]="destination.id"
+                [value]="destination.title"
+                formControlName="destination"
+                (check)="onToursChange($event)"
+                required
+              />
+              <label [for]="destination.id" class="w-100">
+                <div class="tourDestinationCard w-100">
+                  <figure
+                    class="position-relative overflow-hidden rounded-3 rounded-bottom-0 mb-0 w-100"
+                  >
+                    <img
+                      [src]="destination.featured_image"
+                      class="w-100"
+                      height="220"
+                      [alt]="destination.title"
+                      [title]="destination.title"
+                    />
+                    <i
+                      class="fa fa-check fs-1 textMainColor position-absolute top-0 end-0 m-3"
+                    ></i>
+                  </figure>
+                  <figcaption
+                    class="card_data shadow rounded-bottom-3 text-center"
+                  >
+                    <h2 class="h4 p-2 fw-bold">{{ destination.title }}</h2>
+                  </figcaption>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="text-center my-4 flyBtns">
+            <button class="mainBtn Btn px-4" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 2: Pickup Travel Dates -->
+      <mat-step
+        [stepControl]="secondFormGroup"
+        [completed]="prefilled"
+        [editable]="!prefilled"
+      >
+        <form [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>Pickup Travel Dates</ng-template>
+          <div class="row g-3 my-4">
+            <div class="col-lg-5">
+              <mat-radio-group
+                class="d-flex flex-column"
+                aria-label="Pickup Travel Dates"
+                formControlName="type"
+              >
+                <mat-radio-button checked value="exact_time"
+                  >I know the exact dates</mat-radio-button
+                >
+                <mat-radio-button value="approx_time"
+                  >I have approximate dates.</mat-radio-button
+                >
+              </mat-radio-group>
+            </div>
+            <div
+              class="col-lg-6 flex-grow-1"
+              *ngIf="isDateTypeSelected('exact_time')"
+            >
+              <mat-form-field
+                appearance="outline"
+                class="w-100 date-range-field"
+              >
+                <mat-label>Select a date range</mat-label>
+                <mat-date-range-input
+                  [formGroup]="secondFormGroup"
+                  [rangePicker]="picker"
+                >
+                  <input
+                    matStartDate
+                    matInput
+                    formControlName="start_date"
+                    placeholder="Start date"
+                    class="date-input"
+                  />
+                  <input
+                    matEndDate
+                    matInput
+                    formControlName="end_date"
+                    placeholder="End date"
+                    class="date-input"
+                  />
+                </mat-date-range-input>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  matInput
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            </div>
+            <div
+              class="col-lg-6 flex-grow-1"
+              *ngIf="isDateTypeSelected('approx_time')"
+            >
+              <div class="d-flex justify-content-between">
+                <mat-form-field>
+                  <mat-label>Select Month</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option
+                      *ngFor="let month of monthList; index as i"
+                      [value]="i + 1"
+                      >{{ month }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between" *ngIf="!prefilled">
+            <button class="mainBtn Btn px-4" matStepperPrevious>Back</button>
+            <button class="mainBtn Btn px-4" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 3: Submit -->
+      <mat-step class="flyBtnsBox" [stepControl]="submitFormGroup">
+        <form [formGroup]="submitFormGroup">
+          <ng-template matStepLabel>Complete Below Data</ng-template>
+          <div class="row g-3 my-4">
+            <div class="col-md-3">
+              <mat-form-field class="w-100">
+                <mat-label>First name</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  formControlName="first_name"
+                  placeholder="ahmed"
+                  class="border-0"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <mat-form-field class="w-100">
+                <mat-label>Last name</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  formControlName="last_name"
+                  placeholder="zenger"
+                  class="border-0"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="w-100">
+                <mat-label>Email</mat-label>
+                <input
+                  type="email"
+                  matInput
+                  formControlName="email"
+                  placeholder="ahmed@gmail.com"
+                  class="border-0"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="w-100">
+                <mat-label>Nationality</mat-label>
+                <mat-select formControlName="nationality">
+                  <mat-option
+                    *ngFor="let item of countriesList"
+                    [value]="item.name"
+                    >{{ item.name }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="w-100">
+                <mat-label>Phone number</mat-label>
+                <input
+                  type="tel"
+                  matInput
+                  formControlName="phone_number"
+                  placeholder="01069769249"
+                  class="border-0"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Min Budget</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="min_person_budget"
+                  (input)="onBudgetChange()"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Max Budget</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="max_person_budget"
+                  (input)="onBudgetChange()"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  id="flight_offer"
+                  formControlName="flight_offer"
+                  class="me-3"
+                />
+                <label for="flight_offer">Add flight offer</label>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 my-3">
+            <div class="col-md-4">
+              <label>Adults ( +12 )</label>
+              <div
+                class="content border rounded-3 d-flex justify-content-around align-items-center p-2"
+              >
+                <button (click)="decrement('adults')" class="mainBtn Btn fs-5">
+                  -
+                </button>
+                <span>{{ submitFormGroup.get("adults")?.value }}</span>
+                <input type="hidden" value="0" formControlName="adults" />
+                <button (click)="increment('adults')" class="mainBtn Btn fs-5">
+                  +
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label>Children ( 2 to 11 )</label>
+              <div
+                class="content border rounded-3 d-flex justify-content-around align-items-center p-2"
+              >
+                <button
+                  (click)="decrement('children')"
+                  class="mainBtn Btn fs-5"
+                >
+                  -
+                </button>
+                <span>{{ submitFormGroup.get("children")?.value }}</span>
+                <input type="hidden" value="0" formControlName="children" />
+                <button
+                  (click)="increment('children')"
+                  class="mainBtn Btn fs-5"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label>Infants ( 0 to 2 )</label>
+              <div
+                class="content border rounded-3 d-flex justify-content-around align-items-center p-2"
+              >
+                <button (click)="decrement('infants')" class="mainBtn Btn fs-5">
+                  -
+                </button>
+                <span>{{ submitFormGroup.get("infants")?.value }}</span>
+                <input type="hidden" value="0" formControlName="infants" />
+                <button (click)="increment('infants')" class="mainBtn Btn fs-5">
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <mat-form-field appearance="fill" class="w-100 mt-3">
+            <mat-label>Notes</mat-label>
+            <textarea
+              matInput
+              formControlName="additional_notes"
+              rows="3"
+              placeholder="Add any notes here"
+            ></textarea>
+          </mat-form-field>
+          <div class="d-flex justify-content-between mt-4 flyBtns">
+            <button
+              class="mainBtn Btn px-4"
+              matStepperPrevious
+              *ngIf="!prefilled"
+            >
+              Back
+            </button>
+            <button (click)="submitForm()" class="mainBtn Btn">Inquire</button>
+            <button class="mainBtn Btn px-4" (click)="stepper.reset()">
+              Reset
+            </button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </div>
+</section>

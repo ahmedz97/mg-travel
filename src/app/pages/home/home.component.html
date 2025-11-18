@@ -1,0 +1,463 @@
+<div class="topsec">
+  <div class="mainContentImg position-relative z-1 overflow-hidden">
+    <div class="container-fluid h-100">
+      <div class="row h-100 align-items-center">
+        <div
+          class="col-xl-6 offset-xl-0 col-lg-6 offset-lg-0 col-md-8 offset-md-2"
+        >
+          <div class="mainContentText text-center text-capitalize">
+            <span class="textSecondColor fw-bold fs-2"
+              >Discover the nature new travel</span
+            >
+            <h1 class="h1 fw-bold">
+              Egygo Travel's Expeditions Across The Globe
+            </h1>
+            <p class="text-muted fs-3 text-lowercase">
+              Egygo Travel, where every adventure begins with a dream and ends
+              with memories to last a lifetime. From the bustling streets of
+              vibrant cities.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <img
+      src="../../../assets/image/mg/mountains.webp"
+      alt="main content shape 1"
+      class="position-absolute bottom-0 start-0 z-n1 shape1"
+    />
+    <img
+      src="../../../assets/image/mg/flying-birds.webp"
+      alt="main content shape 2"
+      class="position-absolute z-n1 shape2"
+    />
+    <div class="boatBox position-absolute end-0 z-n1">
+      <img
+        src="../../../assets/image/mg/circle.webp"
+        alt="main content circle"
+        class="circle position-absolute z-0"
+      />
+      <img
+        src="../../../assets/image/mg/hero-img-1.webp"
+        alt="main content boat"
+        class="boat position-relative z-1"
+      />
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="taps"></div>
+
+    <!-- form search -->
+    <div
+      class="formBox bg-white rounded-5 p-3 pb-0 sideBar mb-md-0 text-capitalize"
+    >
+      <mat-tab-group>
+        <mat-tab [label]="'home.tour' | translate">
+          <form
+            [formGroup]="tourSearchForm"
+            (ngSubmit)="onTourSubmit()"
+            class="row g-3 align-items-center justify-content-between"
+          >
+            <div class="col-md-4">
+              <div
+                class="text-capitalize bg-secondary bg-opacity-10 textSecondColor rounded-3 p-3 text-start"
+              >
+                <label
+                  ><i class="fa fa-plane me-2 mb-2"></i
+                  >{{ "home.destinations" | translate }}</label
+                >
+                <select
+                  formControlName="location"
+                  class="p-2 rounded-1 text-secondary border-0"
+                >
+                  <option
+                    value=""
+                    disabled
+                    selected
+                    class="bg-secondary text-white"
+                  >
+                    {{ "home.allDestinations" | translate }}
+                  </option>
+                  @for (des of allDestinations; track $index) {
+                  <option [value]="des.id">{{ des.title }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div
+                class="text-capitalize bg-secondary bg-opacity-10 textSecondColor rounded-3 p-3 text-start"
+              >
+                <label
+                  ><i class="fa fa-layer-group me-2 mb-2"></i
+                  >{{ "home.categories" | translate }}</label
+                >
+                <select
+                  formControlName="type"
+                  class="p-2 rounded-1 text-secondary border-0"
+                >
+                  <option
+                    value=""
+                    disabled
+                    selected
+                    class="bg-secondary text-white"
+                  >
+                    {{ "home.allCategories" | translate }}
+                  </option>
+                  @for (cat of allCategories; track $index) {
+
+                  <option [value]="cat.id">{{ cat.title }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div
+                class="text-capitalize bg-secondary bg-opacity-10 textSecondColor rounded-3 p-3 text-start"
+              >
+                <label
+                  ><i class="fa fa-alarm-clock me-2 mb-2"></i
+                  >{{ "common.duration" | translate }}</label
+                >
+                <select
+                  formControlName="duration"
+                  class="p-2 rounded-1 text-secondary border-0"
+                >
+                  <option
+                    value=""
+                    disabled
+                    selected
+                    class="bg-secondary text-white"
+                  >
+                    when you go to?
+                  </option>
+                  @for (time of allDurations; track $index) {
+
+                  <option [value]="time.id">{{ time.title }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="text-capitalize flexCenter">
+                <button
+                  type="submit"
+                  class="mainBtn Btn flexBetween gap-2 w-100"
+                >
+                  {{ "common.search" | translate
+                  }}<i
+                    class="fa fa-magnifying-glass-plus bgPrimaryWhiteColor textMainColor rounded-circle"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </mat-tab>
+        <mat-tab label="Make your trip">
+          <form
+            [formGroup]="makeTripForm"
+            (ngSubmit)="onMakeTripSubmit()"
+            class="row g-3 align-items-center justify-content-between"
+          >
+            <div class="col-12">
+              <mat-radio-group
+                [value]="MarkTime"
+                (change)="onChangeTime($event.value)"
+                class="d-flex flex-wrap gap-1"
+              >
+                <mat-radio-button value="exact"
+                  >have an exact time</mat-radio-button
+                >
+                <mat-radio-button value="approximate"
+                  >have an approximate time</mat-radio-button
+                >
+              </mat-radio-group>
+            </div>
+            <div class="col-xl-3 col-lg-4">
+              <div class="text-capitalize">
+                <label class="textSecondColor"
+                  ><i class="fa fa-map-marker-alt me-2 mb-2"></i
+                  >destinations</label
+                >
+                <mat-form-field class="w-100">
+                  <mat-select formControlName="city">
+                    <mat-option value="" disabled selected>
+                      My Destination...
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let des of allDestinations"
+                      [value]="des.slug"
+                    >
+                      {{ des.title }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- if have exact time -->
+            @if (MarkTime==='exact') {
+            <div class="col-xl-3 col-lg-4">
+              <div class="text-capitalize">
+                <label class="textSecondColor"
+                  ><i class="fa fa-calendar-days me-2 mb-2"></i>
+                  check in date
+                </label>
+                <mat-form-field class="w-100">
+                  <mat-label>Start date</mat-label>
+                  <input
+                    formControlName="start_date"
+                    matInput
+                    [matDatepicker]="StartDatepicker"
+                  />
+                  <mat-datepicker-toggle
+                    matIconSuffix
+                    [for]="StartDatepicker"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker touchUi #StartDatepicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-4">
+              <div class="text-capitalize">
+                <label class="textSecondColor"
+                  ><i class="fa fa-calendar-days me-2 mb-2"></i>
+                  check out date
+                </label>
+                <mat-form-field class="w-100">
+                  <mat-label>End date</mat-label>
+                  <input
+                    formControlName="end_date"
+                    matInput
+                    [matDatepicker]="EndDatepicker"
+                  />
+                  <mat-datepicker-toggle
+                    matIconSuffix
+                    [for]="EndDatepicker"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker touchUi #EndDatepicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+            }
+
+            <!-- if have aproximate time -->
+            @if (MarkTime==='approximate') {
+            <div class="col-xl-7 col-lg-8">
+              <div>
+                <label class="textSecondColor"
+                  ><i class="fa fa-calendar-days me-2 mb-2"></i>
+                  check out date
+                </label>
+                <mat-form-field class="w-100">
+                  <mat-label>Select Month</mat-label>
+                  <mat-select formControlName="approximate_time">
+                    <mat-option
+                      *ngFor="let month of monthList; let i = index"
+                      [value]="i + 1"
+                      >{{ month }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            }
+
+            <div class="col-xl-2 col-lg-12">
+              <div class="text-capitalize flexCenter">
+                <button
+                  type="submit"
+                  class="mainBtn Btn flexBetween gap-2 w-100"
+                >
+                  make trip<i
+                    class="fa fa-plane-circle-check bgPrimaryWhiteColor textMainColor rounded-circle"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>
+
+<!-- destination carousel -->
+<section>
+  <div class="container-fluid">
+    <div>
+      <ngx-slick-carousel
+        *ngIf="allDestinations.length > 0"
+        #destinationCarousel="slick-carousel"
+        [config]="destinationOptions"
+      >
+        @for (des of allDestinations; track $index) {
+        <div ngxSlickItem>
+          <app-destination-cart [destination]="des"></app-destination-cart>
+        </div>
+        }
+      </ngx-slick-carousel>
+    </div>
+  </div>
+</section>
+
+<section class="travel-agency-intro py-5">
+  <div class="container">
+    <h2 class="title text-center fw-bold">
+      Egygo Travel agency
+      <img
+        src="../../../assets/image/mg/title-thumb-1.webp"
+        loading="lazy"
+        alt="title thumb"
+      />
+      offers a plethora of features designed to elevate your travel experience
+      to new heights. Our personalized travel packages cater to your unique
+      preferences and
+      <img
+        src="../../../assets/image/mg/title-thumb-2.webp"
+        loading="lazy"
+        alt="title thumb"
+      />
+      budget, ensuring every journey is tailored to perfection.
+    </h2>
+  </div>
+</section>
+
+<section class="travel-agency-intro-content my-5 py-5">
+  <div class="container-fluid">
+    <div class="row g-3">
+      <div class="col-xl-6">
+        <figure class="position-relative py-3 ps-3 pe-4">
+          <img
+            src="../../../assets/image/mg/feature-img-2.webp"
+            loading="lazy"
+            alt="travel agency intro"
+            class="w-100 h-100 rounded-4 overflow-hidden"
+          />
+        </figure>
+      </div>
+      <div class="col-xl-6">
+        <app-about-category></app-about-category>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="popTours py-5 my-5 bgPrimaryWhiteColor">
+  <div class="container position-relative pt-5">
+    <div class="title-box position-relative flexBetween flex-wrap mb-4">
+      <div class="secTitle text-capitalize">
+        <span class="textSecondColor fw-bold fs-5">Tour Experience</span>
+        <h2 class="text-black fw-bold">Ultimate Travel Experience</h2>
+      </div>
+      @if (isBrowser && toursLoaded && tourstest.length > 0) {
+      <div class="carousel-nav-buttons title-nav-buttons">
+        <button
+          type="button"
+          class="nav-btn prev-btn"
+          (click)="prevTourCarousel()"
+        >
+          <i class="fa fa-arrow-left"></i>
+        </button>
+        <button
+          type="button"
+          class="nav-btn next-btn"
+          (click)="nextTourCarousel()"
+        >
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </div>
+      }
+    </div>
+
+    @if (isBrowser && toursLoaded && tourstest.length > 0) {
+    <div class="my-slider">
+      <ngx-slick-carousel #tourCarousel="slick-carousel" [config]="tourOptions">
+        @for (tour of tourstest; track $index) {
+        <div ngxSlickItem>
+          <app-tour-cart [tour]="tour"></app-tour-cart>
+        </div>
+        }
+      </ngx-slick-carousel>
+    </div>
+    }
+
+    <app-counter></app-counter>
+  </div>
+</section>
+
+<app-why-booking-with-us></app-why-booking-with-us>
+
+<app-testimonial-cart></app-testimonial-cart>
+
+<!-- life time section -->
+<app-aboutsection></app-aboutsection>
+
+<section class="popTours py-5 my-5 bgPrimaryWhiteColor">
+  <div class="container position-relative pt-5">
+    <div class="title-box position-relative flexBetween flex-wrap mb-4">
+      <div class="secTitle text-capitalize">
+        <span class="textSecondColor fw-bold fs-5">Tour Experience</span>
+        <h2 class="text-black fw-bold">Our Most Popular Tours</h2>
+      </div>
+      @if (isBrowser && toursLoaded && tourstest.length > 0) {
+      <div class="carousel-nav-buttons title-nav-buttons">
+        <button
+          type="button"
+          class="nav-btn prev-btn"
+          (click)="prevPopularTourCarousel()"
+        >
+          <i class="fa fa-arrow-left"></i>
+        </button>
+        <button
+          type="button"
+          class="nav-btn next-btn"
+          (click)="nextPopularTourCarousel()"
+        >
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </div>
+      }
+    </div>
+
+    <div class="">
+      @if (isBrowser && toursLoaded && tourstest.length > 0) {
+      <ngx-slick-carousel
+        #popularTourCarousel="slick-carousel"
+        [config]="tourOptions"
+      >
+        @for (tour of tourstest.reverse(); track $index) {
+        <div ngxSlickItem>
+          <app-tour-cart [tour]="tour"></app-tour-cart>
+        </div>
+        }
+      </ngx-slick-carousel>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="blogs my-5 py-5">
+  <div class="container">
+    <div class="secTitle text-center">
+      <span
+        class="box bgMainColor text-white text-uppercase border rounded-pill p-2 transition"
+      >
+        <span
+          class="bg-white textMainColor rounded-circle transition d-inline-block"
+          ><i class="fa fa-plane me-2 ps-1"></i
+        ></span>
+
+        our blog
+      </span>
+      <h2 class="my-3 textSecondColor fw-bold">Our Latest Blog & News</h2>
+    </div>
+
+    <!-- This fetches blogs and stores them -->
+    <app-blog-cart (blogsLoaded)="onBlogsLoaded($event)"></app-blog-cart>
+  </div>
+</section>
+
+<app-partner-slider></app-partner-slider>

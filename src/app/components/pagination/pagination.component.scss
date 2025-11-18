@@ -1,0 +1,18 @@
+@import '../../../styles/variables';
+
+::ng-deep .ngx-pagination a.ng-star-inserted, .ngx-pagination button {
+  color: $primary-color !important;
+
+  text-decoration: none !important;
+  font-weight: bold !important;
+  margin-inline: 5px !important;
+  border-radius: 10px !important;
+
+
+}
+
+::ng-deep .ngx-pagination .current {
+  background: $primary-color !important;
+    border-radius: 10px !important;
+
+}

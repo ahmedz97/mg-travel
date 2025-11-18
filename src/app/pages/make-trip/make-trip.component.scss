@@ -1,0 +1,122 @@
+/* make trip */
+@import '../../../styles/variables';
+.pointer,
+input,
+input + label {
+  cursor: pointer;
+}
+
+#makeTrip {
+  .tourDestinationCard .card_data {
+    background-color: antiquewhite;
+  }
+
+  figure {
+    i {
+      transform: translateX(300%);
+      transition: all 1s;
+    }
+
+    img,
+    .card_data {
+      transition: all 1s;
+    }
+
+    &:hover {
+      img {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  figcaption h2{
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+
+  .chooseDestination {
+    input[type="radio"],
+    input[type="checkbox"] {
+      visibility: hidden;
+    }
+  }
+
+  input[name="date_approximate_start"] {
+    visibility: hidden;
+  }
+
+  figure:hover i,
+  input:checked + label figure i {
+    transform: translateY(0);
+  }
+
+  figure:hover .card_data,
+  input:checked + label .card_data {
+    background-color: $primary-color;
+    color: white;
+  }
+
+  input[type="radio"]:checked + label,
+  input[type="radio"]:checked {
+    accent-color: $primary-color;
+    color: $primary-color;
+  }
+
+  /* button,
+  #lastSec button {
+    margin-inline: 5px;
+  } */
+
+  input:not([type="range"]) {
+    border: #dee2e6 1px solid;
+    width: unset;
+  }
+
+  #lastSec {
+    textarea {
+      outline: 0;
+      width: 100%;
+    }
+  }
+
+  input.w-20 {
+    width: 20px;
+  }
+
+  #flight_offer {
+    width: 20px;
+    height: 20px;
+  }
+
+  .date-range-field {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 0.5rem;
+
+}
+
+.date-input {
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  border: none !important;
+}
+
+@media screen and (max-width:600px) {
+  .flyBtnsBox{position: relative;}
+  .flyBtns{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 0 !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+  }
+}
+
+}

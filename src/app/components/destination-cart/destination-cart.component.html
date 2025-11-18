@@ -1,0 +1,46 @@
+<div
+  role="button"
+  [routerLink]="['/destination', destination.slug]"
+  class="item p-2 overflow-hidden mb-4"
+>
+  <figure class="overflow-hidden position-relative rounded-4">
+    <img
+      [src]="destination.featured_image"
+      class="w-100 h-100"
+      [alt]="destination.title"
+      [title]="destination.title"
+    />
+    <span
+      class="bgMainColor text-white text-capitalize position-absolute top-0 start-0 mt-4 rounded-end-pill py-1 px-3"
+      >{{ destination.tours_count }} tour</span
+    >
+    <div
+      class="layer position-absolute flexCenter flex-column z-20 text-capitalize"
+    >
+      <span class="text-white fs-5">get 10% off</span>
+      <div class="rounded-circle overflow-hidden my-3">
+        <img
+          [src]="destination.featured_image"
+          class="w-100 h-100"
+          [alt]="destination.title"
+          [title]="destination.title"
+        />
+      </div>
+
+      <button
+        [routerLink]="['/destination', destination.slug]"
+        class="secBtn Btn py-1"
+      >
+        view all destinations
+      </button>
+    </div>
+  </figure>
+  <figcaption class=" ">
+    <h5
+      [routerLink]="['/destination', destination.slug]"
+      class="h3 textMainColor text-capitalize fw-bold mb-0 transition"
+    >
+      {{ destination.title }}
+    </h5>
+  </figcaption>
+</div>

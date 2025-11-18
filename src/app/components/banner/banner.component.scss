@@ -1,0 +1,37 @@
+@import '../../../styles/variables';
+
+.banner{
+    margin-top: -96px;
+    padding: 150px 0 95px;
+    // background-color: #EDF2F1;
+    background: linear-gradient(45deg,  #fff, $secondary-color, #000);
+    height: 47vh;
+    .shape1,.shape2{
+        width: 150px;
+        height: 150px;
+                animation: bounce-y 7s infinite  ease-in-out;
+
+    }
+
+    .shape1{
+
+        transform: translate(30.1014%, 0%) translate3d(0px, 0px, 0px);
+        top: 30%;
+        left: 7%;
+    }
+    .shape2{
+
+        transform: translate(-22.4%, -50%) translate3d(0px, 0px, 0px);
+        top: 65%;
+        right: 7%;
+    }
+
+    .breadcrumb-item.active{color: $primary-color ;}
+
+    @media screen and (max-width:767px) {
+        .shape1 , .shape2{
+            width: 110px;
+            height: 110px;
+        }
+    }
+}
