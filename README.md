@@ -1,4 +1,8 @@
-# Tricia
+# MG Travel - Tourism Website
+
+This is a tourism website project built with Angular.
+
+## Project Information
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.16.
 
