@@ -420,13 +420,13 @@
       }
     </div>
 
-    <div class="">
+    <div class="my-slider">
       @if (isBrowser && toursLoaded && tourstest.length > 0) {
       <ngx-slick-carousel
         #popularTourCarousel="slick-carousel"
         [config]="tourPopularOptions"
       >
-        @for (tour of tourstest.reverse(); track $index) {
+        @for (tour of allToursFromCategories.reverse(); track $index) {
         <div ngxSlickItem>
           <app-tour-cart [tour]="tour"></app-tour-cart>
         </div>
