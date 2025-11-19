@@ -18,9 +18,12 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    // for hash routing for ssr => 'not found' issue
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     provideRouter(
       routes,
       withEnabledBlockingInitialNavigation(),

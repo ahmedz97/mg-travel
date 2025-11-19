@@ -547,11 +547,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this._DataService.getTours().subscribe({
       next: (res) => {
         this.tourstest = res.data.data;
-        this.allToursFromCategories = res.data.data;
-        this.alltours = [...this.allToursFromCategories];
+        // this.allToursFromCategories = res.data.data;
+        // this.alltours = [...this.allToursFromCategories];
         // Initialize default lists for both category and destination views
-        this.getTours();
-        this.getDestinationTours();
+        // this.getTours();
+        // this.getDestinationTours();
         // Mark tours as loaded and trigger change detection
         this.toursLoaded = true;
         if (this.isBrowser) {

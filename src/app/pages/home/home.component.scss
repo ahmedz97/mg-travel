@@ -158,7 +158,7 @@
 
 .travel-agency-intro {
   .title {
-      font-size: 2.5rem;
+      font-size: 1.5rem;
       line-height: 1.4;
       margin: 0;
 
@@ -170,12 +170,12 @@
 
       // Large screens (desktop)
       @media screen and (min-width: 1200px) {
-          font-size: 2.75rem;
+          font-size: 1.75rem;
       }
 
       // Medium screens (tablets)
       @media screen and (max-width: 991px) {
-          font-size: 2rem;
+          font-size: 1.2rem;
 
           img {
               width: 45px;
@@ -196,7 +196,7 @@
 
       // Extra small screens
       @media screen and (max-width: 575px) {
-          font-size: 1.25rem;
+          font-size: 1rem;
           line-height: 1.6;
 
           img {

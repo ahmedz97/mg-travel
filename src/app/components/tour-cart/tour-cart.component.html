@@ -89,10 +89,7 @@
           <span>{{ "common.perPersonFrom" | translate }}:</span><br />
           <b class="textMainColor fs-5">{{ tour.start_from | currency }}</b>
         </p>
-        <button
-          class="secBtn Btn fs-5 py-1"
-          [routerLink]="['/tour', tour.slug]"
-        >
+        <button class="secBtn Btn py-1" [routerLink]="['/tour', tour.slug]">
           {{ "common.seeMore" | translate }}
           <!-- <i class="fa fa-arrow-right ms-1 rounded-circle"></i> -->
         </button>
