@@ -549,7 +549,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.tourstest = res.data.data;
         // this.allToursFromCategories = res.data.data;
         // this.alltours = [...this.allToursFromCategories];
-        // Initialize default lists for both category and destination views
+        // // Initialize default lists for both category and destination views
         // this.getTours();
         // this.getDestinationTours();
         // Mark tours as loaded and trigger change detection
@@ -862,6 +862,45 @@ export class HomeComponent implements OnInit, AfterViewInit {
   //   ],
   // };
   tourOptions = {
+    infinite: true,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
+    dots: false,
+    arrows: false,
+    speed: 500,
+    cssEase: 'linear',
+    responsive: [
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 3.5,
+        },
+      },
+      {
+        breakpoint: 992,
+        settings: {
+          slidesToShow: 2.5,
+        },
+      },
+      {
+        breakpoint: 767,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 586,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
+
+  tourPopularOptions = {
     infinite: true,
     slidesToShow: 4,
     slidesToScroll: 1,

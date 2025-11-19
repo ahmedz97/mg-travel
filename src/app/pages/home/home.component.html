@@ -424,7 +424,7 @@
       @if (isBrowser && toursLoaded && tourstest.length > 0) {
       <ngx-slick-carousel
         #popularTourCarousel="slick-carousel"
-        [config]="tourOptions"
+        [config]="tourPopularOptions"
       >
         @for (tour of tourstest.reverse(); track $index) {
         <div ngxSlickItem>
