@@ -42,7 +42,9 @@ export class WhyBookingWithUsComponent implements AfterViewInit {
       el.autoplay = { delay: 2500, disableOnInteraction: false };
       el.speed = 500;
       el.breakpoints = {
+        0: { slidesPerView: 1 },
         400: { slidesPerView: 1.5 },
+        586: { slidesPerView: 1 },
         768: { slidesPerView: 2.5 },
         992: { slidesPerView: 3.5 },
         1200: { slidesPerView: 4.5 },

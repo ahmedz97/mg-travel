@@ -80,6 +80,8 @@ export class DestinationComponent implements OnInit, AfterViewInit {
       el.navigation = true;
       el.speed = 500;
       el.breakpoints = {
+        0: { slidesPerView: 1 },
+        586: { slidesPerView: 1 },
         767: { slidesPerView: 1.5 },
         992: { slidesPerView: 2.5 },
         1200: { slidesPerView: 3.5 },

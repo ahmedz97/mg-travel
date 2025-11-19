@@ -257,6 +257,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
         el.pagination = { clickable: true };
         el.speed = 500;
         el.breakpoints = {
+          0: { slidesPerView: 1 },
           586: { slidesPerView: 1 },
           992: { slidesPerView: 2 },
         };
@@ -271,6 +272,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
         el.pagination = { clickable: true };
         el.speed = 500;
         el.breakpoints = {
+          0: { slidesPerView: 1 },
           586: { slidesPerView: 1 },
           992: { slidesPerView: 2 },
         };

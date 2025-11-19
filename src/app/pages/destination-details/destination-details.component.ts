@@ -71,7 +71,9 @@ export class DestinationDetailsComponent implements OnInit, AfterViewInit {
       el.pagination = { clickable: true };
       el.speed = 500;
       el.breakpoints = {
+        0: { slidesPerView: 1 },
         400: { slidesPerView: 1 },
+        586: { slidesPerView: 1 },
         740: { slidesPerView: 2 },
         940: { slidesPerView: 3 },
         1200: { slidesPerView: 4 },
