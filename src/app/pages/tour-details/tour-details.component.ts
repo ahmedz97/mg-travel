@@ -1,7 +1,17 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  PLATFORM_ID,
+  Inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { register } from 'swiper/element/bundle';
+register();
 import { DataService } from '../../core/services/data.service';
 import { SeoService } from '../../core/services/seo.service';
 import { Itour } from '../../core/interfaces/itour';
@@ -28,7 +38,6 @@ import { MakeTripFormComponent } from '../../components/make-trip-form/make-trip
   selector: 'app-tour-details',
   standalone: true,
   imports: [
-    SlickCarouselModule,
     CommonModule,
     MatTabsModule,
     MatExpansionModule,
@@ -42,10 +51,13 @@ import { MakeTripFormComponent } from '../../components/make-trip-form/make-trip
     MakeTripFormComponent,
     RouterLink,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './tour-details.component.html',
   styleUrl: './tour-details.component.scss',
 })
-export class TourDetailsComponent implements OnInit {
+export class TourDetailsComponent implements OnInit, AfterViewInit {
+  @ViewChild('tourGalleryCarousel') tourGalleryCarousel!: ElementRef;
+
   constructor(
     private _DataService: DataService,
     private _ActivatedRoute: ActivatedRoute,
@@ -53,8 +65,33 @@ export class TourDetailsComponent implements OnInit {
     private toaster: ToastrService,
     private _BookingService: BookingService,
     private sanitizer: DomSanitizer,
-    private _SeoService: SeoService
+    private _SeoService: SeoService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.initializeSwiper();
+      }, 100);
+    }
+  }
+
+  initializeSwiper() {
+    if (
+      this.tourGalleryCarousel?.nativeElement &&
+      this.tourGallery.length > 0
+    ) {
+      const el = this.tourGalleryCarousel.nativeElement;
+      el.slidesPerView = 1;
+      el.spaceBetween = 0;
+      el.loop = true;
+      el.autoplay = { delay: 1500, disableOnInteraction: false };
+      el.speed = 500;
+      el.navigation = true;
+      el.initialize();
+    }
+  }
 
   getSanitizedHtml(content: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(content);
@@ -129,7 +166,10 @@ export class TourDetailsComponent implements OnInit {
         // Keep itinerary in the same order as from dashboard
         this.tourItenary = response.data?.days ? [...response.data.days] : [];
         // Sort by display_order if it exists in reverse order, otherwise keep original order
-        if (this.tourItenary.length > 0 && this.tourItenary[0].display_order !== undefined) {
+        if (
+          this.tourItenary.length > 0 &&
+          this.tourItenary[0].display_order !== undefined
+        ) {
           this.tourItenary.sort((a: any, b: any) => {
             const orderA = a.display_order ?? 0;
             const orderB = b.display_order ?? 0;
@@ -140,6 +180,11 @@ export class TourDetailsComponent implements OnInit {
           this.tourItenary.reverse();
         }
         this.tourGallery = response.data?.gallery;
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => {
+            this.initializeSwiper();
+          }, 100);
+        }
         console.log(this.tourData);
 
         this.bannerTitle = this.tourData?.title || '?';
@@ -168,7 +213,7 @@ export class TourDetailsComponent implements OnInit {
         this.bookingFormData.patchValue({ tour_id: response.data.id });
         this.getTourPricing(1);
         this.getReview(); // Fetch reviews for this specific tour
-        
+
         // Update SEO
         this.updateTourSEO(response.data);
       },
@@ -181,9 +226,14 @@ export class TourDetailsComponent implements OnInit {
   updateTourSEO(tour: any): void {
     const baseUrl = 'https://egygo-travel.com';
     const tourImage = tour.image || tour.gallery?.[0]?.image || '';
-    const tourDescription = tour.short_description || tour.description || `Book ${tour.title} tour with EGYGO Travel. Experience amazing destinations and create unforgettable memories.`;
-    const destinations = tour.destinations?.map((d: any) => d.title).join(', ') || '';
-    const keywords = `${tour.title}, tour, travel, ${destinations}, Egypt tours, booking`.toLowerCase();
+    const tourDescription =
+      tour.short_description ||
+      tour.description ||
+      `Book ${tour.title} tour with EGYGO Travel. Experience amazing destinations and create unforgettable memories.`;
+    const destinations =
+      tour.destinations?.map((d: any) => d.title).join(', ') || '';
+    const keywords =
+      `${tour.title}, tour, travel, ${destinations}, Egypt tours, booking`.toLowerCase();
 
     this._SeoService.updateSEO({
       title: `${tour.title} - Book Now | EGYGO Travel`,
@@ -195,7 +245,10 @@ export class TourDetailsComponent implements OnInit {
     });
 
     // Add structured data
-    const structuredData = this._SeoService.generateTourStructuredData(tour, baseUrl);
+    const structuredData = this._SeoService.generateTourStructuredData(
+      tour,
+      baseUrl
+    );
     this._SeoService.updateSEO({ structuredData });
   }
 
@@ -408,17 +461,4 @@ export class TourDetailsComponent implements OnInit {
     );
     return totalRating / this.tourReviews.length;
   }
-
-  galleryOptions = {
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 1500,
-    dots: false,
-    arrows: true,
-    speed: 500,
-    prevArrow: '<button type="button" class="slick-prev custom-arrow"><i class="fa fa-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next custom-arrow"><i class="fa fa-arrow-right"></i></button>',
-  };
 }

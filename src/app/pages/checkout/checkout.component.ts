@@ -1,14 +1,25 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  PLATFORM_ID,
+  Inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BookingService } from '../../core/services/booking.service';
 import { ToastrService } from 'ngx-toastr';
-import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { register } from 'swiper/element/bundle';
+register();
 import { BannerComponent } from '../../components/banner/banner.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -23,17 +34,20 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatRadioModule,
     ReactiveFormsModule,
-    SlickCarouselModule,
     BannerComponent,
     TranslateModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
 })
-export class CheckoutComponent implements OnInit {
+export class CheckoutComponent implements OnInit, AfterViewInit {
+  @ViewChild('ordersCarousel') ordersCarousel!: ElementRef;
+
   constructor(
     private _BookingService: BookingService,
-    private toaster: ToastrService
+    private toaster: ToastrService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   bannerTitle: string = 'checkout';
@@ -183,14 +197,24 @@ export class CheckoutComponent implements OnInit {
     return this.tourCart.reduce((sum, cart) => sum + cart.totalPrice, 0);
   }
 
-  ordersOptions = {
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 1500,
-    dots: true,
-    arrows: false,
-    speed: 500,
-  };
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.initializeSwiper();
+      }, 100);
+    }
+  }
+
+  initializeSwiper() {
+    if (this.ordersCarousel?.nativeElement) {
+      const el = this.ordersCarousel.nativeElement;
+      el.slidesPerView = 1;
+      el.spaceBetween = 20;
+      el.loop = true;
+      el.autoplay = { delay: 1500, disableOnInteraction: false };
+      el.pagination = { clickable: true };
+      el.speed = 500;
+      el.initialize();
+    }
+  }
 }

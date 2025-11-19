@@ -286,17 +286,22 @@
 <section>
   <div class="container-fluid">
     <div>
-      <ngx-slick-carousel
+      <swiper-container
         *ngIf="allDestinations.length > 0"
-        #destinationCarousel="slick-carousel"
-        [config]="destinationOptions"
+        #destinationCarousel
+        [slidesPerView]="3.5"
+        [spaceBetween]="20"
+        [loop]="true"
+        [autoplay]="{ delay: 2500, disableOnInteraction: false }"
+        [pagination]="{ clickable: true }"
+        init="false"
       >
         @for (des of allDestinations; track $index) {
-        <div ngxSlickItem>
+        <swiper-slide>
           <app-destination-cart [destination]="des"></app-destination-cart>
-        </div>
+        </swiper-slide>
         }
-      </ngx-slick-carousel>
+      </swiper-container>
     </div>
   </div>
 </section>
@@ -372,13 +377,25 @@
 
     @if (isBrowser && toursLoaded && tourstest.length > 0) {
     <div class="my-slider">
-      <ngx-slick-carousel #tourCarousel="slick-carousel" [config]="tourOptions">
+      <swiper-container
+        #tourCarousel
+        [slidesPerView]="4"
+        [spaceBetween]="20"
+        [loop]="true"
+        [autoplay]="{
+          delay: 3000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true
+        }"
+        [speed]="500"
+        init="false"
+      >
         @for (tour of tourstest; track $index) {
-        <div ngxSlickItem>
+        <swiper-slide>
           <app-tour-cart [tour]="tour"></app-tour-cart>
-        </div>
+        </swiper-slide>
         }
-      </ngx-slick-carousel>
+      </swiper-container>
     </div>
     }
 
@@ -398,21 +415,21 @@
     <div class="title-box position-relative flexBetween flex-wrap mb-4">
       <div class="secTitle text-capitalize">
         <span class="textSecondColor fw-bold fs-5">Tour Experience</span>
-        <h2 class="text-black fw-bold">Our Most Popular Tours</h2>
+        <h2 class="text-black fw-bold">Ultimate Travel Experience</h2>
       </div>
       @if (isBrowser && toursLoaded && tourstest.length > 0) {
       <div class="carousel-nav-buttons title-nav-buttons">
         <button
           type="button"
           class="nav-btn prev-btn"
-          (click)="prevPopularTourCarousel()"
+          (click)="prevTourCarousel()"
         >
           <i class="fa fa-arrow-left"></i>
         </button>
         <button
           type="button"
           class="nav-btn next-btn"
-          (click)="nextPopularTourCarousel()"
+          (click)="nextTourCarousel()"
         >
           <i class="fa fa-arrow-right"></i>
         </button>
@@ -420,20 +437,31 @@
       }
     </div>
 
+    @if (isBrowser && toursLoaded && tourstest.length > 0) {
     <div class="my-slider">
-      @if (isBrowser && toursLoaded && tourstest.length > 0) {
-      <ngx-slick-carousel
-        #popularTourCarousel="slick-carousel"
-        [config]="tourPopularOptions"
+      <swiper-container
+        #tourCarousel
+        [slidesPerView]="4"
+        [spaceBetween]="20"
+        [loop]="true"
+        [autoplay]="{
+          delay: 3000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true
+        }"
+        [speed]="500"
+        init="false"
       >
-        @for (tour of allToursFromCategories.reverse(); track $index) {
-        <div ngxSlickItem>
+        @for (tour of tourstest.reverse(); track $index) {
+        <swiper-slide>
           <app-tour-cart [tour]="tour"></app-tour-cart>
-        </div>
+        </swiper-slide>
         }
-      </ngx-slick-carousel>
-      }
+      </swiper-container>
     </div>
+    }
+
+    <app-counter></app-counter>
   </div>
 </section>
 

@@ -1,12 +1,12 @@
 <section class="testimonial position-relative my-5 py-5 bgPrimaryWhiteColor">
   <div class="container pt-5">
-    <ngx-slick-carousel
+    <swiper-container
       *ngIf="allReviews.length > 0"
-      #testimonialCarousel="slick-carousel"
-      [config]="testimonialOptions"
+      #testimonialCarousel
+      init="false"
     >
       @for (testimonial of allReviews; track $index) {
-      <div ngxSlickItem>
+      <swiper-slide>
         <div class="row g-3 item">
           <div class="col-md-4 border-end">
             <figure class="mb-0 position-relative p-xl-2 p-md-4 mx-auto">
@@ -43,9 +43,9 @@
             </figcaption>
           </div>
         </div>
-      </div>
+      </swiper-slide>
       }
-    </ngx-slick-carousel>
+    </swiper-container>
 
     @if (allReviews.length > 0) {
     <div class="carousel-nav-buttons testimonial-nav-buttons">

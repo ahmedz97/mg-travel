@@ -4,6 +4,12 @@ import {
   Component,
   OnInit,
   signal,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  PLATFORM_ID,
+  Inject,
+  CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
@@ -16,7 +22,9 @@ import { BookingService } from '../../core/services/booking.service';
 import { ProfileService } from '../../core/services/profile.service';
 import { ToastrService } from 'ngx-toastr';
 import { DataService } from '../../core/services/data.service';
-import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { register } from 'swiper/element/bundle';
+import { isPlatformBrowser } from '@angular/common';
+register();
 import { TourCartComponent } from '../../components/tour-cart/tour-cart.component';
 import { BannerComponent } from '../../components/banner/banner.component';
 import { MakeTripFormComponent } from '../../components/make-trip-form/make-trip-form.component';
@@ -31,24 +39,26 @@ import { AuthService } from '../../core/services/auth.service';
     NgxDropzoneImagePreviewComponent,
     CommonModule,
     ReactiveFormsModule,
-    SlickCarouselModule,
     TourCartComponent,
     BannerComponent,
     MakeTripFormComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, AfterViewInit {
+  @ViewChild('bookingCarousel') bookingCarousel!: ElementRef;
+  @ViewChild('wishlistCarousel') wishlistCarousel!: ElementRef;
   constructor(
     private _DataService: DataService,
     private _BookingService: BookingService,
     private _ProfileService: ProfileService,
     private _Router: Router,
     private toaster: ToastrService,
-    private _AuthService: AuthService
+    private _AuthService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
   bannerTitle: string = 'my profile';
   updateProfile!: FormGroup;
@@ -228,24 +238,46 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  bookingOptions = {
-    infinite: true,
-    slidesToShow: 2,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 1500,
-    dots: true,
-    arrows: false,
-    speed: 500,
-    responsive: [
-      {
-        breakpoint: 586,
-        settings: {
-          slidesToShow: 1,
-        }
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.initializeSwipers();
+      }, 100);
+    }
+  }
+
+  initializeSwipers() {
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.bookingCarousel?.nativeElement) {
+        const el = this.bookingCarousel.nativeElement;
+        el.slidesPerView = 2;
+        el.spaceBetween = 20;
+        el.loop = true;
+        el.autoplay = { delay: 1500, disableOnInteraction: false };
+        el.pagination = { clickable: true };
+        el.speed = 500;
+        el.breakpoints = {
+          586: { slidesPerView: 1 },
+          992: { slidesPerView: 2 },
+        };
+        el.initialize();
       }
-    ]
-  };
+      if (this.wishlistCarousel?.nativeElement) {
+        const el = this.wishlistCarousel.nativeElement;
+        el.slidesPerView = 2;
+        el.spaceBetween = 20;
+        el.loop = true;
+        el.autoplay = { delay: 1500, disableOnInteraction: false };
+        el.pagination = { clickable: true };
+        el.speed = 500;
+        el.breakpoints = {
+          586: { slidesPerView: 1 },
+          992: { slidesPerView: 2 },
+        };
+        el.initialize();
+      }
+    }
+  }
 
   getFav(): void {
     this._DataService.getWishlist().subscribe({

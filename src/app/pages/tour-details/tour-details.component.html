@@ -7,12 +7,9 @@
     <div class="row g-3 justify-content-between">
       <div class="col-lg-8">
         <div class="gallery">
-          <ngx-slick-carousel
-            #tourGalleryCarousel="slick-carousel"
-            [config]="galleryOptions"
-          >
+          <swiper-container #tourGalleryCarousel init="false">
             <ng-container *ngFor="let slide of tourGallery">
-              <div ngxSlickItem>
+              <swiper-slide>
                 <figure class="rounded-4 overflow-hidden imgHover">
                   <img
                     loading="lazy"
@@ -22,9 +19,9 @@
                     [title]="tourData?.title"
                   />
                 </figure>
-              </div>
+              </swiper-slide>
             </ng-container>
-          </ngx-slick-carousel>
+          </swiper-container>
 
           <div class="textSecondColor mb-4">
             <h4 class="h3 text-capitalize mb-2">{{ tourData?.title }}</h4>

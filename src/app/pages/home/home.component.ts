@@ -10,10 +10,8 @@ import {
   afterNextRender,
   ElementRef,
 } from '@angular/core';
-import {
-  SlickCarouselModule,
-  SlickCarouselComponent,
-} from 'ngx-slick-carousel';
+import { register } from 'swiper/element/bundle';
+register();
 import { DataService } from '../../core/services/data.service';
 import { SeoService } from '../../core/services/seo.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -63,7 +61,6 @@ declare var $: any;
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     FormsModule,
-    SlickCarouselModule,
     CommonModule,
     ReactiveFormsModule,
     // RouterLink,
@@ -94,35 +91,22 @@ declare var $: any;
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  @ViewChild('tourCarousel') tourCarousel!: SlickCarouselComponent;
-  @ViewChild('popularTourCarousel')
-  popularTourCarousel!: SlickCarouselComponent;
+  @ViewChild('tourCarousel') tourCarousel!: ElementRef;
+  @ViewChild('destinationCarousel') destinationCarousel!: ElementRef;
 
   private $destory = new Subject<void>();
   toursLoaded = false; // Flag to track when tours are loaded
   isBrowser = false;
   // Navigation methods
   prevTourCarousel() {
-    if (this.tourCarousel) {
-      this.tourCarousel.slickPrev();
+    if (this.tourCarousel?.nativeElement) {
+      this.tourCarousel.nativeElement.swiper.slidePrev();
     }
   }
 
   nextTourCarousel() {
-    if (this.tourCarousel) {
-      this.tourCarousel.slickNext();
-    }
-  }
-
-  prevPopularTourCarousel() {
-    if (this.popularTourCarousel) {
-      this.popularTourCarousel.slickPrev();
-    }
-  }
-
-  nextPopularTourCarousel() {
-    if (this.popularTourCarousel) {
-      this.popularTourCarousel.slickNext();
+    if (this.tourCarousel?.nativeElement) {
+      this.tourCarousel.nativeElement.swiper.slideNext();
     }
   }
 
@@ -154,6 +138,50 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // Force change detection after view init to prevent flickering
     if (isPlatformBrowser(this.platformId)) {
       this.isBrowser = true;
+    }
+    // Initialize Swiper after view init
+    setTimeout(() => {
+      this.initializeSwipers();
+    }, 100);
+  }
+
+  initializeSwipers() {
+    if (this.isBrowser) {
+      if (this.destinationCarousel?.nativeElement) {
+        const el = this.destinationCarousel.nativeElement;
+        el.slidesPerView = 3.5;
+        el.spaceBetween = 20;
+        el.loop = true;
+        el.autoplay = { delay: 2500, disableOnInteraction: false };
+        el.pagination = { clickable: true };
+        el.breakpoints = {
+          586: { slidesPerView: 1.5 },
+          767: { slidesPerView: 2.5 },
+          992: { slidesPerView: 3 },
+          1200: { slidesPerView: 3.5 },
+        };
+        el.initialize();
+      }
+      if (this.tourCarousel?.nativeElement && this.toursLoaded) {
+        const el = this.tourCarousel.nativeElement;
+        el.slidesPerView = 4;
+        el.spaceBetween = 20;
+        el.loop = true;
+        el.autoplay = {
+          delay: 3000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        };
+        el.speed = 500;
+        el.breakpoints = {
+          586: { slidesPerView: 1 },
+          767: { slidesPerView: 2 },
+          992: { slidesPerView: 2.5 },
+          1200: { slidesPerView: 3.5 },
+          1400: { slidesPerView: 4 },
+        };
+        el.initialize();
+      }
     }
   }
 
@@ -530,7 +558,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.toursLoaded = true;
           if (this.isBrowser) {
             setTimeout(() => {
-              // this.cdr.detectChanges();
+              this.initializeSwipers();
             }, 100);
           }
         } else {
@@ -547,16 +575,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this._DataService.getTours().subscribe({
       next: (res) => {
         this.tourstest = res.data.data;
-        this.allToursFromCategories = res.data.data;
+        // this.allToursFromCategories = res.data.data;
         // this.alltours = [...this.allToursFromCategories];
-        // // Initialize default lists for both category and destination views
+        // Initialize default lists for both category and destination views
         // this.getTours();
         // this.getDestinationTours();
         // Mark tours as loaded and trigger change detection
         this.toursLoaded = true;
         if (this.isBrowser) {
           setTimeout(() => {
-            // this.cdr.detectChanges();
+            this.initializeSwipers();
           }, 100);
         }
         console.log('Fallback: All tours loaded:', this.allToursFromCategories);
@@ -810,37 +838,32 @@ export class HomeComponent implements OnInit, AfterViewInit {
   //   },
   // ];
 
-  // slick carousel options
-
+  // Swiper carousel options
   destinationOptions = {
-    infinite: true,
-    slidesToShow: 3.5,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2500,
-    dots: true,
-    arrows: false,
-    speed: 500,
-    responsive: [
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 3,
-        },
+    slidesPerView: 3.5,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+      delay: 2500,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      clickable: true,
+    },
+    breakpoints: {
+      586: {
+        slidesPerView: 1.5,
       },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 2.5,
-        },
+      767: {
+        slidesPerView: 2.5,
       },
-      {
-        breakpoint: 586,
-        settings: {
-          slidesToShow: 1.5,
-        },
+      992: {
+        slidesPerView: 3,
       },
-    ],
+      1200: {
+        slidesPerView: 3.5,
+      },
+    },
   };
   // testimonialOptions: OwlOptions = {
   //   loop: true,
@@ -862,80 +885,31 @@ export class HomeComponent implements OnInit, AfterViewInit {
   //   ],
   // };
   tourOptions = {
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    pauseOnHover: true,
-    dots: false,
-    arrows: false,
+    slidesPerView: 4,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
+    },
     speed: 500,
-    cssEase: 'linear',
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3.5,
-        },
+    breakpoints: {
+      586: {
+        slidesPerView: 1,
       },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2.5,
-        },
+      767: {
+        slidesPerView: 2,
       },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 2,
-        },
+      992: {
+        slidesPerView: 2.5,
       },
-      {
-        breakpoint: 586,
-        settings: {
-          slidesToShow: 1,
-        },
+      1200: {
+        slidesPerView: 3.5,
       },
-    ],
-  };
-
-  tourPopularOptions = {
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    pauseOnHover: true,
-    dots: false,
-    arrows: false,
-    speed: 500,
-    cssEase: 'linear',
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3.5,
-        },
+      1400: {
+        slidesPerView: 4,
       },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2.5,
-        },
-      },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 586,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
+    },
   };
 }

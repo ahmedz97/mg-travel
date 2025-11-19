@@ -21,17 +21,17 @@
     </div>
 
     <div class="mt-5">
-      <ngx-slick-carousel
+      <swiper-container
         *ngIf="allDestinations.length > 0"
-        #destinationCarousel="slick-carousel"
-        [config]="destinationOptions"
+        #destinationCarousel
+        init="false"
       >
         @for (des of allDestinations; track $index) {
-        <div ngxSlickItem>
+        <swiper-slide>
           <app-destination-cart [destination]="des"></app-destination-cart>
-        </div>
+        </swiper-slide>
         }
-      </ngx-slick-carousel>
+      </swiper-container>
     </div>
   </div>
 </section>

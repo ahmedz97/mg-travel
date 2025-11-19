@@ -1,15 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { SlickCarouselModule } from 'ngx-slick-carousel';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  PLATFORM_ID,
+  Inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { register } from 'swiper/element/bundle';
+register();
 
 @Component({
   selector: 'app-partner-slider',
   standalone: true,
-  imports: [SlickCarouselModule, CommonModule],
+  imports: [CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './partner-slider.component.html',
   styleUrl: './partner-slider.component.scss',
 })
-export class PartnerSliderComponent {
+export class PartnerSliderComponent implements AfterViewInit {
+  @ViewChild('partnerCarousel') partnerCarousel!: ElementRef;
   partnerImg: any[] = [
     { src: '../../../assets/image/partner/civitatis.webp' },
     { src: '../../../assets/image/partner/partner.webp' },
@@ -28,42 +40,33 @@ export class PartnerSliderComponent {
     { src: '../../../assets/image/partner/viator.webp' },
   ];
 
-  partnersOptions = {
-    infinite: true,
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 1500,
-    centerMode: true,
-    centerPadding: '20px',
-    dots: false,
-    arrows: false,
-    speed: 500,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 4.5,
-        },
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 4,
-        },
-      },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 500,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-    ],
-  };
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.initializeSwiper();
+      }, 100);
+    }
+  }
+
+  initializeSwiper() {
+    if (this.partnerCarousel?.nativeElement) {
+      const el = this.partnerCarousel.nativeElement;
+      el.slidesPerView = 6;
+      el.spaceBetween = 20;
+      el.loop = true;
+      el.centeredSlides = true;
+      el.autoplay = { delay: 1500, disableOnInteraction: false };
+      el.speed = 500;
+      el.breakpoints = {
+        500: { slidesPerView: 2 },
+        767: { slidesPerView: 3 },
+        992: { slidesPerView: 4 },
+        1200: { slidesPerView: 4.5 },
+        1400: { slidesPerView: 6 },
+      };
+      el.initialize();
+    }
+  }
 }

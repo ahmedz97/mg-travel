@@ -4,12 +4,9 @@
 
 <section class="my-5">
   <div class="container">
-    <ngx-slick-carousel
-      #galleryCarousel="slick-carousel"
-      [config]="galleryOptions"
-    >
+    <swiper-container #galleryCarousel init="false">
       <ng-container *ngFor="let slide of destinationDetails.gallery">
-        <div ngxSlickItem>
+        <swiper-slide>
           <figure class="rounded-3 overflow-hidden imgHover">
             <img
               loading="lazy"
@@ -20,9 +17,9 @@
               [title]="destinationDetails?.title"
             />
           </figure>
-        </div>
+        </swiper-slide>
       </ng-container>
-    </ngx-slick-carousel>
+    </swiper-container>
   </div>
 </section>
 

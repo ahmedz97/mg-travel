@@ -216,12 +216,9 @@
             <p><b class="me-5">Join Date:</b>21 August, 2025</p>
           </div>
           } @if (selectedTab==='myBooking') { @if (haveData) {
-          <ngx-slick-carousel
-            #bookingCarousel="slick-carousel"
-            [config]="bookingOptions"
-          >
+          <swiper-container #bookingCarousel init="false">
             @for (cart of tourCart; track $index) {
-            <div ngxSlickItem>
+            <swiper-slide>
               <app-tour-cart [tour]="cart.tour"></app-tour-cart>
               <div class="text-capitalize textSecondColor mt-4">
                 <h6>
@@ -246,22 +243,19 @@
                   }}</b>
                 </h6>
               </div>
-            </div>
+            </swiper-slide>
             }
-          </ngx-slick-carousel>
+          </swiper-container>
           }@else {
           <h2 class="text-danger text-capitalize">no tour in booking cart</h2>
           } } @if (selectedTab==='myWishlist') { @if (haveData) {
-          <ngx-slick-carousel
-            #wishlistCarousel="slick-carousel"
-            [config]="bookingOptions"
-          >
+          <swiper-container #wishlistCarousel init="false">
             @for (cart of favList; track $index) {
-            <div ngxSlickItem>
+            <swiper-slide>
               <app-tour-cart [tour]="cart.tour"></app-tour-cart>
-            </div>
+            </swiper-slide>
             }
-          </ngx-slick-carousel>
+          </swiper-container>
           }@else {
           <h2 class="text-danger text-capitalize">no tour in wishlist</h2>
           } } @if (selectedTab==='setting') {

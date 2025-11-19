@@ -1,15 +1,56 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  PLATFORM_ID,
+  Inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { isPlatformBrowser } from '@angular/common';
+import { register } from 'swiper/element/bundle';
+register();
 
 @Component({
   selector: 'app-why-booking-with-us',
   standalone: true,
-  imports: [TranslateModule, SlickCarouselModule],
+  imports: [TranslateModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './why-booking-with-us.component.html',
   styleUrl: './why-booking-with-us.component.scss',
 })
-export class WhyBookingWithUsComponent {
+export class WhyBookingWithUsComponent implements AfterViewInit {
+  @ViewChild('bookingCarousel') bookingCarousel!: ElementRef;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.initializeSwiper();
+      }, 100);
+    }
+  }
+
+  initializeSwiper() {
+    if (this.bookingCarousel?.nativeElement) {
+      const el = this.bookingCarousel.nativeElement;
+      el.slidesPerView = 6;
+      el.spaceBetween = 20;
+      el.loop = true;
+      el.autoplay = { delay: 2500, disableOnInteraction: false };
+      el.speed = 500;
+      el.breakpoints = {
+        400: { slidesPerView: 1.5 },
+        768: { slidesPerView: 2.5 },
+        992: { slidesPerView: 3.5 },
+        1200: { slidesPerView: 4.5 },
+        1400: { slidesPerView: 6 },
+      };
+      el.initialize();
+    }
+  }
   bookingItems = [
     {
       icon: 'fa-comment-dollar',
@@ -56,42 +97,4 @@ export class WhyBookingWithUsComponent {
       descriptionIsTranslation: false,
     },
   ];
-
-  bookingOptions = {
-    infinite: true,
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2500,
-    dots: false,
-    arrows: false,
-    speed: 500,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 4.5,
-        },
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 3.5,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2.5,
-        },
-      },
-
-      {
-        breakpoint: 400,
-        settings: {
-          slidesToShow: 1.5,
-        },
-      },
-    ],
-  };
 }

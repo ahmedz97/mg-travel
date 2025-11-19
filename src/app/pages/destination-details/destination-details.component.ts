@@ -1,9 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  PLATFORM_ID,
+  Inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { DataService } from '../../core/services/data.service';
 import { SeoService } from '../../core/services/seo.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { register } from 'swiper/element/bundle';
+register();
 import { SocialComponent } from '../../components/social/social.component';
 import { TourCartComponent } from '../../components/tour-cart/tour-cart.component';
 import { FaqContentComponent } from '../../components/faq-content/faq-content.component';
@@ -17,7 +27,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   standalone: true,
   imports: [
     RouterLink,
-    SlickCarouselModule,
     CommonModule,
     SocialComponent,
     TourCartComponent,
@@ -26,16 +35,50 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     BannerComponent,
     MakeTripFormComponent,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './destination-details.component.html',
   styleUrl: './destination-details.component.scss',
 })
-export class DestinationDetailsComponent implements OnInit {
+export class DestinationDetailsComponent implements OnInit, AfterViewInit {
+  @ViewChild('galleryCarousel') galleryCarousel!: ElementRef;
+
   constructor(
     private _DataService: DataService,
     private _ActivatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    private _SeoService: SeoService
+    private _SeoService: SeoService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.initializeSwiper();
+      }, 100);
+    }
+  }
+
+  initializeSwiper() {
+    if (
+      this.galleryCarousel?.nativeElement &&
+      this.destinationDetails?.gallery?.length > 0
+    ) {
+      const el = this.galleryCarousel.nativeElement;
+      el.slidesPerView = 4;
+      el.spaceBetween = 20;
+      el.loop = true;
+      el.autoplay = { delay: 1500, disableOnInteraction: false };
+      el.pagination = { clickable: true };
+      el.speed = 500;
+      el.breakpoints = {
+        400: { slidesPerView: 1 },
+        740: { slidesPerView: 2 },
+        940: { slidesPerView: 3 },
+        1200: { slidesPerView: 4 },
+      };
+      el.initialize();
+    }
+  }
 
   getSanitizedHtml(content: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(content);
@@ -67,9 +110,16 @@ export class DestinationDetailsComponent implements OnInit {
               this.destinationDetails.title
             );
             console.log('destination Details:', this.destinationDetails);
-            
+
             // Update SEO
             this.updateDestinationSEO(response.data);
+
+            // Initialize swiper after data loads
+            if (isPlatformBrowser(this.platformId)) {
+              setTimeout(() => {
+                this.initializeSwiper();
+              }, 100);
+            }
           },
           error: (err) => {
             console.error('Error fetching destination details:', err);
@@ -118,8 +168,12 @@ export class DestinationDetailsComponent implements OnInit {
   updateDestinationSEO(destination: any): void {
     const baseUrl = 'https://egygo-travel.com';
     const destImage = destination.image || '';
-    const destDescription = destination.description || destination.short_description || `Explore ${destination.title} with EGYGO Travel. Discover amazing tours and experiences.`;
-    const keywords = `${destination.title}, destination, travel, tours, ${destination.title} tours, Egypt travel`.toLowerCase();
+    const destDescription =
+      destination.description ||
+      destination.short_description ||
+      `Explore ${destination.title} with EGYGO Travel. Discover amazing tours and experiences.`;
+    const keywords =
+      `${destination.title}, destination, travel, tours, ${destination.title} tours, Egypt travel`.toLowerCase();
 
     this._SeoService.updateSEO({
       title: `${destination.title} - Tours & Travel Guide | EGYGO Travel`,
@@ -131,38 +185,10 @@ export class DestinationDetailsComponent implements OnInit {
     });
 
     // Add structured data
-    const structuredData = this._SeoService.generateDestinationStructuredData(destination, baseUrl);
+    const structuredData = this._SeoService.generateDestinationStructuredData(
+      destination,
+      baseUrl
+    );
     this._SeoService.updateSEO({ structuredData });
   }
-
-  galleryOptions = {
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 1500,
-    dots: true,
-    arrows: false,
-    speed: 500,
-    responsive: [
-      {
-        breakpoint: 940,
-        settings: {
-          slidesToShow: 3,
-        }
-      },
-      {
-        breakpoint: 740,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-      {
-        breakpoint: 400,
-        settings: {
-          slidesToShow: 1,
-        }
-      }
-    ]
-  };
 }
