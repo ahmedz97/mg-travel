@@ -58,8 +58,10 @@
           </div> -->
           <!-- user name and email -->
           <div class="textSecondColor text-center mt-2 pb-3 bs-popover-bottom">
-            <h5 class="text-capitalize mb-0 fw-bold">Antoni Jonson</h5>
-            <p class="">jonsonexample.com</p>
+            <h5 class="text-capitalize mb-0 fw-bold">
+              {{ profilemeData.name }}
+            </h5>
+            <p class="">{{ profilemeData.email }}</p>
           </div>
 
           <ul class="list-unstyled text-capitalize">
@@ -209,11 +211,16 @@
           >
             <h5 class="fw-bold mb-3 pb-3 border-bottom">profile info</h5>
 
-            <p><b class="me-5">Full Name:</b> Antoni Jonson</p>
-            <p><b class="me-5">Email:</b> jonsonexample.com</p>
-            <p><b class="me-5">Phone:</b>+2 134 562 458</p>
-            <p><b class="me-5">Address:</b>New York, USA</p>
-            <p><b class="me-5">Join Date:</b>21 August, 2025</p>
+            <p><b class="me-5">Full Name:</b> {{ profilemeData.name }}</p>
+            <p><b class="me-5">Email:</b> {{ profilemeData.email }}</p>
+            <p><b class="me-5">Phone:</b> {{ profilemeData.phone }}</p>
+            <p>
+              <b class="me-5">Nationality:</b> {{ profilemeData.nationality }}
+            </p>
+            <p>
+              <b class="me-5">Join Date:</b>
+              {{ profilemeData.created_at | date }}
+            </p>
           </div>
           } @if (selectedTab==='myBooking') { @if (haveData) {
           <swiper-container #bookingCarousel init="false">
@@ -354,7 +361,9 @@
                     formControlName="nationality"
                     class="form-control p-2 ps-5 rounded-3"
                   >
-                    <option selected disabled>select your nationality</option>
+                    <option value="" selected disabled>
+                      select your nationality
+                    </option>
                     @for (item of countriesList; track $index) {
 
                     <option [value]="item.name">{{ item.name }}</option>

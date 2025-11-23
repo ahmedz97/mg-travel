@@ -60,7 +60,7 @@ export class PartnerSliderComponent implements AfterViewInit {
       el.autoplay = { delay: 1500, disableOnInteraction: false };
       el.speed = 500;
       el.breakpoints = {
-        0: { slidesPerView: 1.5 },
+        0: { slidesPerView: 2 },
         500: { slidesPerView: 2.5 },
         767: { slidesPerView: 3.5 },
         992: { slidesPerView: 4 },

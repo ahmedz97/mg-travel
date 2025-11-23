@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
     loadComponent: () =>
       import('./pages/home/home.component').then((m) => m.HomeComponent),
     title: 'Home',
@@ -36,14 +37,6 @@ export const routes: Routes = [
       ),
     title: 'Blog Details',
   },
-  // {
-  //   path: 'blogDetails',
-  //   loadComponent: () =>
-  //     import('./pages/blog-details/blog-details.component').then(
-  //       (m) => m.BlogDetailsComponent
-  //     ),
-  //   title: 'Blogs Details',
-  // },
   {
     path: 'tour',
     loadComponent: () =>

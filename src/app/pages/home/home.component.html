@@ -412,7 +412,7 @@
 
 <section class="popTours py-5 my-5 bgPrimaryWhiteColor">
   <div class="container">
-    <!-- <div class="title-box position-relative flexBetween flex-wrap mb-4">
+    <div class="title-box position-relative flexBetween flex-wrap mb-4">
       <div class="secTitle text-capitalize">
         <span class="textSecondColor fw-bold fs-5">Tour Experience</span>
         <h2 class="text-black fw-bold">Ultimate Travel Experience</h2>
@@ -452,14 +452,14 @@
         [speed]="500"
         init="false"
       >
-        @for (tour of tourstest.reverse(); track $index) {
+        @for (tour of tourstest; track $index) {
         <swiper-slide>
           <app-tour-cart [tour]="tour"></app-tour-cart>
         </swiper-slide>
         }
       </swiper-container>
     </div>
-    } -->
+    }
 
     <app-counter></app-counter>
   </div>

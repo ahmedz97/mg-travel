@@ -87,8 +87,9 @@ export class TourDetailsComponent implements OnInit, AfterViewInit {
       el.spaceBetween = 0;
       el.loop = true;
       el.autoplay = { delay: 1500, disableOnInteraction: false };
-      el.speed = 500;
-      el.navigation = true;
+      el.speed = 2000;
+      el.navigation = false;
+
       el.initialize();
     }
   }

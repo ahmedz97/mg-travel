@@ -97,7 +97,7 @@ export class MakeTripComponent implements OnInit {
     this._MaketripService.getDestination().subscribe({
       next: (response) => {
         this.destinationList = response.data.data;
-        // console.log(this.destinationList);
+        console.log('destinationList', this.destinationList);
       },
       error: (err) => {
         // console.log(err.error.message);

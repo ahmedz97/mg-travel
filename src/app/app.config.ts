@@ -1,10 +1,6 @@
 // ✅ app.config.ts
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import {
-  provideRouter,
-  withEnabledBlockingInitialNavigation,
-  withInMemoryScrolling,
-} from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -18,15 +14,18 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import {
+  LocationStrategy,
+  HashLocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     // for hash routing for ssr => 'not found' issue
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
     provideRouter(
       routes,
-      withEnabledBlockingInitialNavigation(),
       withInMemoryScrolling({
         scrollPositionRestoration: 'enabled',
         anchorScrolling: 'enabled',

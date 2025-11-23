@@ -71,7 +71,7 @@ input + label {
     margin-inline: 5px;
   } */
 
-  input:not([type="range"]) {
+  input:not([type="range"], [type="checkbox"]) {
     border: #dee2e6 1px solid;
     width: unset;
   }
@@ -112,10 +112,11 @@ input + label {
     bottom: 0;
     right: 0;
     left: 0;
-    background-color: #fff;
+    background-color: #fff !important;
     padding: 20px;
     margin-bottom: 0 !important;
     border-top: 1px solid rgba(0, 0, 0, 0.2);
+    z-index: 1000;
   }
 }
 
