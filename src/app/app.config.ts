@@ -23,7 +23,7 @@ import {
 export const appConfig: ApplicationConfig = {
   providers: [
     // for hash routing for ssr => 'not found' issue
-    { provide: LocationStrategy, useClass: PathLocationStrategy },
+    // { provide: LocationStrategy, useClass: HashLocationStrategy },
     provideRouter(
       routes,
       withInMemoryScrolling({

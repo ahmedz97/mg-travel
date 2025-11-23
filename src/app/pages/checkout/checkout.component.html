@@ -119,7 +119,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
               <div>
                 <label
                   for="state"
@@ -137,9 +137,9 @@
                   <i class="fa fa-location-dot textMainColor"></i>
                 </div>
               </div>
-            </div>
+            </div> -->
 
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
               <div>
                 <label
                   for="coupon_id"
@@ -157,7 +157,7 @@
                   <i class="fa fa-code textMainColor"></i>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <div class="col-md-12">
               <div>
@@ -214,87 +214,118 @@
       </div>
 
       <div class="col-lg-4">
-        <!-- your order -->
-        <div class="text-capitalize pb-4 border-bottom">
-          <h2 class="text-capitalize textSecondColor mb-3 fw-bold h4">
-            {{ "checkout.bookingSummary" | translate }}
-          </h2>
+        <div>
+          <!-- your order -->
+          <div class="text-capitalize pb-4 border-bottom">
+            <h2 class="text-capitalize textSecondColor mb-3 fw-bold h4">
+              {{ "checkout.bookingSummary" | translate }}
+            </h2>
 
-          @if (tourCart.length>0) {
-          <swiper-container #ordersCarousel init="false">
-            @for (cart of tourCart; track $index) {
-            <swiper-slide>
-              <div class="p-2 order rounded-3">
-                <figure class="specialBorder overflow-hidden mb-2">
-                  <img
-                    [src]="cart.tour.featured_image"
-                    height="250px"
-                    class="w-100"
-                    [alt]="cart.tour.title"
-                  />
-                </figure>
-                <h3 class="h6 fw-bold pe-2 textSecondColor">
-                  {{ cart.tour.title }}
-                </h3>
-                <div>
-                  <span
-                    class="bgSecondColor specialBorder text-white px-2 py-1"
-                  >
-                    <i class="fa fa-star me-2"></i>
-                    {{ cart.tour.rate }}
-                  </span>
-                  <span class="mx-2"
-                    >({{ cart.tour.reviews_number }} reviews)</span
-                  >
+            @if (tourCart.length>0) {
+            <swiper-container #ordersCarousel init="false">
+              @for (cart of tourCart; track $index) {
+              <swiper-slide>
+                <div class="p-2 order rounded-3">
+                  <figure class="specialBorder overflow-hidden mb-2">
+                    <img
+                      [src]="cart.tour.featured_image"
+                      height="250px"
+                      class="w-100"
+                      [alt]="cart.tour.title"
+                    />
+                  </figure>
+                  <h3 class="h6 fw-bold pe-2 textSecondColor">
+                    {{ cart.tour.title }}
+                  </h3>
+                  <div>
+                    <span
+                      class="bgSecondColor specialBorder text-white px-2 py-1"
+                    >
+                      <i class="fa fa-star me-2"></i>
+                      {{ cart.tour.rate }}
+                    </span>
+                    <span class="mx-2"
+                      >({{ cart.tour.reviews_number }} reviews)</span
+                    >
+                  </div>
+
+                  <div class="text-capitalize mt-3">
+                    <p class="mb-1 flexBetween">
+                      <span class="textSecondColor"
+                        >{{ "checkout.checkIn" | translate }}:</span
+                      >
+                      {{ cart.start_date.slice(0, 10) }}
+                    </p>
+                    <p class="mb-1 flexBetween">
+                      <span class="textSecondColor"
+                        >{{ "checkout.guests" | translate }}:</span
+                      >
+                      @if (cart.adults>0) {
+                      {{ cart.adults }} {{ "checkout.adults" | translate }} }
+                      @if (cart.children>0) { {{ cart.children }}
+                      {{ "checkout.children" | translate }} } @if
+                      (cart.infants>0) { {{ cart.infants }}
+                      {{ "checkout.infants" | translate }} }
+                    </p>
+                    <p class="mb-1 flexBetween">
+                      <span class="textSecondColor"
+                        >{{ "checkout.stay" | translate }}:</span
+                      >
+                      {{ cart.tour.duration }}
+                    </p>
+
+                    <h4 class="h6 fw-bolder flexBetween">
+                      <span class="textSecondColor"
+                        >{{ "checkout.totalPrice" | translate }}:</span
+                      >
+                      {{ cart.totalPrice | currency }}
+                    </h4>
+                  </div>
                 </div>
+              </swiper-slide>
 
-                <div class="text-capitalize mt-3">
-                  <p class="mb-1 flexBetween">
-                    <span class="textSecondColor"
-                      >{{ "checkout.checkIn" | translate }}:</span
-                    >
-                    {{ cart.start_date.slice(0, 10) }}
-                  </p>
-                  <p class="mb-1 flexBetween">
-                    <span class="textSecondColor"
-                      >{{ "checkout.guests" | translate }}:</span
-                    >
-                    @if (cart.adults>0) {
-                    {{ cart.adults }} {{ "checkout.adults" | translate }} } @if
-                    (cart.children>0) { {{ cart.children }}
-                    {{ "checkout.children" | translate }} } @if (cart.infants>0)
-                    { {{ cart.infants }} {{ "checkout.infants" | translate }} }
-                  </p>
-                  <p class="mb-1 flexBetween">
-                    <span class="textSecondColor"
-                      >{{ "checkout.stay" | translate }}:</span
-                    >
-                    {{ cart.tour.duration }}
-                  </p>
-
-                  <h4 class="h6 fw-bolder flexBetween">
-                    <span class="textSecondColor"
-                      >{{ "checkout.totalPrice" | translate }}:</span
-                    >
-                    {{ cart.totalPrice | currency }}
-                  </h4>
-                </div>
-              </div>
-            </swiper-slide>
-
+              }
+            </swiper-container>
+            }@else {
+            <h5 class="text-capitalize text-danger">
+              {{ "checkout.cartIsEmpty" | translate }}
+            </h5>
             }
-          </swiper-container>
-          }@else {
-          <h5 class="text-capitalize text-danger">
-            {{ "checkout.cartIsEmpty" | translate }}
-          </h5>
-          }
-        </div>
+          </div>
 
-        <!-- price -->
-        <div class="fw-bolder flexBetween textMainColor text-uppercase mt-3">
-          <span>{{ "checkout.total" | translate }}:</span>
-          <span> {{ getTotalPrice() | currency }}</span>
+          <!-- price -->
+          <div class="fw-bolder flexBetween textMainColor text-uppercase mt-3">
+            <span>{{ "checkout.total" | translate }}:</span>
+            <span> {{ getTotalPrice() | currency }}</span>
+          </div>
+
+          <!-- coupon code -->
+          <div>
+            <label
+              for="coupon_id"
+              class="textSecondColor text-capitalize fw-bold mb-2"
+              >{{ "checkout.couponCode" | translate }}</label
+            >
+            <div class="item position-relative">
+              <input
+                type="text"
+                id="coupon_id"
+                formControlName="coupon_id"
+                placeholder="{{ 'checkout.yourCouponCode' | translate }}"
+                class="form-control p-2 ps-5 rounded-3"
+              />
+              <i class="fa fa-code textMainColor"></i>
+            </div>
+          </div>
+
+          <!-- price after coupon code -->
+          <div
+            *ngIf="checkoutForm.get('coupon_id')?.value"
+            class="fw-bolder flexBetween textMainColor text-uppercase mt-3"
+          >
+            <span>{{ "checkout.total" | translate }}:</span>
+            <span> {{ getTotalPriceAfterCouponCode() | currency }}</span>
+          </div>
         </div>
       </div>
     </form>

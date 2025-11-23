@@ -215,8 +215,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // { src: '../../../assets/image/new/5.png' },
   ];
 
+  rawVideoUrl =
+    'https://www.youtube.com/embed/mfxQy5A_tHs?autoplay=1&mute=1&loop=1&playlist=mfxQy5A_tHs&controls=0&showinfo=0&rel=0&iv_load_policy=3';
   // video
-  rawVideoUrl = 'https://www.youtube.com/embed/k3KqP69xuPc?si=jlt_SSYpm0STHo7I';
+  // rawVideoUrl = 'https://www.youtube.com/embed/k3KqP69xuPc?si=jlt_SSYpm0STHo7I';
   posterSrc = '../../../assets/image/blog2.webp';
   sanitizedVideoUrl: SafeResourceUrl | null = null;
   isVideoPlaying = false;

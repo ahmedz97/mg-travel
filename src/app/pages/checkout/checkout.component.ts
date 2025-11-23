@@ -89,29 +89,29 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
     // if form is valid === true
     if (this.checkoutForm.valid) {
-      this._BookingService
-        .getCoupon(this.checkoutForm.get('coupon_id')?.value)
-        .subscribe({
-          next: (cResponse) => {
-            console.log(cResponse);
-            this.toaster.success(cResponse.message);
-            // after coupon code is tammmam check other data and send it
-            this._BookingService.sendCheckoutData(this.checkoutData).subscribe({
-              next: (response) => {
-                console.log(response);
-                this.toaster.success(response.message);
-              },
-              error: (err) => {
-                console.log(err);
-                this.toaster.error(err.error.message);
-              },
-            });
-          },
-          error: (cError) => {
-            console.log(cError);
-            this.toaster.error(cError.error.message);
-          },
-        });
+      this._BookingService.sendCheckoutData(this.checkoutData).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.toaster.success(response.message);
+        },
+        error: (err) => {
+          console.log(err);
+          this.toaster.error(err.error.message);
+        },
+      });
+      // this._BookingService
+      //   .getCoupon(this.checkoutForm.get('coupon_id')?.value)
+      //   .subscribe({
+      //     next: (cResponse) => {
+      //       console.log(cResponse);
+      //       this.toaster.success(cResponse.message);
+      //       // after coupon code is tammmam check other data and send it
+      //     },
+      //     error: (cError) => {
+      //       console.log(cError);
+      //       this.toaster.error(cError.error.message);
+      //     },
+      //   });
     }
 
     // this._BookingService.sendCheckoutData(this.checkoutData).subscribe({
@@ -195,6 +195,15 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   getTotalPrice(): number {
     return this.tourCart.reduce((sum, cart) => sum + cart.totalPrice, 0);
+  }
+
+  getTotalPriceAfterCouponCode(): number {
+    const totalPrice = this.getTotalPrice();
+    const couponCode = this.checkoutForm.get('coupon_id')?.value;
+    if (couponCode) {
+      return totalPrice - couponCode;
+    }
+    return totalPrice;
   }
 
   ngAfterViewInit(): void {

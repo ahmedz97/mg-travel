@@ -17,7 +17,13 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, CommonModule, BannerComponent, TranslateModule],
+  imports: [
+    RouterLink,
+    ReactiveFormsModule,
+    CommonModule,
+    BannerComponent,
+    TranslateModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -90,7 +96,7 @@ export class LoginComponent implements OnInit {
 
             this._AuthService.saveToken(response.data.accessToken);
             this.toastr.success(response.message);
-            this._Router.navigate(['']);
+            this._Router.navigate(['/home']);
           } else {
             this.toastr.error('Login failed');
           }

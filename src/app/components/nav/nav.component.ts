@@ -33,7 +33,7 @@ export class NavComponent implements OnInit {
   ) {}
 
   navigationLinks = [
-    { path: '/', label: 'nav.home' },
+    { path: '/home', label: 'nav.home' },
     { path: '/about', label: 'nav.about' },
     { path: '/blog', label: 'nav.blogs' },
     { path: '/contact', label: 'nav.contact' },
@@ -80,7 +80,7 @@ export class NavComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('language', langCode);
       this.translate.use(langCode);
-      
+
       const htmlTag = document.documentElement;
       htmlTag.setAttribute('lang', langCode);
       htmlTag.setAttribute('dir', 'ltr'); // Both English and Spanish are LTR

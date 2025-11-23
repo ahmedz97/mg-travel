@@ -23,7 +23,7 @@
   </div>
 </section>
 
-<section class="my-5">
+<!-- <section class="my-5">
   <div class="container">
     <div class="row g-3">
       <div class="col-lg-8 order-2 order-lg-1">
@@ -64,15 +64,20 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <section class="my-5 pt-5">
   <div class="container">
+    <!-- description -->
+    <div>
+      <h5 class="fw-bold text-black text-capitalize">description</h5>
+      <p [innerHTML]="getSanitizedHtml(destinationDetails?.description)"></p>
+    </div>
     <!-- related tour -->
-    <div class="row g-3 mb-5">
+    <div class="row g-3 my-4">
       <ng-container *ngIf="filteredTours.length != 0; else elseTemplate">
         <div
-          class="col-xl-4 col-lg-6 px-3"
+          class="col-xl-4 col-lg-6"
           *ngFor="let tour of filteredTours.slice(0, 9); let i = index"
         >
           <app-tour-cart [tour]="tour"></app-tour-cart>

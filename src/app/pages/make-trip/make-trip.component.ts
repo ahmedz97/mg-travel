@@ -203,7 +203,7 @@ export class MakeTripComponent implements OnInit {
       this._MaketripService.sendDataTrip(this.makeTripForm).subscribe({
         next: (response) => {
           this.toaster.success(response.message);
-          this._Router.navigate(['/']); //go to home page
+          this._Router.navigate(['/home']); //go to home page
         },
         error: (err) => {
           this.toaster.error(err.error.message);
