@@ -56,6 +56,9 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   countries: any[] = [];
   tourCart: any[] = [];
   haveData: boolean = false;
+  couponApplied: boolean = false;
+  couponDiscount: number = 0;
+  couponData: any = null;
 
   ngOnInit(): void {
     this._BookingService.getCountries().subscribe({
@@ -74,7 +77,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     email: new FormControl(''),
     // start_date: new FormControl(''),
     country: new FormControl(''),
-    state: new FormControl(''),
+    // state: new FormControl(''),
     // street_addres: new FormControl(''),
     payment_method: new FormControl(''),
     notes: new FormControl(''),
@@ -197,12 +200,51 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     return this.tourCart.reduce((sum, cart) => sum + cart.totalPrice, 0);
   }
 
+  applyCoupon(): void {
+    const couponCode = this.checkoutForm.get('coupon_id')?.value;
+
+    if (!couponCode || couponCode.trim() === '') {
+      this.toaster.error('Please enter a coupon code');
+      return;
+    }
+
+    this._BookingService.getCoupon(couponCode).subscribe({
+      next: (cResponse) => {
+        console.log(cResponse);
+        this.couponApplied = true;
+        this.couponData = cResponse.data;
+
+        // Calculate discount based on coupon type (percentage or fixed amount)
+        const totalPrice = this.getTotalPrice();
+        if (this.couponData.type === 'percentage') {
+          this.couponDiscount = (totalPrice * this.couponData.value) / 100;
+        } else {
+          this.couponDiscount = this.couponData.value;
+        }
+
+        this.toaster.success(
+          cResponse.message || 'Coupon applied successfully!'
+        );
+      },
+      error: (cError) => {
+        console.log(cError);
+        this.couponApplied = false;
+        this.couponDiscount = 0;
+        this.couponData = null;
+        this.toaster.error(cError.error.message || 'Invalid coupon code');
+      },
+    });
+    this.checkoutForm.get('coupon_id')?.reset();
+  }
+
   getTotalPriceAfterCouponCode(): number {
     const totalPrice = this.getTotalPrice();
-    const couponCode = this.checkoutForm.get('coupon_id')?.value;
-    if (couponCode) {
-      return totalPrice - couponCode;
+
+    if (this.couponApplied && this.couponDiscount > 0) {
+      const finalPrice = totalPrice - this.couponDiscount;
+      return finalPrice > 0 ? finalPrice : 0;
     }
+
     return totalPrice;
   }
 

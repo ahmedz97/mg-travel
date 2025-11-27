@@ -1,7 +1,14 @@
-<app-nav></app-nav>
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+<!-- Show page loader during initial load (without nav/footer) -->
+<app-page-loader *ngIf="isInitialLoad"></app-page-loader>
 
+<!-- Show nav, footer, and router outlet after initial load -->
+<ng-container *ngIf="!isInitialLoad">
+  <app-nav></app-nav>
+  <router-outlet></router-outlet>
+  <app-footer></app-footer>
+</ng-container>
+
+<!-- Global spinner for HTTP requests -->
 <ngx-spinner
   bdColor="#fff"
   size="medium"

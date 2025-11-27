@@ -4,34 +4,58 @@
     margin-top: -96px;
     padding: 150px 0 95px;
     // background-color: #EDF2F1;
-    background: linear-gradient(45deg,  #fff, $secondary-color, #000);
-    height: 47vh;
-    .shape1,.shape2{
-        width: 150px;
-        height: 150px;
-                animation: bounce-y 7s infinite  ease-in-out;
+    // background: linear-gradient(45deg,  #fff, $secondary-color, #000);
+    background-image: url('../../../assets/image/new/15.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 60vh;
 
-    }
-
-    .shape1{
-
-        transform: translate(30.1014%, 0%) translate3d(0px, 0px, 0px);
-        top: 30%;
-        left: 7%;
-    }
-    .shape2{
-
-        transform: translate(-22.4%, -50%) translate3d(0px, 0px, 0px);
-        top: 65%;
-        right: 7%;
-    }
 
     .breadcrumb-item.active{color: $primary-color ;}
 
-    @media screen and (max-width:767px) {
-        .shape1 , .shape2{
-            width: 110px;
-            height: 110px;
-        }
+
+    .waves{
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      width: 100%;
+      height: 122px;
+      // top: -122px;
+      min-height: 100px;
+      max-height: 150px;
+    }
+
+    .parallax > use {
+      animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+    }
+
+    .parallax > use:nth-child(1) {
+      animation-delay: -2s;
+      animation-duration: 7s;
+    }
+
+    .parallax > use:nth-child(2) {
+      animation-delay: -3s;
+      animation-duration: 10s;
+    }
+
+    .parallax > use:nth-child(3) {
+      animation-delay: -4s;
+      animation-duration: 13s;
+    }
+
+    .parallax > use:nth-child(4) {
+      animation-delay: -5s;
+      animation-duration: 20s;
+    }
+
+    @keyframes move-forever {
+      0% {
+        transform: translate3d(-90px, 0, 0);
+      }
+      100% {
+        transform: translate3d(85px, 0, 0);
+      }
     }
 }

@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'x',
     loadComponent: () =>
       import('./pages/page-loader/page-loader.component').then(
         (m) => m.PageLoaderComponent
       ),
   },
   {
-    path: 'home',
+    path: '',
     loadComponent: () =>
       import('./pages/home/home.component').then((m) => m.HomeComponent),
     title: 'Home',

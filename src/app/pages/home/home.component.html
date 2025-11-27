@@ -389,21 +389,21 @@
     <div class="title-box position-relative flexBetween flex-wrap mb-4">
       <div class="secTitle text-capitalize">
         <span class="textSecondColor fw-bold fs-5">Tour Experience</span>
-        <h2 class="text-black fw-bold">Ultimate Travel Experience</h2>
+        <h2 class="text-black fw-bold">Popular Tours Experience</h2>
       </div>
-      @if (isBrowser && toursLoaded && tourstest.length > 0) {
+      @if (isBrowser && toursLoaded && allToursFromCategories.length > 0) {
       <div class="carousel-nav-buttons title-nav-buttons">
         <button
           type="button"
           class="nav-btn prev-btn"
-          (click)="prevTourCarousel()"
+          (click)="prevPopularToursCarousel()"
         >
           <i class="fa fa-arrow-left"></i>
         </button>
         <button
           type="button"
           class="nav-btn next-btn"
-          (click)="nextTourCarousel()"
+          (click)="nextPopularToursCarousel()"
         >
           <i class="fa fa-arrow-right"></i>
         </button>
@@ -411,10 +411,10 @@
       }
     </div>
 
-    @if (isBrowser && toursLoaded && tourstest.length > 0) {
+    @if (isBrowser && toursLoaded && allToursFromCategories.length > 0) {
     <div class="my-slider">
       <swiper-container
-        #tourCarousel
+        #popularToursCarousel
         [slidesPerView]="4"
         [spaceBetween]="20"
         [loop]="true"
@@ -423,10 +423,10 @@
           disableOnInteraction: false,
           pauseOnMouseEnter: true
         }"
-        [speed]="500"
+        [speed]="1500"
         init="false"
       >
-        @for (tour of tourstest; track $index) {
+        @for (tour of allToursFromCategories; track $index) {
         <swiper-slide>
           <app-tour-cart [tour]="tour"></app-tour-cart>
         </swiper-slide>
@@ -434,8 +434,6 @@
       </swiper-container>
     </div>
     }
-
-    <app-counter></app-counter>
   </div>
 </section>
 

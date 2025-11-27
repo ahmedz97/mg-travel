@@ -33,7 +33,7 @@ export class NavComponent implements OnInit {
   ) {}
 
   navigationLinks = [
-    { path: '/home', label: 'nav.home' },
+    { path: '/', label: 'nav.home' },
     { path: '/about', label: 'nav.about' },
     { path: '/blog', label: 'nav.blogs' },
     { path: '/contact', label: 'nav.contact' },

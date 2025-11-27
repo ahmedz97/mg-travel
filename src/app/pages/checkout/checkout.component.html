@@ -300,31 +300,46 @@
           </div>
 
           <!-- coupon code -->
-          <div>
+          <div class="my-3">
             <label
               for="coupon_id"
               class="textSecondColor text-capitalize fw-bold mb-2"
               >{{ "checkout.couponCode" | translate }}</label
             >
-            <div class="item position-relative">
-              <input
-                type="text"
-                id="coupon_id"
-                formControlName="coupon_id"
-                placeholder="{{ 'checkout.yourCouponCode' | translate }}"
-                class="form-control p-2 ps-5 rounded-3"
-              />
-              <i class="fa fa-code textMainColor"></i>
+            <div class="d-flex gap-2">
+              <div class="item position-relative flex-grow-1">
+                <input
+                  type="text"
+                  id="coupon_id"
+                  formControlName="coupon_id"
+                  placeholder="{{ 'checkout.yourCouponCode' | translate }}"
+                  class="form-control p-2 ps-5 rounded-3"
+                />
+                <i class="fa fa-code textMainColor"></i>
+              </div>
+              <button
+                type="button"
+                class="mainBtn Btn fontsm px-4 rounded-3 text-capitalize"
+                (click)="applyCoupon()"
+                [disabled]="!checkoutForm.get('coupon_id')?.value"
+              >
+                {{ "checkout.applyCoupon" | translate }}
+              </button>
             </div>
           </div>
 
-          <!-- price after coupon code -->
-          <div
-            *ngIf="checkoutForm.get('coupon_id')?.value"
-            class="fw-bolder flexBetween textMainColor text-uppercase mt-3"
-          >
-            <span>{{ "checkout.total" | translate }}:</span>
-            <span> {{ getTotalPriceAfterCouponCode() | currency }}</span>
+          <!-- discount and price after coupon code -->
+          <div *ngIf="couponApplied && couponDiscount > 0" class="mt-3">
+            <div class="flexBetween text-success mb-2">
+              <span class="text-capitalize"
+                >{{ "checkout.discount" | translate }}:</span
+              >
+              <span class="fw-bold">- {{ couponDiscount | currency }}</span>
+            </div>
+            <div class="fw-bolder flexBetween textMainColor text-uppercase">
+              <span>{{ "checkout.finalTotal" | translate }}:</span>
+              <span> {{ getTotalPriceAfterCouponCode() | currency }}</span>
+            </div>
           </div>
         </div>
       </div>
