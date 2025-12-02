@@ -107,7 +107,10 @@
                   {{ "contact.officeAddress" | translate }}
                 </h6>
                 <p class="mb-1 transition">
-                  {{ userAddress || "fayoum , cairo , egypt" }}
+                  {{
+                    userAddress ||
+                      "Alrawdah Al-Sharifa Street is branched for Khalid bin Alwaleed Street Luxor Al-Awamiya"
+                  }}
                 </p>
               </div>
             </li>
@@ -123,9 +126,9 @@
                   {{ "contact.callUs" | translate }}
                 </h6>
                 <a
-                  href="tel:{{ phoneNumber }} || {{ 01000000000 }}"
+                  href="tel:{{ phoneNumber }} || {{ +201117839212 }}"
                   class="mb-1 transition"
-                  >{{ phoneNumber || "01000000000" }}</a
+                  >{{ phoneNumber || "+20 11 17839212" }}</a
                 >
               </div>
             </li>
@@ -159,11 +162,11 @@
     <iframe
       *ngIf="
         userLocation ||
-        'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.223093450459!2d30.87755907479765!3d29.31633967602293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145840e33ebad6a9%3A0x3611c2e067ee576a!2sFayoum%20Governorate%2C%20Egypt!5e0!3m2!1sen!2sus!4v1731856800000!5m2!1sen!2sus'
+        'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d2392.7962863532975!2d32.633200089318876!3d25.68747909082999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjXCsDQxJzE1LjYiTiAzMsKwMzcnNTcuNyJF!5e0!3m2!1sen!2seg!4v1764685012805!5m2!1sen!2seg'
       "
       [src]="
         userLocation ||
-          'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.223093450459!2d30.87755907479765!3d29.31633967602293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145840e33ebad6a9%3A0x3611c2e067ee576a!2sFayoum%20Governorate%2C%20Egypt!5e0!3m2!1sen!2sus!4v1731856800000!5m2!1sen!2sus'
+          'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d2392.7962863532975!2d32.633200089318876!3d25.68747909082999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjXCsDQxJzE1LjYiTiAzMsKwMzcnNTcuNyJF!5e0!3m2!1sen!2seg!4v1764685012805!5m2!1sen!2seg'
           | safeUrl
       "
       class="w-100 rounded-3"

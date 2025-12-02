@@ -43,17 +43,23 @@
           <h6 class="mb-2 d-flex align-items-center nav-link">
             <i class="fa fa-headphones-alt me-2"></i>
             <a
-              href="tel:{{ phoneNumber }} || {{ 01000000000 }}"
+              href="tel:{{ phoneNumber }} || {{ +201117839212 }}"
               class="fw-bold fs-4 text-decoration-none"
-              >{{ phoneNumber || "01000000000" }}</a
+              >{{ phoneNumber || "+20 11 17839212" }}</a
             >
           </h6>
           <h6 class="mb-2 d-flex align-items-center nav-link">
             <i class="fa fa-location-dot me-2"></i>
+
             <a
-              href="{{ userLocation }} || fayoum , cairo , egypt"
+              href="{{
+                userLocation
+              }} || https://maps.app.goo.gl/zYUJAJemzjkrshsU8"
               target="_blank"
-              >{{ userAddress || "fayoum , cairo , egypt" }}</a
+              >{{
+                userAddress ||
+                  "Alrawdah Al-Sharifa Street is branched for Khalid bin Alwaleed Street Luxor Al-Awamiya"
+              }}</a
             >
           </h6>
           <h6 class="mb-2 d-flex align-items-center nav-link">
