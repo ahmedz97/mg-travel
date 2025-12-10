@@ -159,7 +159,7 @@
     "refundGuarantee": "Refund Guarantee",
     "bestPriceGuarantee": "Best Price Guarantee",
     "weProvideBestTourFacilities": "We Provide The Best Tour Facilities.",
-    "description": "MG Travel Agency likely offers a range of tour activities depending on their location and specialties. Here are some common tour activities that travel agencies might",
+    "description": "Alfa Omega Travel Agency likely offers a range of tour activities depending on their location and specialties. Here are some common tour activities that travel agencies might",
     "yearsOfExperience": "Years of Experience"
   },
   "blog": {
@@ -194,7 +194,7 @@
   },
   "login": {
     "login": "Login",
-    "loginByAccount": "Log in by your MG account",
+    "loginByAccount": "Log in by your Alfa Omega account",
     "emailAddress": "Email Address",
     "password": "Password",
     "forgotPassword": "Forgot Password?",
@@ -208,7 +208,7 @@
   },
   "signup": {
     "signUp": "Sign Up",
-    "createAccount": "Create your MG account",
+    "createAccount": "Create your Alfa Omega account",
     "fullName": "Full Name",
     "emailAddress": "Email Address",
     "password": "Password",
@@ -289,7 +289,7 @@
     "selectMonth": "Select Month"
   },
   "forgetPassword": {
-    "loginByAccount": "Log in by your MG account",
+    "loginByAccount": "Log in by your Alfa Omega account",
     "emailAddress": "Email Address",
     "otpCode": "OTP Code",
     "yourOtpCode": "Your OTP Code",

@@ -22,7 +22,7 @@ export class FooterComponent implements OnInit {
   logo: any;
 
   ngOnInit(): void {
-    // this.getSettings();
+    this.getSettings();
   }
 
   getSettings(): void {
