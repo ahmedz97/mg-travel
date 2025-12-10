@@ -8,13 +8,13 @@
       <div class="specialBorder bg-white p-4 sideBar">
         <div class="text-center">
           <img
-            [src]="logo"
-            [alt]="siteTitle"
-            [title]="siteTitle"
+            src="../../../assets/image/logo-MG-Travel.webp"
+            alt="MG travel "
+            title="MG travel "
             width="200px"
             height="70px"
           />
-          <p class="fs-5">{{ 'signup.createAccount' | translate }}</p>
+          <p class="fs-5">{{ "signup.createAccount" | translate }}</p>
         </div>
 
         <form
@@ -26,7 +26,7 @@
             <label
               for="name"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'signup.fullName' | translate }}</label
+              >{{ "signup.fullName" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -47,16 +47,16 @@
               "
               class="alert alert-danger mt-2"
             >
-              <span *ngIf="registerForm.get('name')?.getError('required')"
-                >{{ 'signup.nameRequired' | translate }}</span
-              >
+              <span *ngIf="registerForm.get('name')?.getError('required')">{{
+                "signup.nameRequired" | translate
+              }}</span>
             </div>
           </div>
           <div class="mb-3">
             <label
               for="email"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'signup.emailAddress' | translate }}</label
+              >{{ "signup.emailAddress" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -76,9 +76,9 @@
               "
               class="alert alert-danger mt-2"
             >
-              <span *ngIf="registerForm.get('email')?.getError('required')"
-                >{{ 'signup.emailRequired' | translate }}</span
-              >
+              <span *ngIf="registerForm.get('email')?.getError('required')">{{
+                "signup.emailRequired" | translate
+              }}</span>
             </div>
           </div>
 
@@ -86,7 +86,7 @@
             <label
               for="password"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'signup.password' | translate }}</label
+              >{{ "signup.password" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -106,8 +106,9 @@
               "
               class="alert alert-danger mt-2"
             >
-              <span *ngIf="registerForm.get('password')?.getError('required')"
-                >{{ 'signup.passwordRequired' | translate }}</span
+              <span
+                *ngIf="registerForm.get('password')?.getError('required')"
+                >{{ "signup.passwordRequired" | translate }}</span
               >
             </div>
           </div>
@@ -116,7 +117,7 @@
             <label
               for="password_confirmation"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'signup.passwordConfirmation' | translate }}</label
+              >{{ "signup.passwordConfirmation" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -142,7 +143,7 @@
                     .get('password_confirmation')
                     ?.getError('required')
                 "
-                >{{ 'signup.passwordConfirmationNotMatched' | translate }}
+                >{{ "signup.passwordConfirmationNotMatched" | translate }}
               </span>
             </div>
           </div>
@@ -151,7 +152,7 @@
             <label
               for="phone"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'signup.phoneNumber' | translate }}</label
+              >{{ "signup.phoneNumber" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -171,9 +172,9 @@
               "
               class="alert alert-danger mt-2"
             >
-              <span *ngIf="registerForm.get('phone')?.getError('required')"
-                >{{ 'signup.phoneRequired' | translate }}</span
-              >
+              <span *ngIf="registerForm.get('phone')?.getError('required')">{{
+                "signup.phoneRequired" | translate
+              }}</span>
             </div>
           </div>
 
@@ -181,7 +182,7 @@
             <label
               for="birthdate"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'signup.birthDate' | translate }}</label
+              >{{ "signup.birthDate" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -203,8 +204,9 @@
               "
               class="alert alert-danger mt-2"
             >
-              <span *ngIf="registerForm.get('birthDate')?.getError('required')"
-                >{{ 'signup.birthDateRequired' | translate }}</span
+              <span
+                *ngIf="registerForm.get('birthDate')?.getError('required')"
+                >{{ "signup.birthDateRequired" | translate }}</span
               >
             </div>
           </div>
@@ -213,7 +215,7 @@
             <label
               for="nationality"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'signup.nationality' | translate }}</label
+              >{{ "signup.nationality" | translate }}</label
             >
 
             <div class="item">
@@ -224,7 +226,7 @@
                 class="form-control text-capitalize"
               >
                 <option value="" class="bg-body-secondary" selected disabled>
-                  {{ 'signup.selectNationality' | translate }}
+                  {{ "signup.selectNationality" | translate }}
                 </option>
                 @for (city of countryList; track $index) {
                 <option [value]="city.name">{{ city.name }}</option>
@@ -241,7 +243,7 @@
             >
               <span
                 *ngIf="registerForm.get('nationality')?.getError('required')"
-                >{{ 'signup.nationalityRequired' | translate }}</span
+                >{{ "signup.nationalityRequired" | translate }}</span
               >
             </div>
           </div>
@@ -258,14 +260,14 @@
             <i
               class="fa fa-paper-plane mx-2 border-0 bg-transparent text-white"
             ></i>
-            {{ 'signup.signUp' | translate }}
+            {{ "signup.signUp" | translate }}
           </button>
         </form>
         <p class="my-2 text-center">
-          {{ 'signup.alreadyHaveAccount' | translate }}
-          <span routerLink="/login" class="textMainColor fw-bold cPointer"
-            >{{ 'signup.login' | translate }}</span
-          >
+          {{ "signup.alreadyHaveAccount" | translate }}
+          <span routerLink="/login" class="textMainColor fw-bold cPointer">{{
+            "signup.login" | translate
+          }}</span>
           .
         </p>
       </div>

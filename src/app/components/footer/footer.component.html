@@ -4,13 +4,13 @@
       <!-- Logo Section -->
       <div class="footer-logo mb-5">
         <img
-          src=" '../../../assets/image/alfa omega versions/Artboard 2@4x.png'"
-          alt="Alfa Omega Travel "
-          title="Alfa Omega Travel "
+          src=" '../../../assets/image/logo-MG-Travel.webp'"
+          alt="MG travel "
+          title="MG travel "
           class="logo-img"
           (error)="
             $any($event.target).src =
-              '../../../assets/image/alfa omega versions/Artboard 2@4x.png'
+              '../../../assets/image/logo-MG-Travel.webp'
           "
         />
       </div>
@@ -39,7 +39,8 @@
         </div>
 
         <!-- contact information -->
-        <div class="nav-row mb-3">
+        <!-- data dynamically from the database -->
+        <!-- <div class="nav-row mb-3">
           <h6 class="mb-2 d-flex align-items-center nav-link">
             <i class="fa fa-headphones-alt me-2"></i>
             <a
@@ -67,6 +68,30 @@
             <a href="mailTo:{{ userEmail }} || info@mg-travel.com">{{
               userEmail || "info@mg-travel.com"
             }}</a>
+          </h6>
+        </div> -->
+
+        <!-- data static -->
+        <div class="nav-row mb-3">
+          <h6 class="mb-2 d-flex align-items-center nav-link">
+            <i class="fa fa-headphones-alt me-2"></i>
+            <a
+              href="tel:+201117839212"
+              class="fw-bold fs-4 text-decoration-none"
+              >+20 11 17839212</a
+            >
+          </h6>
+          <h6 class="mb-2 d-flex align-items-center nav-link">
+            <i class="fa fa-location-dot me-2"></i>
+
+            <a href="https://maps.app.goo.gl/zYUJAJemzjkrshsU8" target="_blank">
+              "Alrawdah Al-Sharifa Street is branched for Khalid bin Alwaleed
+              Street Luxor Al-Awamiya"
+            </a>
+          </h6>
+          <h6 class="mb-2 d-flex align-items-center nav-link">
+            <i class="fa fa-envelopes-bulk me-2"></i>
+            <a href="mailTo:info@mg-travel.com">"info&#64;mg-travel.com" </a>
           </h6>
         </div>
       </div>

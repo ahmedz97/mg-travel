@@ -8,13 +8,13 @@
       <div class="specialBorder bg-white p-4 sideBar">
         <div class="text-center">
           <img
-            [src]="logo"
-            [alt]="siteTitle"
-            [title]="siteTitle"
+            src="../../../assets/image/logo-MG-Travel.webp"
+            alt="MG travel "
+            title="MG travel "
             width="200px"
             height="70px"
           />
-          <p class="fs-5">{{ 'login.loginByAccount' | translate }}</p>
+          <p class="fs-5">{{ "login.loginByAccount" | translate }}</p>
         </div>
 
         <form [formGroup]="loginForm" (ngSubmit)="handleLoginForm()" class="">
@@ -22,7 +22,7 @@
             <label
               for="email"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'login.emailAddress' | translate }}</label
+              >{{ "login.emailAddress" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -42,9 +42,9 @@
               "
               class="alert alert-danger mt-2"
             >
-              <span *ngIf="loginForm.get('email')?.getError('required')"
-                >{{ 'login.emailRequired' | translate }}</span
-              >
+              <span *ngIf="loginForm.get('email')?.getError('required')">{{
+                "login.emailRequired" | translate
+              }}</span>
             </div>
           </div>
 
@@ -52,7 +52,7 @@
             <label
               for="password"
               class="textSecondColor text-capitalize fw-bold mb-2"
-              >{{ 'login.password' | translate }}</label
+              >{{ "login.password" | translate }}</label
             >
             <div class="item position-relative">
               <input
@@ -72,9 +72,9 @@
               "
               class="alert alert-danger mt-2"
             >
-              <span *ngIf="loginForm.get('password')?.getError('required')"
-                >{{ 'login.passwordRequired' | translate }}</span
-              >
+              <span *ngIf="loginForm.get('password')?.getError('required')">{{
+                "login.passwordRequired" | translate
+              }}</span>
             </div>
           </div>
 
@@ -83,7 +83,7 @@
             routerLink="/forgetPassword"
             class="my-2 textMainColor fw-bold cPointer text-capitalize"
           >
-            {{ 'login.forgotPassword' | translate }}
+            {{ "login.forgotPassword" | translate }}
           </p>
 
           <button
@@ -98,14 +98,14 @@
             <i
               class="fa fa-paper-plane mx-2 border-0 bg-transparent text-white"
             ></i>
-            {{ 'login.login' | translate }}
+            {{ "login.login" | translate }}
           </button>
         </form>
         <div></div>
         <p class="my-2 text-center">
-          {{ 'login.dontHaveAccount' | translate }}
+          {{ "login.dontHaveAccount" | translate }}
           <span routerLink="/signup" class="textMainColor fw-bold cPointer"
-            >{{ 'login.signUp' | translate }}.</span
+            >{{ "login.signUp" | translate }}.</span
           >
         </p>
       </div>
