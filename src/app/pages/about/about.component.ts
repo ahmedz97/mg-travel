@@ -38,12 +38,11 @@ export class AboutComponent implements OnInit {
   constructor(private _SeoService: SeoService) {}
 
   ngOnInit(): void {
-    this._SeoService.updateSEO({
-      title: 'About Us - EGYGO Travel',
-      description: 'Learn about EGYGO Travel, your trusted travel partner. Discover our mission, values, and commitment to providing exceptional travel experiences.',
-      keywords: 'about us, travel agency, EGYGO Travel, company information, travel services',
-      url: 'https://egygo-travel.com/about',
-      type: 'website',
-    });
+    this._SeoService.updateSeoData(
+      {},
+      'About Us - MG Travel',
+      'Learn more about MG Travel, your trusted travel partner for premium tours and exceptional travel experiences.',
+      '../../../assets/image/logo-MG-Travel.webp'
+    );
   }
 }

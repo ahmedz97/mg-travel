@@ -143,8 +143,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
       // We may need to manually trigger change detection
       this.cdr.detectChanges();
-      console.log(this.el.nativeElement);
-      console.log(this.tourstest);
+      // console.log(this.el.nativeElement);
+      // console.log(this.tourstest);
     });
   }
 
@@ -275,7 +275,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ];
 
   ngOnInit(): void {
-    this.setupSEO();
+    this.getSettingsAndUpdateSeo();
     this.getDestination();
     this.getCategory();
     this.getDurations();
@@ -293,54 +293,71 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  setupSEO(): void {
+  getSettingsAndUpdateSeo(): void {
     this._DataService.getSetting().subscribe({
       next: (res) => {
-        const siteTitle =
-          res.data.find((item: any) => item.option_key === 'site_title')
-            ?.option_value[0] || 'EGYGO Travel';
-        const siteDescription =
-          res.data.find((item: any) => item.option_key === 'site_description')
-            ?.option_value[0] ||
-          "Discover amazing tours and destinations with EGYGO Travel. Book your perfect trip to Egypt and explore the world's most beautiful places.";
-        const logoPath =
-          res.data.find((item: any) => item.option_key === 'logo')
-            ?.option_value[0] || '';
-        const logo = logoPath ? this._DataService.getImageUrl(logoPath) : '';
+        if (res.data && Array.isArray(res.data)) {
+          // Get current language or default to 'en'
+          const currentLang = isPlatformBrowser(this.platformId)
+            ? localStorage.getItem('language') || 'en'
+            : 'en';
+          // console.log(res.data);
 
-        this._SeoService.updateSEO({
-          title: `${siteTitle} - Your Trusted Travel Partner`,
-          description: siteDescription,
-          keywords:
-            'travel, tours, Egypt, destinations, vacation, booking, travel agency, Nile cruises, pyramids, Luxor, Aswan',
-          image: logo,
-          url: 'https://egygo-travel.com',
-          type: 'website',
-        });
+          // Extract SEO data from settings
+          const seoData = this._SeoService.extractSeoFromSettings(
+            res.data,
+            currentLang
+          );
 
-        // Add organization structured data
-        const orgData = this._SeoService.generateOrganizationStructuredData(
+          // Always add "test" to title in home page
+          const baseTitle =
+            seoData.meta_title || seoData.og_title || 'MG - Home';
+          const titleWithTest = ` ${baseTitle}`;
+
+          // Update SEO with test in title
+          this._SeoService.updateSeoData(
+            { ...seoData, meta_title: titleWithTest, og_title: titleWithTest },
+            titleWithTest,
+            seoData.meta_description ||
+              seoData.og_description ||
+              'Discover amazing tours and travel experiences with MG Travel. Book your dream vacation today.',
+            seoData.og_image || '/assets/image/logo-MG.webp'
+          );
+        } else {
+          // If settings API fails, use defaults with test
+          this._SeoService.updateSeoData(
+            {
+              meta_title: 'MG - Home',
+              og_title: 'MG - Home',
+            },
+            'MG - Home',
+            'Discover amazing tours and travel experiences with MG Travel. Book your dream vacation today.',
+            '/assets/image/logo-MG-Travel.webp'
+          );
+        }
+      },
+      error: (err) => {
+        // If settings API fails, use defaults with test
+        this._SeoService.updateSeoData(
           {
-            site_title: siteTitle,
-            site_description: siteDescription,
-            logo: logo,
-            phone:
-              res.data.find(
-                (item: any) => item.option_key === 'CONTACT_PHONE_NUMBER'
-              )?.option_value[0] || '',
-            email:
-              res.data.find((item: any) => item.option_key === 'email_address')
-                ?.option_value[0] || '',
-            address:
-              res.data.find((item: any) => item.option_key === 'address')
-                ?.option_value[0] || '',
+            meta_title: 'MG - Home',
+            og_title: 'MG - Home',
           },
-          'https://egygo-travel.com'
+          'MG - Home',
+          'Discover amazing tours and travel experiences with MG Travel. Book your dream vacation today.',
+          '/assets/image/logo-MG.webp'
         );
-        this._SeoService.updateSEO({ structuredData: orgData });
       },
     });
   }
+  // setupSEO(): void {
+  //   this._SeoService.updateSeoData(
+  //     {},
+  //     'Home - MG Travel',
+  //     'Welcome to MG Travel, your trusted travel partner for premium tours and exceptional travel experiences. Discover amazing destinations and create unforgettable memories.',
+  //     '../../../assets/image/logo-MG-Travel.webp'
+  //   );
+  // }
 
   makeTripForm = new FormGroup({
     city: new FormControl('', Validators.required),
@@ -521,7 +538,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   getCategory() {
     this._DataService.getCategories().subscribe({
       next: (res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
 
         this.allCategories = res.data.data;
         this.categoriesWithTours = res.data.data;
@@ -557,7 +574,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         });
 
         const pricesMap = this.categoryPrices; // مثل { Multi Days Tours: 80, Egypt Classic Tours: 100, Nile Cruises: 150 , Adventure Tours: 80,Culture Tours: 80 }
-        console.log(pricesMap);
+        // console.log(pricesMap);
 
         this.allCategories = this.allCategories.map((cat: any) => {
           const categoryTitle = cat.title.trim().toLowerCase();
@@ -576,16 +593,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
           if (!matched) {
             cat.start_price = pricesMap['Nile Cruises']; // fallback to Nile Cruises price
-            console.log('not matched');
+            // console.log('not matched');
           }
 
           return cat;
         });
 
-        console.log('all categories with start price', this.allCategories);
-        console.log('All tours from categories:', this.allToursFromCategories);
-        console.log('Categories with tours:', this.categoriesWithTours);
-        console.log('Tour category mapping:', tourCategoryMap);
+        // console.log('all categories with start price', this.allCategories);
+        // console.log('All tours from categories:', this.allToursFromCategories);
+        // console.log('Categories with tours:', this.categoriesWithTours);
+        // console.log('Tour category mapping:', tourCategoryMap);
 
         // Prepare master list and initialize default views
         if (this.allToursFromCategories.length > 0) {
@@ -602,7 +619,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           }
         } else {
           // If no tours found in categories, get all tours as fallback
-          console.log('No tours found in categories, fetching all tours...');
+          // console.log('No tours found in categories, fetching all tours...');
           this.getAllToursFallback();
         }
       },
@@ -615,8 +632,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       next: (res) => {
         this.tourstest = res.data.data;
         this.allToursFromCategories = res.data.data.reverse() || [];
-        console.log('allToursFromCategories', this.allToursFromCategories);
-        console.log('tourstest', this.tourstest);
+        // console.log('allToursFromCategories', this.allToursFromCategories);
+        // console.log('tourstest', this.tourstest);
         // this.allToursFromCategories = res.data.data;
         // this.alltours = [...this.allToursFromCategories];
         // Initialize default lists for both category and destination views
@@ -629,9 +646,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.initializeSwipers();
           }, 100);
         }
-        console.log('Fallback: All tours loaded:', this.allToursFromCategories);
+        // console.log('Fallback: All tours loaded:', this.allToursFromCategories);
       },
-      error: (err) => console.log(err),
+      error: (err) => {
+        // console.log(err);
+      },
     });
   }
 
@@ -642,7 +661,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         takeUntil(this.$destory), // close , clear suscripe memory on destroy
         tap((res) => {
           this.allDurations = res.data;
-          console.log(this.allDurations);
+          // console.log(this.allDurations);
         })
       )
       .subscribe({
@@ -660,10 +679,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this._DataService.getReviews().subscribe({
       next: (res) => {
         this.allReviews = res.data.data;
-        console.log(this.allReviews);
+        // console.log(this.allReviews);
       },
       error: (err) => {
-        console.log(err);
+        // console.log(err);
       },
     });
   }

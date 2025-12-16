@@ -75,7 +75,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (this._AuthService.getToken()) {
-      console.log('done', this._AuthService.getToken());
+      // console.log('done', this._AuthService.getToken());
 
       this.showCountries();
       this.profileMe();

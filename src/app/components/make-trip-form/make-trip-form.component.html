@@ -1,7 +1,9 @@
 <section class="py-5 position-relative bgPrimaryWhiteColor">
   <div class="container">
     <div class="text-white mb-5">
-      <h2 class="text-capitalize fw-bold text-center h1">{{ 'makeTrip.makeYourTrip' | translate }}</h2>
+      <h2 class="text-capitalize fw-bold text-center h1">
+        {{ "makeTrip.makeYourTrip" | translate }}
+      </h2>
     </div>
     <form
       [formGroup]="makeTripForm"
@@ -14,21 +16,24 @@
           (change)="onChangeTime($event.value)"
           class="d-flex flex-wrap gap-1"
         >
-          <mat-radio-button value="exact">{{ 'makeTrip.haveExactTime' | translate }}</mat-radio-button>
-          <mat-radio-button value="approximate"
-            >{{ 'makeTrip.haveApproximateTime' | translate }}</mat-radio-button
-          >
+          <mat-radio-button value="exact">{{
+            "makeTrip.haveExactTime" | translate
+          }}</mat-radio-button>
+          <mat-radio-button value="approximate">{{
+            "makeTrip.haveApproximateTime" | translate
+          }}</mat-radio-button>
         </mat-radio-group>
       </div>
       <div class="col-xl-3 col-lg-4">
         <div class="text-capitalize">
           <label class="textSecondColor"
-            ><i class="fa fa-map-marker-alt me-2 mb-2"></i>{{ 'makeTrip.destinations' | translate }}</label
+            ><i class="fa fa-map-marker-alt me-2 mb-2"></i
+            >{{ "makeTrip.destinations" | translate }}</label
           >
           <mat-form-field class="w-100">
             <mat-select formControlName="city">
               <mat-option value="" disabled selected>
-                {{ 'makeTrip.myDestination' | translate }}
+                {{ "makeTrip.myDestination" | translate }}
               </mat-option>
               <mat-option
                 *ngFor="let des of allDestinations"
@@ -47,10 +52,10 @@
         <div class="text-capitalize">
           <label class="textSecondColor"
             ><i class="fa fa-calendar-days me-2 mb-2"></i>
-            {{ 'makeTrip.checkInDate' | translate }}
+            {{ "makeTrip.checkInDate" | translate }}
           </label>
           <mat-form-field class="w-100">
-            <mat-label>{{ 'makeTrip.startDate' | translate }}</mat-label>
+            <mat-label>{{ "makeTrip.startDate" | translate }}</mat-label>
             <input
               formControlName="start_date"
               matInput
@@ -68,10 +73,10 @@
         <div class="text-capitalize">
           <label class="textSecondColor"
             ><i class="fa fa-calendar-days me-2 mb-2"></i>
-            {{ 'makeTrip.checkOutDate' | translate }}
+            {{ "makeTrip.checkOutDate" | translate }}
           </label>
           <mat-form-field class="w-100">
-            <mat-label>{{ 'makeTrip.endDate' | translate }}</mat-label>
+            <mat-label>{{ "makeTrip.endDate" | translate }}</mat-label>
             <input
               formControlName="end_date"
               matInput
@@ -93,10 +98,10 @@
         <div>
           <label class="textSecondColor"
             ><i class="fa fa-calendar-days me-2 mb-2"></i>
-            {{ 'makeTrip.chooseMonth' | translate }}
+            {{ "makeTrip.chooseMonth" | translate }}
           </label>
           <mat-form-field class="w-100">
-            <mat-label>{{ 'makeTrip.selectMonth' | translate }}</mat-label>
+            <mat-label>{{ "makeTrip.selectMonth" | translate }}</mat-label>
             <mat-select formControlName="approximate_time">
               <mat-option
                 *ngFor="let month of monthList; let i = index"
@@ -115,7 +120,8 @@
             type="submit"
             class="mainBtn Btn flexBetween gap-2 w-100 mb-2"
           >
-            {{ 'common.makeTrip' | translate }}<i
+            {{ "common.makeTrip" | translate
+            }}<i
               class="fa fa-plane-circle-check bgPrimaryWhiteColor textMainColor rounded-circle"
             ></i>
           </button>
@@ -127,7 +133,7 @@
     <img
       src="../../../assets/image/mg/hero-img-1.webp"
       class="w-100 h-100"
-      alt="egygo image"
+      alt="MG Travel image"
     />
   </figure>
 </section>

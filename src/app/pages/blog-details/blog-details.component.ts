@@ -59,17 +59,17 @@ export class BlogDetailsComponent implements OnInit {
   ngOnInit(): void {
     this._ActivatedRoute.paramMap.subscribe({
       next: (param) => {
-        console.log(param);
+        // console.log(param);
         this.blogParam = param.get('slug');
         // console.log('blog param:', this.blogParam);
 
         if (!isNaN(Number(this.blogParam))) {
           this._DataService.getCategoriesBlog(this.blogParam).subscribe({
             next: (response) => {
-              console.log(response.data);
+              // console.log(response.data);
               this.blogListById = response.data;
               this.bannerTitle = this.blogListById.title;
-              console.log(this.bannerTitle);
+              // console.log(this.bannerTitle);
               this.isListId = true;
               response.data.created_at = this.formatDate(
                 response.data.created_at
@@ -79,10 +79,10 @@ export class BlogDetailsComponent implements OnInit {
         } else {
           this._DataService.getBlogs(this.blogParam).subscribe({
             next: (response) => {
-              console.log(response.data);
+              // console.log(response.data);
               this.blogDetails = response.data;
               this.bannerTitle = this.blogDetails.title;
-              console.log(this.bannerTitle);
+              // console.log(this.bannerTitle);
 
               this.isListId = false;
               response.data.created_at = this.formatDate(
@@ -93,9 +93,9 @@ export class BlogDetailsComponent implements OnInit {
                 .map((name: any) => name.trim());
 
               // this.writeReview.patchValue({ tour_id: response.data.id });
-              
+
               // Update SEO
-              this.updateBlogSEO(response.data);
+              this.updateTourSEO(response.data);
             },
           });
         }
@@ -118,7 +118,7 @@ export class BlogDetailsComponent implements OnInit {
 
   getWriteReview() {
     if (this.writeReview.valid) {
-      console.log(this.writeReview.value);
+      // console.log(this.writeReview.value);
       this.isLoading = true;
 
       //untill api is not ready and mos3an confirm it
@@ -149,6 +149,7 @@ export class BlogDetailsComponent implements OnInit {
       next: (res) => {
         // console.log(res.data.data);
         this.blogs = res.data.data;
+        this.updateTourSEO(this.blogs);
       },
       error: (err) => {
         // console.log(err);
@@ -168,27 +169,53 @@ export class BlogDetailsComponent implements OnInit {
     });
   }
 
-  updateBlogSEO(blog: any): void {
-    const baseUrl = 'https://egygo-travel.com';
-    const blogImage = blog.image || '';
-    const blogDescription = blog.short_description || blog.description || `Read ${blog.title} on EGYGO Travel blog. Travel tips, guides, and insights.`;
-    const tags = blog.tags ? blog.tags.split(',').map((t: string) => t.trim()).join(', ') : '';
-    const keywords = `${blog.title}, travel blog, ${tags}, travel tips, Egypt travel`.toLowerCase();
+  updateTourSEO(tour: any): void {
+    // Extract SEO data from API if available
+    const seoData: any = {};
+    if (tour.seo) {
+      if (tour.seo.meta_title) seoData.meta_title = tour.seo.meta_title;
+      if (tour.seo.meta_description)
+        seoData.meta_description = tour.seo.meta_description;
+      if (tour.seo.meta_keywords)
+        seoData.meta_keywords = tour.seo.meta_keywords;
+      if (tour.seo.og_title) seoData.og_title = tour.seo.og_title;
+      if (tour.seo.og_description)
+        seoData.og_description = tour.seo.og_description;
+      if (tour.seo.og_image) seoData.og_image = tour.seo.og_image;
+      if (tour.seo.og_type) seoData.og_type = tour.seo.og_type;
+      if (tour.seo.twitter_title)
+        seoData.twitter_title = tour.seo.twitter_title;
+      if (tour.seo.twitter_description)
+        seoData.twitter_description = tour.seo.twitter_description;
+      if (tour.seo.twitter_card) seoData.twitter_card = tour.seo.twitter_card;
+      if (tour.seo.twitter_image)
+        seoData.twitter_image = tour.seo.twitter_image;
+      if (tour.seo.canonical) seoData.canonical = tour.seo.canonical;
+      if (tour.seo.robots) seoData.robots = tour.seo.robots;
+      if (tour.seo.structure_schema)
+        seoData.structure_schema = tour.seo.structure_schema;
+    }
 
-    this._SeoService.updateSEO({
-      title: `${blog.title} | EGYGO Travel Blog`,
-      description: blogDescription.substring(0, 160),
-      keywords: keywords,
-      image: blogImage,
-      url: `${baseUrl}/blog/${blog.slug}`,
-      type: 'article',
-      author: 'EGYGO Travel',
-      publishedTime: blog.created_at || new Date().toISOString(),
-      modifiedTime: blog.updated_at || blog.created_at || new Date().toISOString(),
-    });
+    const tourImage =
+      tour.seo?.og_image ||
+      tour.image ||
+      tour.gallery?.[0]?.image ||
+      '/assets/image/logo-MG-Travel.webp';
+    const tourDescription =
+      tour.seo?.meta_description ||
+      tour.seo?.og_description ||
+      tour.short_description ||
+      tour.description ||
+      `Book ${tour.title} tour with MG Travel. Experience amazing destinations and create unforgettable memories.`;
 
-    // Add structured data
-    const structuredData = this._SeoService.generateBlogStructuredData(blog, baseUrl);
-    this._SeoService.updateSEO({ structuredData });
+    const fallbackTitle =
+      tour.seo?.meta_title || tour.seo?.og_title || `${tour.title} - MG Travel`;
+
+    this._SeoService.updateSeoData(
+      seoData,
+      fallbackTitle,
+      tourDescription.substring(0, 160),
+      tourImage
+    );
   }
 }

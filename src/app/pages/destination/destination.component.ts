@@ -46,15 +46,12 @@ export class DestinationComponent implements OnInit, AfterViewInit {
   bannerTitle: string = 'destination';
 
   ngOnInit(): void {
-    this._SeoService.updateSEO({
-      title: 'Destinations - Explore Amazing Places | EGYGO Travel',
-      description:
-        'Discover amazing travel destinations with EGYGO Travel. Explore Egypt and other beautiful places around the world. Find tours and travel guides.',
-      keywords:
-        'destinations, travel destinations, Egypt destinations, places to visit, travel locations, tourist destinations',
-      url: 'https://egygo-travel.com/destination',
-      type: 'website',
-    });
+    this._SeoService.updateSeoData(
+      {},
+      'Destination - MG Travel',
+      'Explore our amazing destinations with MG Travel. Discover the best tours and experiences for your next adventure.',
+      '../../../assets/image/logo-MG-Travel.webp'
+    );
     this.getDestination();
   }
 
@@ -95,7 +92,7 @@ export class DestinationComponent implements OnInit, AfterViewInit {
     this._DataService.getDestination().subscribe({
       next: (res) => {
         this.allDestinations = res.data.data;
-        console.log('all destinations', res);
+        // console.log('all destinations', res);
         if (isPlatformBrowser(this.platformId)) {
           setTimeout(() => {
             this.initializeSwiper();
@@ -103,7 +100,7 @@ export class DestinationComponent implements OnInit, AfterViewInit {
         }
       },
       error: (err) => {
-        console.log(err);
+        // console.log(err);
       },
     });
   }

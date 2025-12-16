@@ -23,12 +23,11 @@ export class FaqComponent implements OnInit {
   constructor(private _SeoService: SeoService) {}
 
   ngOnInit(): void {
-    this._SeoService.updateSEO({
-      title: 'Frequently Asked Questions (FAQ) - EGYGO Travel',
-      description: 'Find answers to frequently asked questions about EGYGO Travel services, bookings, tours, and travel information. Get help with your travel inquiries.',
-      keywords: 'FAQ, frequently asked questions, travel FAQ, booking questions, travel help, customer support',
-      url: 'https://egygo-travel.com/faq',
-      type: 'website',
-    });
+    this._SeoService.updateSeoData(
+      {},
+      'FAQ - MG Travel',
+      'Find answers to frequently asked questions about MG Travel services, bookings, tours, and travel information. Get help with your travel inquiries.',
+      '../../../assets/image/logo-MG-Travel.webp'
+    );
   }
 }

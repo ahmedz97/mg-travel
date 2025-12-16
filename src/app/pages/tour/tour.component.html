@@ -18,15 +18,17 @@
               *ngFor="let type of allCategories"
               class="flexBetween listFilter p-1 rounded-2"
             >
-              <mat-checkbox
+              <mat-radio-button
                 class="cPointer"
-                [checked]="isChecked('selectedTripType', type.id)"
-                (change)="toggle('selectedTripType', type.id, $event.checked)"
+                [checked]="isSelected('selectedTripType', type.id)"
+                (change)="selectRadio('selectedTripType', type.id)"
+                [value]="type.id"
+                name="category"
               >
                 {{ type.title }}
-              </mat-checkbox>
+              </mat-radio-button>
               <span class="flexCenter rounded-circle">{{
-                type.tours_count
+                getCategoryCount(type.id)
               }}</span>
             </div>
           </div>
@@ -71,15 +73,19 @@
               *ngFor="let d of allDurations"
               class="flexBetween listFilter p-1 rounded-2"
             >
-              <mat-checkbox
+              <mat-radio-button
                 class="cPointer"
-                [checked]="isChecked('selectedDuration', d.id)"
-                (change)="toggle('selectedDuration', d.id, $event.checked)"
+                [checked]="isSelected('selectedDuration', d.id)"
+                (change)="selectRadio('selectedDuration', d.id)"
+                [value]="d.id"
+                name="duration"
               >
                 {{ d.title }}
-              </mat-checkbox>
+              </mat-radio-button>
 
-              <span class="flexCenter rounded-circle">{{ d.tours_count }}</span>
+              <span class="flexCenter rounded-circle">{{
+                getDurationCount(d.id)
+              }}</span>
             </div>
           </div>
 
@@ -92,17 +98,17 @@
               *ngFor="let dest of allDestinations"
               class="flexBetween listFilter p-2 rounded-2"
             >
-              <mat-checkbox
+              <mat-radio-button
                 class="cPointer"
-                [checked]="isChecked('selectedDestination', dest.id)"
-                (change)="
-                  toggle('selectedDestination', dest.id, $event.checked)
-                "
+                [checked]="isSelected('selectedDestination', dest.id)"
+                (change)="selectRadio('selectedDestination', dest.id)"
+                [value]="dest.id"
+                name="destination"
               >
                 {{ dest.title }}
-              </mat-checkbox>
+              </mat-radio-button>
               <span class="flexCenter textMainColor rounded-circle">{{
-                dest.tours_count
+                getDestinationCount(dest.id)
               }}</span>
             </div>
           </div>
@@ -121,9 +127,9 @@
                 class="btn btn-sm btn-outline-secondary"
                 (click)="clearAllFilters()"
                 *ngIf="
-                  selectedTripType.length > 0 ||
-                  selectedDestination.length > 0 ||
-                  selectedDuration.length > 0 ||
+                  selectedTripType !== null ||
+                  selectedDestination !== null ||
+                  selectedDuration !== null ||
                   minBudget > 0 ||
                   maxBudget < 5000
                 "

@@ -36,10 +36,10 @@ export class CartComponent implements OnInit {
         this.tourCart = response.data;
         if (this.tourCart.length === 0) {
           this.haveData = false;
-          console.log(this.tourCart);
+          // console.log(this.tourCart);
         } else {
           this.haveData = true;
-          console.log(this.tourCart);
+          // console.log(this.tourCart);
 
           this.tourCart.forEach((item) => {
             let adultPrice = 0;

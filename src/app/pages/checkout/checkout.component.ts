@@ -94,60 +94,22 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     if (this.checkoutForm.valid) {
       this._BookingService.sendCheckoutData(this.checkoutData).subscribe({
         next: (response) => {
-          console.log(response);
+          // console.log(response);
           this.toaster.success(response.message);
         },
         error: (err) => {
-          console.log(err);
+          // console.log(err);
           this.toaster.error(err.error.message);
         },
       });
-      // this._BookingService
-      //   .getCoupon(this.checkoutForm.get('coupon_id')?.value)
-      //   .subscribe({
-      //     next: (cResponse) => {
-      //       console.log(cResponse);
-      //       this.toaster.success(cResponse.message);
-      //       // after coupon code is tammmam check other data and send it
-      //     },
-      //     error: (cError) => {
-      //       console.log(cError);
-      //       this.toaster.error(cError.error.message);
-      //     },
-      //   });
     }
-
-    // this._BookingService.sendCheckoutData(this.checkoutData).subscribe({
-    //   next: (response) => {
-    //     // console.log(response);
-    //     this.toaster.success(response.message);
-    //     // if form is valid === true
-    //     if (response.status) {
-    //       this._BookingService
-    //         .getCoupon(this.checkoutForm.get('coupon_id')?.value)
-    //         .subscribe({
-    //           next: (cResponse) => {
-    //             // console.log(cResponse);
-    //           },
-    //           error: (cError) => {
-    //             // console.log(cError);
-    //           },
-    //         });
-    //     }
-    //   },
-    //   error: (err) => {
-    //     console.log(err);
-    //     this.toaster.error(err.error.message);
-    //   },
-    // });
-
-    // this.checkoutForm.reset();
   }
 
   getListCart(): void {
     this._BookingService.getCartList().subscribe({
       next: (response) => {
         this.tourCart = response.data;
+        // console.log(this.tourCart);
         if (this.tourCart.length === 0) {
           this.haveData = false;
           // console.log(this.tourCart);
@@ -210,7 +172,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
     this._BookingService.getCoupon(couponCode).subscribe({
       next: (cResponse) => {
-        console.log(cResponse);
+        // console.log(cResponse);
         this.couponApplied = true;
         this.couponData = cResponse.data;
 
@@ -227,7 +189,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         );
       },
       error: (cError) => {
-        console.log(cError);
+        // console.log(cError);
         this.couponApplied = false;
         this.couponDiscount = 0;
         this.couponData = null;
