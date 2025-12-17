@@ -14,7 +14,7 @@
 // Minimal custom styles for Bootstrap navbar
 .navbar {
   // height: 70px;
-  z-index: 1030;
+  z-index: 9999;
   .navbar-brand{
     width: 200px;
     height: 70px;
@@ -58,7 +58,7 @@ transition: $transition;
 }
 
 .offcanvas-backdrop {
-  z-index: 1040;
+  z-index: 1030;
   transition: opacity 0.3s ease-in-out;
 
   &.show {
@@ -118,7 +118,7 @@ transition: $transition;
 .dropdown-menu {
   display: none;
   position: absolute;
-  z-index: 1000;
+  z-index: 9993;
   background-color: white;
   min-width: 180px;
   padding: 0.5rem 0;
@@ -126,7 +126,7 @@ transition: $transition;
 }
 
 
-.fixed-top{inset:0 auto auto 0; width:100%; z-index:1030}
+.fixed-top{inset:0 auto auto 0; width:100%; z-index:9999}
 .top-label{
   max-height:120px; padding-block:10px; opacity:1; overflow:hidden;
   transition:max-height .5s ease,padding .5s ease,opacity .5s ease;

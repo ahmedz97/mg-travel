@@ -11,34 +11,60 @@
         >
           <!-- category -->
           <div class="mb-4">
-            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">
-              {{ "tour.tourCategory" | translate }}
-            </h4>
             <div
-              *ngFor="let type of allCategories"
-              class="flexBetween listFilter p-1 rounded-2"
+              class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3 cPointer"
+              (click)="toggleCategoryCollapse()"
             >
-              <mat-radio-button
-                class="cPointer"
-                [checked]="isSelected('selectedTripType', type.id)"
-                (change)="selectRadio('selectedTripType', type.id)"
-                [value]="type.id"
-                name="category"
+              <h4 class="h5 fw-bold mb-0">
+                {{ "tour.tourCategory" | translate }}
+              </h4>
+              <i
+                class="fa-solid"
+                [ngClass]="{
+                  'fa-chevron-down': !isCategoryExpanded,
+                  'fa-chevron-up': isCategoryExpanded
+                }"
+              ></i>
+            </div>
+            <div *ngIf="isCategoryExpanded">
+              <div
+                *ngFor="let type of allCategories"
+                class="flexBetween listFilter p-1 rounded-2"
               >
-                {{ type.title }}
-              </mat-radio-button>
-              <span class="flexCenter rounded-circle">{{
-                getCategoryCount(type.id)
-              }}</span>
+                <mat-radio-button
+                  class="cPointer"
+                  [checked]="isSelected('selectedTripType', type.id)"
+                  (change)="selectRadio('selectedTripType', type.id)"
+                  [value]="type.id"
+                  name="category"
+                >
+                  {{ type.title }}
+                </mat-radio-button>
+                <span class="flexCenter rounded-circle">{{
+                  getCategoryCount(type.id)
+                }}</span>
+              </div>
             </div>
           </div>
 
           <!-- price -->
           <div class="mb-4">
-            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">
-              {{ "tour.tourPrice" | translate }}
-            </h4>
-            <div>
+            <div
+              class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3 cPointer"
+              (click)="togglePriceCollapse()"
+            >
+              <h4 class="h5 fw-bold mb-0">
+                {{ "tour.tourPrice" | translate }}
+              </h4>
+              <i
+                class="fa-solid"
+                [ngClass]="{
+                  'fa-chevron-down': !isPriceExpanded,
+                  'fa-chevron-up': isPriceExpanded
+                }"
+              ></i>
+            </div>
+            <div *ngIf="isPriceExpanded">
               <p class="mb-0 text-capitalize">
                 {{ "tour.priceFrom" | translate }}:
                 <span class="textMainColor"> {{ minBudget | currency }} </span>
@@ -65,51 +91,78 @@
 
           <!-- duartion -->
           <div class="mb-4">
-            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">
-              {{ "tour.tourDuration" | translate }}
-            </h4>
-
             <div
-              *ngFor="let d of allDurations"
-              class="flexBetween listFilter p-1 rounded-2"
+              class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3 cPointer"
+              (click)="toggleDurationCollapse()"
             >
-              <mat-radio-button
-                class="cPointer"
-                [checked]="isSelected('selectedDuration', d.id)"
-                (change)="selectRadio('selectedDuration', d.id)"
-                [value]="d.id"
-                name="duration"
+              <h4 class="h5 fw-bold mb-0">
+                {{ "tour.tourDuration" | translate }}
+              </h4>
+              <i
+                class="fa-solid"
+                [ngClass]="{
+                  'fa-chevron-down': !isDurationExpanded,
+                  'fa-chevron-up': isDurationExpanded
+                }"
+              ></i>
+            </div>
+            <div *ngIf="isDurationExpanded">
+              <div
+                *ngFor="let d of allDurations"
+                class="flexBetween listFilter p-1 rounded-2"
               >
-                {{ d.title }}
-              </mat-radio-button>
+                <mat-radio-button
+                  class="cPointer"
+                  [checked]="isSelected('selectedDuration', d.id)"
+                  (change)="selectRadio('selectedDuration', d.id)"
+                  [value]="d.id"
+                  name="duration"
+                >
+                  {{ d.title }}
+                </mat-radio-button>
 
-              <span class="flexCenter rounded-circle">{{
-                getDurationCount(d.id)
-              }}</span>
+                <span class="flexCenter rounded-circle">{{
+                  getDurationCount(d.id)
+                }}</span>
+              </div>
             </div>
           </div>
 
           <!-- destination -->
           <div class="mb-4">
-            <h4 class="h5 fw-bold pb-3 border-bottom mb-3">
-              {{ "tour.tourDestination" | translate }}
-            </h4>
             <div
-              *ngFor="let dest of allDestinations"
-              class="flexBetween listFilter p-2 rounded-2"
+              class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3 cPointer"
+              (click)="toggleDestinationCollapse()"
             >
-              <mat-radio-button
-                class="cPointer"
-                [checked]="isSelected('selectedDestination', dest.id)"
-                (change)="selectRadio('selectedDestination', dest.id)"
-                [value]="dest.id"
-                name="destination"
+              <h4 class="h5 fw-bold mb-0">
+                {{ "tour.tourDestination" | translate }}
+              </h4>
+              <i
+                class="fa-solid"
+                [ngClass]="{
+                  'fa-chevron-down': !isDestinationExpanded,
+                  'fa-chevron-up': isDestinationExpanded
+                }"
+              ></i>
+            </div>
+            <div *ngIf="isDestinationExpanded">
+              <div
+                *ngFor="let dest of allDestinations"
+                class="flexBetween listFilter p-2 rounded-2"
               >
-                {{ dest.title }}
-              </mat-radio-button>
-              <span class="flexCenter textMainColor rounded-circle">{{
-                getDestinationCount(dest.id)
-              }}</span>
+                <mat-radio-button
+                  class="cPointer"
+                  [checked]="isSelected('selectedDestination', dest.id)"
+                  (change)="selectRadio('selectedDestination', dest.id)"
+                  [value]="dest.id"
+                  name="destination"
+                >
+                  {{ dest.title }}
+                </mat-radio-button>
+                <span class="flexCenter textMainColor rounded-circle">{{
+                  getDestinationCount(dest.id)
+                }}</span>
+              </div>
             </div>
           </div>
         </div>

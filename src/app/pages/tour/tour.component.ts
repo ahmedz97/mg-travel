@@ -73,6 +73,12 @@ export class TourComponent implements OnInit {
 
   allToursRaw: any[] = []; // النسخة الخام من API بدون فلاتر
 
+  // Collapse states for filter sections
+  isCategoryExpanded: boolean = false;
+  isPriceExpanded: boolean = true; // Only price is open by default
+  isDurationExpanded: boolean = false;
+  isDestinationExpanded: boolean = false;
+
   ngOnInit(): void {
     this._SeoService.updateSeoData(
       {},
@@ -812,6 +818,42 @@ export class TourComponent implements OnInit {
       (a, b) => b.start_from - a.start_from
     );
     // console.log(this.filteredTours);
+  }
+
+  toggleCategoryCollapse() {
+    // Close all other sections
+    this.isPriceExpanded = false;
+    this.isDurationExpanded = false;
+    this.isDestinationExpanded = false;
+    // Toggle current section
+    this.isCategoryExpanded = !this.isCategoryExpanded;
+  }
+
+  togglePriceCollapse() {
+    // Close all other sections
+    this.isCategoryExpanded = false;
+    this.isDurationExpanded = false;
+    this.isDestinationExpanded = false;
+    // Toggle current section
+    this.isPriceExpanded = !this.isPriceExpanded;
+  }
+
+  toggleDurationCollapse() {
+    // Close all other sections
+    this.isCategoryExpanded = false;
+    this.isPriceExpanded = false;
+    this.isDestinationExpanded = false;
+    // Toggle current section
+    this.isDurationExpanded = !this.isDurationExpanded;
+  }
+
+  toggleDestinationCollapse() {
+    // Close all other sections
+    this.isCategoryExpanded = false;
+    this.isPriceExpanded = false;
+    this.isDurationExpanded = false;
+    // Toggle current section
+    this.isDestinationExpanded = !this.isDestinationExpanded;
   }
 }
 

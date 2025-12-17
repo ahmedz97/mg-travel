@@ -26,9 +26,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   selector: 'app-destination-details',
   standalone: true,
   imports: [
-    RouterLink,
     CommonModule,
-    SocialComponent,
     TourCartComponent,
     FaqContentComponent,
     PartnerSliderComponent,

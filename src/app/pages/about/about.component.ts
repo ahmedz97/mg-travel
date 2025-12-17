@@ -19,7 +19,6 @@ import { SeoService } from '../../core/services/seo.service';
   imports: [
     BannerComponent,
     AboutsectionComponent,
-    TeamCartComponent,
     TestimonialCartComponent,
     PartnerSliderComponent,
     CommonModule,
