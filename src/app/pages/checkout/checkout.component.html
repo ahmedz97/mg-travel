@@ -63,7 +63,7 @@
                 >
                 <div class="item position-relative">
                   <input
-                    type="tel"
+                    type="number"
                     id="phone"
                     formControlName="phone"
                     placeholder="{{ 'contact.yourPhone' | translate }}"
@@ -205,6 +205,7 @@
             <button
               (click)="getCheckoutData()"
               type="submit"
+              [disabled]="!checkoutForm.valid"
               class="mainBtn Btn w-100 mt-2"
             >
               {{ "checkout.placeOrder" | translate }}

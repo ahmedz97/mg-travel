@@ -9,7 +9,7 @@ import {
   Inject,
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -22,6 +22,7 @@ import { register } from 'swiper/element/bundle';
 register();
 import { BannerComponent } from '../../components/banner/banner.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout',
@@ -47,6 +48,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   constructor(
     private _BookingService: BookingService,
     private toaster: ToastrService,
+    private _Router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -70,11 +72,13 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     this.getListCart();
   }
 
+  // must start with 0 and must be 10 digits
+  phonePattern = '^01[0-2][0-9]{8}$';
   checkoutForm: FormGroup = new FormGroup({
     first_name: new FormControl(''),
     last_name: new FormControl(''),
-    phone: new FormControl(''),
-    email: new FormControl(''),
+    phone: new FormControl('', Validators.pattern(this.phonePattern)),
+    email: new FormControl('', [Validators.email]),
     // start_date: new FormControl(''),
     country: new FormControl(''),
     // state: new FormControl(''),
@@ -96,6 +100,12 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         next: (response) => {
           // console.log(response);
           this.toaster.success(response.message);
+          this.checkoutForm.reset();
+          this.couponApplied = false;
+          this.couponDiscount = 0;
+          this.couponData = null;
+          this.getListCart();
+          this._Router.navigate(['/']);
         },
         error: (err) => {
           // console.log(err);
@@ -178,10 +188,13 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
         // Calculate discount based on coupon type (percentage or fixed amount)
         const totalPrice = this.getTotalPrice();
+        console.log('totalPrice', totalPrice);
         if (this.couponData.type === 'percentage') {
           this.couponDiscount = (totalPrice * this.couponData.value) / 100;
+          console.log('couponDiscount percentage', this.couponDiscount);
         } else {
           this.couponDiscount = this.couponData.value;
+          console.log('couponDiscount fixed amount', this.couponDiscount);
         }
 
         this.toaster.success(

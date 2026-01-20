@@ -26,7 +26,7 @@
     </div>
     <figure class="rounded-2 overflow-hidden position-relative mb-0">
       <img
-        [src]="tour.featured_image"
+        [src]="tour.featured_image || '../../../assets/image/can-not-load-image.webp'"
         class="w-100"
         height="200px"
         [alt]="tour.title"

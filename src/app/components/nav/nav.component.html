@@ -145,26 +145,36 @@
           <ul class="dropdown-menu border-0 shadow">
             <li class="dropdown-item">
               <div>
+                @if(!isLoggedIn()) {
+                <!-- login -->
                 <i
-                  routerLink="/signup"
+                  routerLink="/login"
                   routerLinkActive="textMainColor"
                   class="fa fa-circle-user textSecondColor me-2 fw-bold cPointer"
-                  title="Sign up now"
+                  title="Login"
                 ></i>
-
+                }
+        
                 <i
                   routerLink="/cart"
                   routerLinkActive=" textMainColor "
                   class="fa fa-cart-plus textSecondColor me-2 fw-bold cPointer"
                   title="Tours cart"
                 ></i>
-
+        
+                @if(isLoggedIn()) {
                 <i
                   routerLink="/profile"
                   routerLinkActive=" textMainColor "
                   class="fa fa-address-book textSecondColor me-2 fw-bold cPointer"
                   title="My profile"
                 ></i>
+                }
+        
+                @if(isLoggedIn()) {
+                <!-- logout -->
+                 <i (click)="logout()" class="fa fa-arrow-right-from-bracket textSecondColor me-2 fw-bold cPointer" title="Logout"></i>
+                 }
               </div>
             </li>
             <li class="dropdown-item">
@@ -330,12 +340,15 @@
 
     <div class="offcanvas-footer border-top p-3">
       <div>
+        @if(!isLoggedIn()) {
+        <!-- login -->
         <i
-          routerLink="/signup"
+          routerLink="/login"
           routerLinkActive="textMainColor"
           class="fa fa-circle-user textSecondColor me-2 fw-bold cPointer"
-          title="Sign up now"
+          title="Login"
         ></i>
+        }
 
         <i
           routerLink="/cart"
@@ -344,12 +357,19 @@
           title="Tours cart"
         ></i>
 
+        @if(isLoggedIn()) {
         <i
           routerLink="/profile"
           routerLinkActive=" textMainColor "
           class="fa fa-address-book textSecondColor me-2 fw-bold cPointer"
           title="My profile"
         ></i>
+        }
+
+        @if(isLoggedIn()) {
+        <!-- logout -->
+         <i (click)="logout()" class="fa fa-arrow-right-from-bracket textSecondColor me-2 fw-bold cPointer" title="Logout"></i>
+         }
       </div>
 
       <!-- select language -->

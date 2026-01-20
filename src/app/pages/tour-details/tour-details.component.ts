@@ -318,18 +318,37 @@ export class TourDetailsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // Helper method to format date as YYYY-MM-DD (local time, no timezone conversion)
+  formatDateForSubmission(date: Date | null): string | null {
+    if (!date) return null;
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
   submitBookingForm(): void {
     if (this.bookingFormData.valid) {
-      // console.log(this.bookingFormData.value);
+      // Format the date to avoid timezone issues
+      const formValue = { ...this.bookingFormData.value };
+      const selectedDate = formValue.start_date;
+
+      if (selectedDate instanceof Date) {
+        formValue.start_date = this.formatDateForSubmission(selectedDate);
+      }
+
+      // console.log(formValue);
       this._BookingService
         // ,localStorage.getItem('accessToken')
-        .appendBookingData(this.bookingFormData.value)
+        .appendBookingData(formValue)
         .subscribe({
           next: (response) => {
             // console.log(response);
             if (response.status == true) {
               // console.log(response.status);
-              // console.log(this.bookingFormData.value);
+              // console.log(formValue);
               // console.log(localStorage.getItem('accessToken'));
 
               this.toaster.success(response.message);

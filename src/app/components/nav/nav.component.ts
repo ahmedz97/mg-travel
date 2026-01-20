@@ -6,11 +6,12 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../core/services/data.service';
 import { SocialComponent } from '../social/social.component';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -28,6 +29,8 @@ import { SocialComponent } from '../social/social.component';
 export class NavComponent implements OnInit {
   constructor(
     private _DataService: DataService,
+    private _AuthService: AuthService,
+    private _Router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
     public translate: TranslateService
   ) {}
@@ -184,5 +187,14 @@ export class NavComponent implements OnInit {
         // console.log(err);
       },
     });
+  }
+
+  isLoggedIn(): boolean {
+    return this._AuthService.isLoggedIn();
+  }
+
+  logout(): void {
+    this._AuthService.logout();
+    this._Router.navigate(['/']);
   }
 }

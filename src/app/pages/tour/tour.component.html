@@ -41,7 +41,7 @@
                   {{ type.title }}
                 </mat-radio-button>
                 <span class="flexCenter rounded-circle">{{
-                  getCategoryCount(type.id)
+                  type.tours_count
                 }}</span>
               </div>
             </div>
@@ -122,7 +122,7 @@
                 </mat-radio-button>
 
                 <span class="flexCenter rounded-circle">{{
-                  getDurationCount(d.id)
+                  d.tours_count
                 }}</span>
               </div>
             </div>
@@ -160,7 +160,7 @@
                   {{ dest.title }}
                 </mat-radio-button>
                 <span class="flexCenter textMainColor rounded-circle">{{
-                  getDestinationCount(dest.id)
+                  dest.tours_count
                 }}</span>
               </div>
             </div>
@@ -174,7 +174,7 @@
           >
             <div class="d-flex align-items-center gap-3">
               <h6 class="textSecondColor fw-bold mb-0">
-                {{ filteredTours.length }} {{ "tour.resultsFound" | translate }}
+                {{ getCurrentPageItemsCount() }} {{ "tour.resultsFound" | translate }} (of {{ totalItems }})
               </h6>
               <button
                 class="btn btn-sm btn-outline-secondary"
