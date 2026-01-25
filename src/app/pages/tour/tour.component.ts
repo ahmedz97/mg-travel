@@ -97,61 +97,119 @@ export class TourComponent implements OnInit {
     this.getDurations();
 
     // 3. Subscribe to queryParams to read filters from URL
+    // this._ActivatedRoute.queryParams.subscribe((param) => {
+    //   // Handle destination (slug)
+    //   if (param['destination']) {
+    //     this.selectedDestinationSlug = param['destination'];
+    //     const destination = this.allDestinations.find(
+    //       (dest) => dest.slug === param['destination']
+    //     );
+    //     if (destination) {
+    //       this.selectedDestination = destination.id;
+    //     } else {
+    //       this.selectedDestination = null;
+    //     }
+    //   } else {
+    //     this.selectedDestinationSlug = null;
+    //     this.selectedDestination = null;
+    //   }
+
+    //   // Handle category (slug)
+    //   if (param['type']) {
+    //     this.selectedCategorySlug = param['type'];
+    //     const category = this.allCategories.find(
+    //       (cat) => cat.slug === param['type']
+    //     );
+    //     if (category) {
+    //       this.selectedTripType = category.id;
+    //     } else {
+    //       this.selectedTripType = null;
+    //     }
+    //   } else {
+    //     this.selectedCategorySlug = null;
+    //     this.selectedTripType = null;
+    //   }
+
+    //   // Handle duration (slug or ID for backward compatibility)
+    //   if (param['duration']) {
+    //     const durationParam = param['duration'];
+    //     const isNumeric = !isNaN(Number(durationParam));
+
+    //     if (isNumeric) {
+    //       // Backward compatibility: ID format
+    //       this.selectedDuration = Number(durationParam);
+    //       const duration = this.allDurations.find(
+    //         (dur) => dur.id === this.selectedDuration
+    //       );
+    //       this.selectedDurationSlug = duration?.slug || null;
+    //     } else {
+    //       // New format: slug
+    //       this.selectedDurationSlug = durationParam;
+    //       const duration = this.allDurations.find(
+    //         (dur) => dur.slug === durationParam
+    //       );
+    //       if (duration) {
+    //         this.selectedDuration = duration.id;
+    //       } else {
+    //         this.selectedDuration = null;
+    //       }
+    //     }
+    //   } else {
+    //     this.selectedDurationSlug = null;
+    //     this.selectedDuration = null;
+    //   }
+
+    //   // Reload tours with filters from URL
+    //   this.getAllTours();
+    // });
+
     this._ActivatedRoute.queryParams.subscribe((param) => {
-      // Handle destination (slug)
-      if (param['destination']) {
-        this.selectedDestinationSlug = param['destination'];
-        const destination = this.allDestinations.find(
-          (dest) => dest.slug === param['destination']
-        );
-        if (destination) {
-          this.selectedDestination = destination.id;
-        } else {
-          this.selectedDestination = null;
+      console.log('params', param);
+
+      // Read query params from URL and set component properties
+      // Support both 'destination' and 'location' for backward compatibility
+      const destinationSlug = param['destination'] || param['location'];
+      if (destinationSlug) {
+        this.selectedDestinationSlug = destinationSlug;
+        // Resolve to ID if destinations are already loaded
+        if (this.allDestinations.length > 0) {
+          const destination = this.allDestinations.find(
+            (dest) => dest.slug === this.selectedDestinationSlug
+          );
+          if (destination) {
+            this.selectedDestination = destination.id;
+          }
         }
       } else {
         this.selectedDestinationSlug = null;
         this.selectedDestination = null;
       }
 
-      // Handle category (slug)
       if (param['type']) {
         this.selectedCategorySlug = param['type'];
-        const category = this.allCategories.find(
-          (cat) => cat.slug === param['type']
-        );
-        if (category) {
-          this.selectedTripType = category.id;
-        } else {
-          this.selectedTripType = null;
+        // Resolve to ID if categories are already loaded
+        if (this.allCategories.length > 0) {
+          const category = this.allCategories.find(
+            (cat) => cat.slug === this.selectedCategorySlug
+          );
+          if (category) {
+            this.selectedTripType = category.id;
+          }
         }
       } else {
         this.selectedCategorySlug = null;
         this.selectedTripType = null;
       }
 
-      // Handle duration (slug or ID for backward compatibility)
       if (param['duration']) {
-        const durationParam = param['duration'];
-        const isNumeric = !isNaN(Number(durationParam));
-
-        if (isNumeric) {
-          // Backward compatibility: ID format
-          this.selectedDuration = Number(durationParam);
+        this.selectedDurationSlug = param['duration'];
+        // Resolve to ID if durations are already loaded
+        if (this.allDurations.length > 0) {
           const duration = this.allDurations.find(
-            (dur) => dur.id === this.selectedDuration
-          );
-          this.selectedDurationSlug = duration?.slug || null;
-        } else {
-          // New format: slug
-          this.selectedDurationSlug = durationParam;
-          const duration = this.allDurations.find(
-            (dur) => dur.slug === durationParam
+            (dur) => dur.slug === this.selectedDurationSlug
           );
           if (duration) {
             this.selectedDuration = duration.id;
-          } else {
-            this.selectedDuration = null;
           }
         }
       } else {
@@ -159,7 +217,15 @@ export class TourComponent implements OnInit {
         this.selectedDuration = null;
       }
 
-      // Reload tours with filters from URL
+      // Read price range from query params if available
+      if (param['minPrice']) {
+        this.minBudget = Number(param['minPrice']) || 0;
+      }
+      if (param['maxPrice']) {
+        this.maxBudget = Number(param['maxPrice']) || 5000;
+      }
+
+      // Fetch tours with filters - getAllTours will use the component properties
       this.getAllTours();
     });
   }
@@ -411,6 +477,34 @@ export class TourComponent implements OnInit {
     this.getAllTours();
 
     // Update URL
+    this.updateURL();
+  }
+
+  clearCategory() {
+    this.selectedTripType = null;
+    this.selectedCategorySlug = null;
+    this.getAllTours();
+    this.updateURL();
+  }
+
+  clearPrice() {
+    this.minBudget = 0;
+    this.maxBudget = 5000;
+    this.getAllTours();
+    this.updateURL();
+  }
+
+  clearDuration() {
+    this.selectedDuration = null;
+    this.selectedDurationSlug = null;
+    this.getAllTours();
+    this.updateURL();
+  }
+
+  clearDestination() {
+    this.selectedDestination = null;
+    this.selectedDestinationSlug = null;
+    this.getAllTours();
     this.updateURL();
   }
 

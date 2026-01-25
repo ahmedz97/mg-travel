@@ -51,7 +51,7 @@
                       {{ "home.allDestinations" | translate }}
                     </option>
                     @for (des of allDestinations; track $index) {
-                    <option [value]="des.id">{{ des.title }}</option>
+                    <option [value]="des.slug">{{ des.title }}</option>
                     }
                   </select>
                 </div>
@@ -78,7 +78,7 @@
                     </option>
                     @for (cat of allCategories; track $index) {
 
-                    <option [value]="cat.id">{{ cat.title }}</option>
+                    <option [value]="cat.slug">{{ cat.title }}</option>
                     }
                   </select>
                 </div>
@@ -105,7 +105,7 @@
                     </option>
                     @for (time of allDurations; track $index) {
 
-                    <option [value]="time.id">{{ time.title }}</option>
+                    <option [value]="time.slug">{{ time.title }}</option>
                     }
                   </select>
                 </div>

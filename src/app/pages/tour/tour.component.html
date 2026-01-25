@@ -18,13 +18,20 @@
               <h4 class="h5 fw-bold mb-0">
                 {{ "tour.tourCategory" | translate }}
               </h4>
-              <i
-                class="fa-solid"
-                [ngClass]="{
-                  'fa-chevron-down': !isCategoryExpanded,
-                  'fa-chevron-up': isCategoryExpanded
-                }"
-              ></i>
+              <div>
+                @if (selectedTripType !== null) {
+                <i
+                  class="fa-regular fa-trash-can text-danger me-4" (click)="clearCategory()"
+                ></i>
+                }
+                <i
+                  class="fa-solid"
+                  [ngClass]="{
+                    'fa-chevron-down': !isCategoryExpanded,
+                    'fa-chevron-up': isCategoryExpanded
+                  }"
+                ></i>
+              </div>
             </div>
             <div *ngIf="isCategoryExpanded">
               <div
@@ -56,13 +63,21 @@
               <h4 class="h5 fw-bold mb-0">
                 {{ "tour.tourPrice" | translate }}
               </h4>
-              <i
-                class="fa-solid"
-                [ngClass]="{
-                  'fa-chevron-down': !isPriceExpanded,
-                  'fa-chevron-up': isPriceExpanded
-                }"
-              ></i>
+              <div>
+                @if (minBudget > 0 ) {
+                <i
+                  class="fa-regular fa-trash-can text-danger me-4" (click)="clearPrice()"
+                ></i>
+                }
+                <i
+                  class="fa-solid"
+                  [ngClass]="{
+                    'fa-chevron-down': !isPriceExpanded,
+                    'fa-chevron-up': isPriceExpanded
+                  }"
+                ></i>
+              </div>
+
             </div>
             <div *ngIf="isPriceExpanded">
               <p class="mb-0 text-capitalize">
@@ -98,13 +113,20 @@
               <h4 class="h5 fw-bold mb-0">
                 {{ "tour.tourDuration" | translate }}
               </h4>
-              <i
-                class="fa-solid"
-                [ngClass]="{
-                  'fa-chevron-down': !isDurationExpanded,
-                  'fa-chevron-up': isDurationExpanded
-                }"
-              ></i>
+              <div>
+                @if (selectedDuration !== null) {
+                  <i
+                    class="fa-regular fa-trash-can text-danger me-4" (click)="clearDuration()"
+                  ></i>
+                }
+                <i
+                  class="fa-solid"
+                  [ngClass]="{
+                    'fa-chevron-down': !isDurationExpanded,
+                    'fa-chevron-up': isDurationExpanded
+                  }"
+                ></i>
+              </div>
             </div>
             <div *ngIf="isDurationExpanded">
               <div
@@ -137,13 +159,21 @@
               <h4 class="h5 fw-bold mb-0">
                 {{ "tour.tourDestination" | translate }}
               </h4>
-              <i
-                class="fa-solid"
-                [ngClass]="{
-                  'fa-chevron-down': !isDestinationExpanded,
-                  'fa-chevron-up': isDestinationExpanded
-                }"
-              ></i>
+
+              <div>
+                @if (selectedDestination !== null) {
+                <i
+                  class="fa-regular fa-trash-can text-danger me-4" (click)="clearDestination()"
+                ></i>
+                }
+                <i
+                  class="fa-solid"
+                  [ngClass]="{
+                    'fa-chevron-down': !isDestinationExpanded,
+                    'fa-chevron-up': isDestinationExpanded
+                  }"
+                ></i>
+              </div>
             </div>
             <div *ngIf="isDestinationExpanded">
               <div
