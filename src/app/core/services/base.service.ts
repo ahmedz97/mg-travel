@@ -7,8 +7,10 @@ import { Injectable } from '@angular/core';
 })
 export class BaseService {
   constructor(protected HttpClient: HttpClient) {}
-  baseUrl = 'https://tourism-api.perfectsolutions4u.com/api';
-  apiBaseUrl = 'https://tourism-api.perfectsolutions4u.com';
+  // baseUrl = 'https://tourism-api.perfectsolutions4u.com/api';
+  // apiBaseUrl = 'https://tourism-api.perfectsolutions4u.com';
+  baseUrl = 'https://dashboard.mg-travels.com/api';
+  apiBaseUrl = 'https://dashboard.mg-travels.com/';
 
   // Helper method to get full image URL
   getImageUrl(imagePath: string | null | undefined, addCacheBust: boolean = true): string {

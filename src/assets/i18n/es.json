@@ -4,8 +4,8 @@
     "about": "Acerca de",
     "blogs": "Blogs",
     "contact": "Contacto",
-    "tours": "Tours",
-    "destinations": "Destinos"
+    "egyptTours": "Tours Egipcio",
+    "globalTours": "Tours Global"
   },
   "common": {
     "seeMore": "Ver Más",
@@ -58,7 +58,7 @@
     "tripType": "Tipo de Viaje"
   },
   "tour": {
-    "tours": "Tours",
+    "egyptTours": "Tours Egipcio",
     "tourDetails": "Detalles del Tour",
     "relatedTours": "Tours Relacionados",
     "bookNow": "Reservar Ahora",
@@ -164,7 +164,7 @@
     "yearsOfExperience": "Años de Experiencia"
   },
   "blog": {
-    "blogs": "Blogs",
+    "blogs": "Noticias",
     "blogDetails": "Detalles del Blog",
     "readMore": "Leer Más",
     "publishedOn": "Publicado el",

@@ -37,6 +37,7 @@ export class NavComponent implements OnInit {
 
   navigationLinks = [
     { path: '/', label: 'nav.home' },
+    { path: '/destination', label: 'nav.globalTours' },
     { path: '/about', label: 'nav.about' },
     { path: '/blog', label: 'nav.blogs' },
     { path: '/contact', label: 'nav.contact' },

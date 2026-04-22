@@ -20,20 +20,12 @@
       </h2>
     </div>
 
-    <div class="mt-5">
-      <swiper-container
-        *ngIf="allDestinations.length > 0"
-        #destinationCarousel
-        init="false"
-      >
-        @for (des of allDestinations; track $index) {
-        <swiper-slide>
+    <div class="row g-2 mt-5">
+      @for (des of allDestinations; track $index) {
+        <div class="col-md-4">
           <app-destination-cart [destination]="des"></app-destination-cart>
-        </swiper-slide>
-        }
-      </swiper-container>
+        </div>
+      }
     </div>
   </div>
 </section>
-<app-make-trip-form></app-make-trip-form>
-<app-partner-slider></app-partner-slider>

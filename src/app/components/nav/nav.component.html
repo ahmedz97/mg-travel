@@ -42,15 +42,15 @@
                 routerLink="/tour"
                 routerLinkActive="active"
                 class="d-block text-capitalize"
-                >{{ "nav.tours" | translate }}</span
+                >{{ "nav.egyptTours" | translate }}</span
               >
               <ul class="dropdown-menu border-0 shadow">
                 <li *ngFor="let cat of allCategories">
                   <a
                     class="dropdown-item"
-                    [routerLink]="['/tour']"
+                    [routerLink]="cat.slug === 'day-tours' ? ['/destination'] : ['/tour']"
                     routerLinkActive="active"
-                    [queryParams]="{ type: cat.slug }"
+                    [queryParams]="cat.slug === 'day-tours' ? null : { type: cat.slug }"
                   >
                     {{ cat.title }}
                   </a>
@@ -59,76 +59,7 @@
             </div>
           </ng-container>
 
-          <ng-container *ngIf="link.path === '/' && allDestinations.length">
-            <div
-              class="nav-link px-3 fw-bold text-dark position-relative dropdown custom-dropdown"
-            >
-              <span
-                role="button"
-                routerLink="/destination"
-                routerLinkActive="active"
-                class="d-block"
-                >{{ "nav.destinations" | translate }}</span
-              >
-              <ul class="dropdown-menu border-0 shadow">
-                <li
-                  *ngFor="let dest of allDestinations"
-                  class="dropdown-submenu"
-                >
-                  <!-- ✅ if egypt-->
-                  <a
-                    *ngIf="!isEgypt(dest)"
-                    class="dropdown-item"
-                    [routerLink]="['/destination', dest.slug]"
-                    routerLinkActive="active"
-                  >
-                    {{ dest.title }}
-                  </a>
-
-                  <!-- ✅ if not egypt submenu -->
-                  <ng-container *ngIf="isEgypt(dest)">
-                    <a
-                      [routerLink]="['/destination', dest.slug]"
-                      class="dropdown-item dropdown-toggle cPointer"
-                    >
-                      {{ dest.title }}
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li *ngFor="let cat of egyptCategories">
-                        <a
-                          class="dropdown-item"
-                          [routerLink]="['/tour']"
-                          routerLinkActive="active"
-                          [queryParams]="{ type: cat.slug }"
-                        >
-                          {{ cat.title }}
-                        </a>
-                      </li>
-                    </ul>
-                  </ng-container>
-                </li>
-              </ul>
-            </div>
-          </ng-container>
-
-          <!-- Dropdown Destinations -->
-          <!-- <ng-container *ngIf="link.path === '/' && allDestinations.length">
-            <div
-              class="nav-link px-1 mx-2 fw-bold text-white position-relative dropdown custom-dropdown"
-            >
-              <span class="d-block">Destinations</span>
-              <ul class="dropdown-menu border-0 shadow">
-                <li *ngFor="let dest of allDestinations">
-                  <a
-                    class="dropdown-item"
-                    [routerLink]="['/destination', dest.slug]"
-                  >
-                    {{ dest.title }}
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </ng-container> -->
+          
         </ng-container>
       </div>
 
@@ -271,7 +202,7 @@
             <div
               class="nav-link px-1 mx-2 fw-bold text-dark position-relative dropdown custom-dropdown"
             >
-              <span class="d-block text-capitalize">tours</span>
+              <span class="d-block text-capitalize">{{ "nav.egyptTours" | translate }}</span>
               <ul class="dropdown-menu border-0 shadow">
                 <li *ngFor="let cat of allCategories">
                   <a
@@ -286,54 +217,7 @@
               </ul>
             </div>
           </ng-container>
-
-          <!-- Dropdown Destinations -->
-          <ng-container *ngIf="link.path === '/' && allDestinations.length">
-            <div
-              class="nav-link px-1 mx-2 fw-bold text-dark position-relative dropdown custom-dropdown"
-            >
-              <span class="d-block">Destinations</span>
-              <ul class="dropdown-menu border-0 shadow">
-                <li
-                  *ngFor="let dest of allDestinations"
-                  class="dropdown-submenu"
-                >
-                  <!-- ✅ if egypt-->
-                  <a
-                    *ngIf="!isEgypt(dest)"
-                    class="dropdown-item"
-                    [routerLink]="['/destination', dest.slug]"
-                    routerLinkActive="active"
-                  >
-                    {{ dest.title }}
-                  </a>
-
-                  <!-- ✅ if not egypt submenu -->
-                  <ng-container *ngIf="isEgypt(dest)">
-                    <a
-                      [routerLink]="['/destination', dest.slug]"
-                      routerLinkActive="active"
-                      class="dropdown-item dropdown-toggle cPointer"
-                    >
-                      {{ dest.title }}
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li *ngFor="let cat of egyptCategories">
-                        <a
-                          class="dropdown-item"
-                          [routerLink]="['/tour']"
-                          routerLinkActive="active"
-                          [queryParams]="{ type: cat.slug }"
-                        >
-                          {{ cat.title }}
-                        </a>
-                      </li>
-                    </ul>
-                  </ng-container>
-                </li>
-              </ul>
-            </div>
-          </ng-container>
+          
         </ng-container>
       </div>
     </div>

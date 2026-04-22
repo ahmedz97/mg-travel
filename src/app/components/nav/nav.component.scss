@@ -33,6 +33,7 @@
 .navbar-nav .nav-link{
 // color: #fff !important;
 transition: $transition;
+padding-inline: 11px !important;
   &.active , .dropdown-item.active , & span.active {
     background-color: $secondary-color !important;
     color: white !important;
