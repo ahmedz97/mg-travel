@@ -20,31 +20,31 @@
         />
       </div>
 
-      <!-- Navigation Links (Desktop) -->
+      <!-- Navigation Links (Desktop): Home, Egypt tours, Global tours, About, Blogs, Contact -->
       <div class="navbar-nav mx-auto d-none d-lg-flex bg-white rounded-pill">
-        <ng-container *ngFor="let link of navigationLinks">
+        <ng-container *ngFor="let item of navMainItems">
           <a
-            [routerLink]="link.path"
+            *ngIf="item.kind === 'route'"
+            [routerLink]="item.path"
             routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+            [routerLinkActiveOptions]="{ exact: !!item.linkExact }"
             class="nav-link px-3 fw-bold text-dark position-relative"
           >
-            {{ link.label | translate }}
+            {{ item.labelKey | translate }}
           </a>
 
-          <!-- Dropdown categories -->
-          <ng-container *ngIf="link.path === '/' && allCategories.length">
+          <ng-container *ngIf="item.kind === 'egyptTours'">
             <div
               class="nav-link px-3 fw-bold text-dark position-relative dropdown custom-dropdown"
             >
-              <span
-                role="button"
+              <a
                 routerLink="/tour"
-                routerLinkActive="active"
-                class="d-block text-capitalize"
-                >{{ "nav.egyptTours" | translate }}</span
+                [class.active]="isEgyptToursActive()"
+                class="d-block text-capitalize text-dark text-decoration-none"
               >
-              <ul class="dropdown-menu border-0 shadow">
+                {{ "nav.egyptTours" | translate }}
+              </a>
+              <ul *ngIf="allCategories.length" class="dropdown-menu border-0 shadow">
                 <li *ngFor="let cat of allCategories">
                   <a
                     class="dropdown-item"
@@ -59,7 +59,15 @@
             </div>
           </ng-container>
 
-          
+          <a
+            *ngIf="item.kind === 'globalTours'"
+            routerLink="/tour"
+            [queryParams]="{ destination: 'global' }"
+            [class.active]="isGlobalToursActive()"
+            class="nav-link px-3 fw-bold text-dark position-relative"
+          >
+            {{ "nav.globalTours" | translate }}
+          </a>
         </ng-container>
       </div>
 
@@ -187,29 +195,35 @@
 
     <div class="offcanvas-body">
       <div class="navbar-nav flex-column">
-        <ng-container *ngFor="let link of navigationLinks">
+        <ng-container *ngFor="let item of navMainItems">
           <a
-            [routerLink]="link.path"
+            *ngIf="item.kind === 'route'"
+            [routerLink]="item.path"
             routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+            [routerLinkActiveOptions]="{ exact: !!item.linkExact }"
             class="nav-link px-1 mx-2 fw-bold text-dark position-relative"
           >
-            {{ link.label | translate }}
+            {{ item.labelKey | translate }}
           </a>
 
-          <!-- Dropdown categories -->
-          <ng-container *ngIf="link.path === '/' && allCategories.length">
+          <ng-container *ngIf="item.kind === 'egyptTours'">
             <div
               class="nav-link px-1 mx-2 fw-bold text-dark position-relative dropdown custom-dropdown"
             >
-              <span class="d-block text-capitalize">{{ "nav.egyptTours" | translate }}</span>
-              <ul class="dropdown-menu border-0 shadow">
+              <a
+                routerLink="/tour"
+                [class.active]="isEgyptToursActive()"
+                class="d-block text-capitalize text-dark text-decoration-none"
+              >
+                {{ "nav.egyptTours" | translate }}
+              </a>
+              <ul *ngIf="allCategories.length" class="dropdown-menu border-0 shadow">
                 <li *ngFor="let cat of allCategories">
                   <a
                     class="dropdown-item"
-                    [routerLink]="['/tour']"
+                    [routerLink]="cat.slug === 'day-tours' ? ['/destination'] : ['/tour']"
                     routerLinkActive="active"
-                    [queryParams]="{ type: cat.slug }"
+                    [queryParams]="cat.slug === 'day-tours' ? null : { type: cat.slug }"
                   >
                     {{ cat.title }}
                   </a>
@@ -217,7 +231,16 @@
               </ul>
             </div>
           </ng-container>
-          
+
+          <a
+            *ngIf="item.kind === 'globalTours'"
+            routerLink="/tour"
+            [queryParams]="{ destination: 'global' }"
+            [class.active]="isGlobalToursActive()"
+            class="nav-link px-1 mx-2 fw-bold text-dark position-relative"
+          >
+            {{ "nav.globalTours" | translate }}
+          </a>
         </ng-container>
       </div>
     </div>

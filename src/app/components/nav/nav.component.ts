@@ -6,12 +6,22 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  UrlTree,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../core/services/data.service';
 import { SocialComponent } from '../social/social.component';
 import { AuthService } from '../../core/services/auth.service';
+
+export type NavMainItem =
+  | { kind: 'route'; path: string; labelKey: string; linkExact?: boolean }
+  | { kind: 'egyptTours' }
+  | { kind: 'globalTours' };
 
 @Component({
   selector: 'app-nav',
@@ -35,12 +45,14 @@ export class NavComponent implements OnInit {
     public translate: TranslateService
   ) {}
 
-  navigationLinks = [
-    { path: '/', label: 'nav.home' },
-    { path: '/destination', label: 'nav.globalTours' },
-    { path: '/about', label: 'nav.about' },
-    { path: '/blog', label: 'nav.blogs' },
-    { path: '/contact', label: 'nav.contact' },
+  /** Home → Egypt tours → Global tours → About → Blogs → Contact */
+  navMainItems: NavMainItem[] = [
+    { kind: 'route', path: '/', labelKey: 'nav.home', linkExact: true },
+    { kind: 'egyptTours' },
+    { kind: 'globalTours' },
+    { kind: 'route', path: '/about', labelKey: 'nav.about' },
+    { kind: 'route', path: '/blog', labelKey: 'nav.blogs' },
+    { kind: 'route', path: '/contact', labelKey: 'nav.contact' },
   ];
 
   isSidebarOpen = false;
@@ -197,5 +209,35 @@ export class NavComponent implements OnInit {
   logout(): void {
     this._AuthService.logout();
     this._Router.navigate(['/']);
+  }
+
+  /** Tour listing route only (`/tour`), not `/tour/:slug`. */
+  private isTourListingTree(tree: UrlTree): boolean {
+    const segs = tree.root.children['primary']?.segments ?? [];
+    return segs.length === 1 && segs[0].path === 'tour';
+  }
+
+  /** Active only on tour listing with `destination=global` (exactly that query, no other keys). */
+  isGlobalToursActive(): boolean {
+    const tree = this._Router.parseUrl(this._Router.url);
+    if (!this.isTourListingTree(tree)) {
+      return false;
+    }
+    const q = tree.queryParams;
+    const keys = Object.keys(q);
+    return (
+      keys.length === 1 &&
+      String(q['destination'] ?? '').toLowerCase() === 'global'
+    );
+  }
+
+  /** Active on tour listing when not viewing global tours. */
+  isEgyptToursActive(): boolean {
+    const tree = this._Router.parseUrl(this._Router.url);
+    if (!this.isTourListingTree(tree)) {
+      return false;
+    }
+    const dest = tree.queryParams['destination'];
+    return !(dest != null && String(dest).toLowerCase() === 'global');
   }
 }

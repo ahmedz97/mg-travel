@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { BaseService } from './base.service';
 
 @Injectable({
@@ -28,15 +28,20 @@ export class DataService extends BaseService {
     );
   }
 
-  getDestination(parent_id: any = 1): Observable<any> {
-    let paramsId = new HttpParams();
-    if (parent_id) {
-      paramsId = paramsId.set('parent_id', parent_id);
-    }
-
-    return this.HttpClient.get(`${this.baseUrl}/destinations`, {
-      params: paramsId,
-    });
+  /** Destinations that belong to a parent (child / regional rows only). */
+  getDestination(): Observable<any> {
+    return this.HttpClient
+      .get(`${this.baseUrl}/destinations`)
+      .pipe(
+        map((res: any) => {
+          const rows: any[] = res?.data?.data ?? [];
+          const withParent = rows.filter((d) => d.parent_id != null);
+          return {
+            ...res,
+            data: { ...res.data, data: withParent },
+          };
+        })
+      );
   }
 
   getDestinationBySlug(slug: string): Observable<any> {
