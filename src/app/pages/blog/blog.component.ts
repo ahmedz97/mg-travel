@@ -38,12 +38,12 @@ export class BlogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this._SeoService.updateSeoData(
-      {},
-      'Blog - MG Travel',
-      'Read our travel blog for tips, guides, and stories about amazing destinations. Get inspired for your next adventure with MG Travel.',
-      '../../../assets/image/logo-MG-Travel.webp'
-    );
+    this._SeoService.applyPageSeoByRoute('blog', {
+      title: 'Blog - MG Travel',
+      description:
+        'Read our travel blog for tips, guides, and stories about amazing destinations. Get inspired for your next adventure with MG Travel.',
+      image: '/assets/image/logo-MG-Travel.webp',
+    });
     this._DataService.getBlogs().subscribe({
       next: (res) => {
         this.allBlogs = res?.data?.data ?? res ?? [];

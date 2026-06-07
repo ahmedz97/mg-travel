@@ -12,6 +12,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { BannerComponent } from '../../components/banner/banner.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-signup',
@@ -31,7 +32,8 @@ export class SignupComponent implements OnInit {
     private _DataService: DataService,
     private _AuthService: AuthService,
     private toastr: ToastrService,
-    private _Router: Router
+    private _Router: Router,
+    private _SeoService: SeoService
   ) {}
 
   bannerTitle = 'sign up';
@@ -51,6 +53,12 @@ export class SignupComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this._SeoService.applySettingsSeo({
+      title: 'Sign Up - MG Travel',
+      description: 'Create your MG Travel account to book tours and manage your trips.',
+      image: '/assets/image/logo-MG-Travel.webp',
+      robots: 'noindex, nofollow',
+    });
     this.getSettings();
     this.getCountries();
   }

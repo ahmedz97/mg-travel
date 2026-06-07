@@ -5,6 +5,7 @@ import { BookingService } from '../../core/services/booking.service';
 import { CommonModule } from '@angular/common';
 import { BannerComponent } from '../../components/banner/banner.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-cart',
@@ -16,7 +17,8 @@ import { TranslateModule } from '@ngx-translate/core';
 export class CartComponent implements OnInit {
   constructor(
     private _BookingService: BookingService,
-    private toaster: ToastrService
+    private toaster: ToastrService,
+    private _SeoService: SeoService
   ) {}
 
   bannerTitle: string = 'cart';
@@ -27,6 +29,12 @@ export class CartComponent implements OnInit {
   totalPrice: number = 0;
 
   ngOnInit(): void {
+    this._SeoService.applySettingsSeo({
+      title: 'Cart - MG Travel',
+      description: 'Review your selected tours before checkout with MG Travel.',
+      image: '/assets/image/logo-MG-Travel.webp',
+      robots: 'noindex, nofollow',
+    });
     this.getListCart();
   }
 

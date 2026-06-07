@@ -1,6 +1,11 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
+import { Observable, shareReplay } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { DataService } from './data.service';
+import { PAGE_SEO_ROUTE_KEYS } from '../../config/page-seo.config';
 
 export interface SeoData {
   meta_title?: string;
@@ -19,40 +24,90 @@ export interface SeoData {
   structure_schema?: string;
 }
 
-export interface LanguageSeoData {
-  meta_title?: string | null;
-  meta_description?: string | null;
-  meta_keywords?: string | null;
-  og_title?: string | null;
-  og_description?: string | null;
-  twitter_title?: string | null;
-  twitter_description?: string | null;
-  canonical?: string | null;
-  structure_schema?: string | null;
+export interface SeoFallbacks {
+  title?: string;
+  description?: string;
+  image?: string;
+  keywords?: string;
+  canonical?: string;
+  robots?: string;
+  structure_schema?: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class SeoService {
-  private defaultTitle = 'Golden Oceans - Premium Travel Experiences';
-  private defaultDescription =
-    'Discover amazing tours and travel experiences with Golden Oceans. Book your dream vacation today.';
-  private defaultImage = '/assets/image/golden ocean/Artboard 2.png';
-  private siteUrl = 'https://backend-goldenoceans.perfectsolutions4u.com';
+  private defaultTitle = environment.seo.defaultTitle;
+  private defaultDescription = environment.seo.defaultDescription;
+  private defaultImage = environment.seo.defaultImage;
+  private siteUrl = environment.siteUrl;
+  private pagesCache$: Observable<any[]> | null = null;
 
   constructor(
     private meta: Meta,
     private title: Title,
+    private dataService: DataService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  updateSeoData(
-    seoData: SeoData,
-    fallbackTitle?: string,
-    fallbackDescription?: string,
-    fallbackImage?: string
-  ): void {
+  applyHomeSeo(fallbacks: SeoFallbacks = {}): void {
+    this.dataService.getSetting().subscribe({
+      next: (res) => {
+        const settings = res?.data;
+        const seoData = Array.isArray(settings)
+          ? this.extractSeoFromSettings(settings, this.getCurrentLanguage())
+          : {};
+        this.updateSeoData(seoData, fallbacks);
+      },
+      error: () => this.updateSeoData({}, fallbacks),
+    });
+  }
+
+  applyPageSeoByRoute(routePath: string, fallbacks: SeoFallbacks = {}): void {
+    const pageKey = PAGE_SEO_ROUTE_KEYS[routePath] ?? routePath;
+    this.applyPageSeo(pageKey, fallbacks);
+  }
+
+  applyPageSeo(pageKey: string, fallbacks: SeoFallbacks = {}): void {
+    this.getPages().subscribe({
+      next: (pages) => {
+        const page = this.findPageByKey(pages, pageKey);
+        if (page?.seo) {
+          this.updateSeoData(
+            this.normalizeApiSeo(page.seo),
+            {
+              title: page.title ? `${page.title} - ${environment.seo.siteName}` : fallbacks.title,
+              description: page.short_description || fallbacks.description,
+              ...fallbacks,
+            }
+          );
+          return;
+        }
+        this.applySettingsSeo(fallbacks);
+      },
+      error: () => this.applySettingsSeo(fallbacks),
+    });
+  }
+
+  applySettingsSeo(fallbacks: SeoFallbacks = {}): void {
+    this.dataService.getSetting().subscribe({
+      next: (res) => {
+        const settings = res?.data;
+        const seoData = Array.isArray(settings)
+          ? this.extractSeoFromSettings(settings, this.getCurrentLanguage())
+          : {};
+        this.updateSeoData(seoData, fallbacks);
+      },
+      error: () => this.updateSeoData({}, fallbacks),
+    });
+  }
+
+  applyEntitySeo(rawSeo: unknown, fallbacks: SeoFallbacks = {}): void {
+    this.updateSeoData(this.normalizeApiSeo(rawSeo), fallbacks);
+  }
+
+  updateSeoData(seoData: SeoData, fallbacks: SeoFallbacks = {}): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -60,31 +115,28 @@ export class SeoService {
     const title =
       seoData.meta_title ||
       seoData.og_title ||
-      fallbackTitle ||
+      fallbacks.title ||
       this.defaultTitle;
     const description =
       seoData.meta_description ||
       seoData.og_description ||
-      fallbackDescription ||
+      fallbacks.description ||
       this.defaultDescription;
     const image =
       seoData.og_image ||
       seoData.twitter_image ||
-      fallbackImage ||
+      fallbacks.image ||
       this.defaultImage;
-    const keywords = seoData.meta_keywords || '';
-    const canonical = seoData.canonical || '';
-    const robots = seoData.robots || 'index, follow';
+    const keywords = seoData.meta_keywords || fallbacks.keywords || '';
+    const canonical = seoData.canonical || fallbacks.canonical || '';
+    const robots = seoData.robots || fallbacks.robots || 'index, follow';
 
-    // Update title
     this.title.setTitle(title);
 
-    // Update or create meta tags
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({ name: 'keywords', content: keywords });
     this.meta.updateTag({ name: 'robots', content: robots });
 
-    // Open Graph tags
     this.meta.updateTag({
       property: 'og:title',
       content: seoData.og_title || title,
@@ -106,7 +158,6 @@ export class SeoService {
       content: canonical || this.getCurrentUrl(),
     });
 
-    // Twitter Card tags
     this.meta.updateTag({
       name: 'twitter:card',
       content: seoData.twitter_card || 'summary_large_image',
@@ -119,22 +170,153 @@ export class SeoService {
       name: 'twitter:description',
       content: seoData.twitter_description || description,
     });
-    if (seoData.twitter_image) {
-      this.meta.updateTag({
-        name: 'twitter:image',
-        content: this.getFullImageUrl(seoData.twitter_image),
-      });
-    }
+    this.meta.updateTag({
+      name: 'twitter:image',
+      content: this.getFullImageUrl(seoData.twitter_image || image),
+    });
 
-    // Canonical URL
     if (canonical) {
       this.updateCanonicalUrl(canonical);
     }
 
-    // Structured data (JSON-LD)
-    if (seoData.structure_schema) {
-      this.updateStructuredData(seoData.structure_schema);
+    const schema = seoData.structure_schema || fallbacks.structure_schema;
+    if (schema) {
+      this.updateStructuredData(schema);
     }
+  }
+
+  normalizeApiSeo(raw: unknown): SeoData {
+    if (!raw || typeof raw !== 'object') {
+      return {};
+    }
+
+    const seoData: SeoData = {};
+    const source = raw as Record<string, unknown>;
+
+    const fields: (keyof SeoData)[] = [
+      'meta_title',
+      'meta_description',
+      'meta_keywords',
+      'og_title',
+      'og_description',
+      'og_image',
+      'og_type',
+      'twitter_title',
+      'twitter_description',
+      'twitter_card',
+      'twitter_image',
+      'canonical',
+      'robots',
+      'structure_schema',
+    ];
+
+    for (const field of fields) {
+      const value = source[field];
+      if (value != null && value !== '') {
+        seoData[field] = String(value);
+      }
+    }
+
+    return seoData;
+  }
+
+  extractSeoFromSettings(
+    settingsResponse: unknown[],
+    language: string = 'en'
+  ): SeoData {
+    if (!settingsResponse || !Array.isArray(settingsResponse)) {
+      return {};
+    }
+
+    const seoSetting = (settingsResponse as Array<{ option_key?: string; option_value?: Record<string, unknown> }>).find(
+      (item) => item.option_key === 'seo'
+    );
+
+    if (!seoSetting?.option_value) {
+      return {};
+    }
+
+    const seoValue = seoSetting.option_value;
+    const langData = (seoValue[language] || seoValue['en'] || {}) as Record<
+      string,
+      unknown
+    >;
+
+    const seoData: SeoData = {};
+
+    const langFields: (keyof SeoData)[] = [
+      'meta_title',
+      'meta_description',
+      'meta_keywords',
+      'og_title',
+      'og_description',
+      'twitter_title',
+      'twitter_description',
+      'canonical',
+      'structure_schema',
+    ];
+
+    for (const field of langFields) {
+      const value = langData[field];
+      if (value != null && value !== '') {
+        seoData[field] = String(value);
+      }
+    }
+
+    if (seoValue['robots']) seoData.robots = String(seoValue['robots']);
+    if (seoValue['og_type']) seoData.og_type = String(seoValue['og_type']);
+    if (seoValue['twitter_card']) {
+      seoData.twitter_card = String(seoValue['twitter_card']);
+    }
+
+    return seoData;
+  }
+
+  findPageByKey(pages: unknown[], key: string): { key?: string; title?: string; short_description?: string; seo?: unknown } | null {
+    if (!pages?.length) {
+      return null;
+    }
+
+    const normalizedKey = key.toLowerCase();
+    const typedPages = pages as Array<{ key?: string; title?: string; short_description?: string; seo?: unknown }>;
+    return (
+      typedPages.find((page) => page.key?.toLowerCase() === normalizedKey) ?? null
+    );
+  }
+
+  getCurrentLanguage(): string {
+    if (!isPlatformBrowser(this.platformId)) {
+      return 'en';
+    }
+    return localStorage.getItem('language') || 'en';
+  }
+
+  getCmsPageKeys(): Observable<string[]> {
+    return this.getPages().pipe(
+      map((pages) =>
+        pages
+          .map((page: { key?: string }) => page.key)
+          .filter((key): key is string => !!key)
+      )
+    );
+  }
+
+  clearPagesCache(): void {
+    this.pagesCache$ = null;
+  }
+
+  resetToDefaults(): void {
+    this.updateSeoData({}, {});
+  }
+
+  private getPages(): Observable<any[]> {
+    if (!this.pagesCache$) {
+      this.pagesCache$ = this.dataService.getPages().pipe(
+        map((res) => res?.data?.data ?? []),
+        shareReplay(1)
+      );
+    }
+    return this.pagesCache$;
   }
 
   private updateCanonicalUrl(url: string): void {
@@ -158,7 +340,6 @@ export class SeoService {
       return;
     }
 
-    // Remove existing structured data
     const existingScript = document.querySelector(
       'script[type="application/ld+json"]'
     );
@@ -166,7 +347,6 @@ export class SeoService {
       existingScript.remove();
     }
 
-    // Add new structured data
     try {
       const script = document.createElement('script');
       script.type = 'application/ld+json';
@@ -179,7 +359,7 @@ export class SeoService {
 
   private getFullImageUrl(image: string): string {
     if (!image) {
-      return this.defaultImage;
+      return `${this.siteUrl}${this.defaultImage}`;
     }
     if (image.startsWith('http://') || image.startsWith('https://')) {
       return image;
@@ -192,103 +372,8 @@ export class SeoService {
 
   private getCurrentUrl(): string {
     if (!isPlatformBrowser(this.platformId)) {
-      return this.siteUrl;
+      return `${this.siteUrl}/`;
     }
     return window.location.href;
-  }
-
-  resetToDefaults(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    this.title.setTitle(this.defaultTitle);
-    this.meta.updateTag({
-      name: 'description',
-      content: this.defaultDescription,
-    });
-    this.meta.updateTag({ property: 'og:title', content: this.defaultTitle });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: this.defaultDescription,
-    });
-    this.meta.updateTag({
-      property: 'og:image',
-      content: this.getFullImageUrl(this.defaultImage),
-    });
-  }
-
-  /**
-   * Extracts SEO data from settings API response and converts it to SeoData format
-   * @param settingsResponse - The settings API response array
-   * @param language - The language code to use (defaults to 'en')
-   * @returns SeoData object with extracted values or empty object if not found
-   */
-  extractSeoFromSettings(
-    settingsResponse: any[],
-    language: string = 'en'
-  ): SeoData {
-    if (!settingsResponse || !Array.isArray(settingsResponse)) {
-      return {};
-    }
-
-    const seoSetting = settingsResponse.find(
-      (item: any) => item.option_key === 'seo'
-    );
-
-    if (!seoSetting || !seoSetting.option_value) {
-      return {};
-    }
-
-    const seoValue = seoSetting.option_value;
-    const langData = seoValue[language] || seoValue['en'] || {};
-
-    // Extract language-specific data, only including properties with actual values
-    const seoData: SeoData = {};
-
-    if (langData.meta_title) seoData.meta_title = langData.meta_title;
-    if (langData.meta_description)
-      seoData.meta_description = langData.meta_description;
-    if (langData.meta_keywords) seoData.meta_keywords = langData.meta_keywords;
-    if (langData.og_title) seoData.og_title = langData.og_title;
-    if (langData.og_description)
-      seoData.og_description = langData.og_description;
-    if (langData.twitter_title) seoData.twitter_title = langData.twitter_title;
-    if (langData.twitter_description)
-      seoData.twitter_description = langData.twitter_description;
-    if (langData.canonical) seoData.canonical = langData.canonical;
-    if (langData.structure_schema)
-      seoData.structure_schema = langData.structure_schema;
-
-    // Global fields (not language-specific)
-    if (seoValue.robots) seoData.robots = seoValue.robots;
-    if (seoValue.og_type) seoData.og_type = seoValue.og_type;
-    if (seoValue.twitter_card) seoData.twitter_card = seoValue.twitter_card;
-
-    return seoData;
-  }
-
-  /**
-   * Updates SEO data from settings API with fallback to defaults
-   * @param settingsResponse - The settings API response array
-   * @param language - The language code to use (defaults to 'en')
-   * @param fallbackTitle - Optional fallback title
-   * @param fallbackDescription - Optional fallback description
-   * @param fallbackImage - Optional fallback image
-   */
-  updateSeoFromSettings(
-    settingsResponse: any[],
-    language: string = 'en',
-    fallbackTitle?: string,
-    fallbackDescription?: string,
-    fallbackImage?: string
-  ): void {
-    const seoData = this.extractSeoFromSettings(settingsResponse, language);
-    this.updateSeoData(
-      seoData,
-      fallbackTitle,
-      fallbackDescription,
-      fallbackImage
-    );
   }
 }

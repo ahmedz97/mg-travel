@@ -41,12 +41,12 @@ export class ContactComponent implements OnInit {
   userLocation: any;
 
   ngOnInit(): void {
-    this._SeoService.updateSeoData(
-      {},
-      'Contact - MG Travel',
-      "Get in touch with MG Travel. Contact us for bookings, inquiries, or travel assistance. We're here to help you plan your perfect trip.",
-      '../../../assets/image/logo-MG-Travel.webp'
-    );
+    this._SeoService.applyPageSeoByRoute('contact', {
+      title: 'Contact - MG Travel',
+      description:
+        "Get in touch with MG Travel. Contact us for bookings, inquiries, or travel assistance. We're here to help you plan your perfect trip.",
+      image: '/assets/image/logo-MG-Travel.webp',
+    });
     this.getCountries();
     // this.getSettings();
   }

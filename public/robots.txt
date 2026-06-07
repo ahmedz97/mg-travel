@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /login
+Disallow: /signup
+Disallow: /forgetPassword
+Disallow: /profile
+Disallow: /cart
+Disallow: /checkout
+
+Sitemap: https://mg-travels.com/sitemap.xml

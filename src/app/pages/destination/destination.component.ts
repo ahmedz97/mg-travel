@@ -46,12 +46,12 @@ export class DestinationComponent implements OnInit, AfterViewInit {
   bannerTitle: string = 'destination';
 
   ngOnInit(): void {
-    this._SeoService.updateSeoData(
-      {},
-      'Destination - MG Travel',
-      'Explore our amazing destinations with MG Travel. Discover the best tours and experiences for your next adventure.',
-      '../../../assets/image/logo-MG-Travel.webp'
-    );
+    this._SeoService.applySettingsSeo({
+      title: 'Destinations - MG Travel',
+      description:
+        'Explore our amazing destinations with MG Travel. Discover the best tours and experiences for your next adventure.',
+      image: '/assets/image/logo-MG-Travel.webp',
+    });
     this.getDestination();
   }
 

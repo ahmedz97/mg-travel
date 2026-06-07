@@ -29,6 +29,7 @@ import { TourCartComponent } from '../../components/tour-cart/tour-cart.componen
 import { BannerComponent } from '../../components/banner/banner.component';
 import { MakeTripFormComponent } from '../../components/make-trip-form/make-trip-form.component';
 import { AuthService } from '../../core/services/auth.service';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-profile',
@@ -58,6 +59,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     private _Router: Router,
     private toaster: ToastrService,
     private _AuthService: AuthService,
+    private _SeoService: SeoService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
   bannerTitle: string = 'my profile';
@@ -74,6 +76,12 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   selectedTab: string = 'dashboard';
 
   ngOnInit(): void {
+    this._SeoService.applySettingsSeo({
+      title: 'My Account - MG Travel',
+      description: 'Manage your MG Travel profile, bookings, and wishlist.',
+      image: '/assets/image/logo-MG-Travel.webp',
+      robots: 'noindex, nofollow',
+    });
     if (this._AuthService.getToken()) {
       // console.log('done', this._AuthService.getToken());
 

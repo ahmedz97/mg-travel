@@ -13,6 +13,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { BannerComponent } from '../../components/banner/banner.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,8 @@ export class LoginComponent implements OnInit {
     private _DataService: DataService,
     private _AuthService: AuthService,
     private toastr: ToastrService,
-    private _Router: Router
+    private _Router: Router,
+    private _SeoService: SeoService
   ) {}
 
   bannerTitle = 'login';
@@ -47,6 +49,12 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this._SeoService.applySettingsSeo({
+      title: 'Login - MG Travel',
+      description: 'Sign in to your MG Travel account to manage bookings and profile.',
+      image: '/assets/image/logo-MG-Travel.webp',
+      robots: 'noindex, nofollow',
+    });
     this.getSettings();
     this.getCountries();
   }

@@ -23,6 +23,7 @@ register();
 import { BannerComponent } from '../../components/banner/banner.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-checkout',
@@ -49,6 +50,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     private _BookingService: BookingService,
     private toaster: ToastrService,
     private _Router: Router,
+    private _SeoService: SeoService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -63,6 +65,12 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   couponData: any = null;
 
   ngOnInit(): void {
+    this._SeoService.applySettingsSeo({
+      title: 'Checkout - MG Travel',
+      description: 'Complete your tour booking with MG Travel.',
+      image: '/assets/image/logo-MG-Travel.webp',
+      robots: 'noindex, nofollow',
+    });
     this._BookingService.getCountries().subscribe({
       next: (response) => {
         // console.log(response.data);

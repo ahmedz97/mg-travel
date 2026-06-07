@@ -23,11 +23,11 @@ export class FaqComponent implements OnInit {
   constructor(private _SeoService: SeoService) {}
 
   ngOnInit(): void {
-    this._SeoService.updateSeoData(
-      {},
-      'FAQ - MG Travel',
-      'Find answers to frequently asked questions about MG Travel services, bookings, tours, and travel information. Get help with your travel inquiries.',
-      '../../../assets/image/logo-MG-Travel.webp'
-    );
+    this._SeoService.applyPageSeoByRoute('faq', {
+      title: 'FAQ - MG Travel',
+      description:
+        'Find answers to frequently asked questions about MG Travel services, bookings, tours, and travel information.',
+      image: '/assets/image/logo-MG-Travel.webp',
+    });
   }
 }

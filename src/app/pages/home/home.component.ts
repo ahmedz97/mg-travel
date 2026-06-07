@@ -275,7 +275,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ];
 
   ngOnInit(): void {
-    this.getSettingsAndUpdateSeo();
+    this._SeoService.applyHomeSeo();
     this.getDestination();
     this.getCategory();
     this.getDurations();
@@ -293,71 +293,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getSettingsAndUpdateSeo(): void {
-    this._DataService.getSetting().subscribe({
-      next: (res) => {
-        if (res.data && Array.isArray(res.data)) {
-          // Get current language or default to 'en'
-          const currentLang = isPlatformBrowser(this.platformId)
-            ? localStorage.getItem('language') || 'en'
-            : 'en';
-          // console.log(res.data);
-
-          // Extract SEO data from settings
-          const seoData = this._SeoService.extractSeoFromSettings(
-            res.data,
-            currentLang
-          );
-
-          // Always add "test" to title in home page
-          const baseTitle =
-            seoData.meta_title || seoData.og_title || 'MG - Home';
-          const titleWithTest = ` ${baseTitle}`;
-
-          // Update SEO with test in title
-          this._SeoService.updateSeoData(
-            { ...seoData, meta_title: titleWithTest, og_title: titleWithTest },
-            titleWithTest,
-            seoData.meta_description ||
-              seoData.og_description ||
-              'Discover amazing tours and travel experiences with MG Travel. Book your dream vacation today.',
-            seoData.og_image || '/assets/image/logo-MG.webp'
-          );
-        } else {
-          // If settings API fails, use defaults with test
-          this._SeoService.updateSeoData(
-            {
-              meta_title: 'MG - Home',
-              og_title: 'MG - Home',
-            },
-            'MG - Home',
-            'Discover amazing tours and travel experiences with MG Travel. Book your dream vacation today.',
-            '/assets/image/logo-MG-Travel.webp'
-          );
-        }
-      },
-      error: (err) => {
-        // If settings API fails, use defaults with test
-        this._SeoService.updateSeoData(
-          {
-            meta_title: 'MG - Home',
-            og_title: 'MG - Home',
-          },
-          'MG - Home',
-          'Discover amazing tours and travel experiences with MG Travel. Book your dream vacation today.',
-          '/assets/image/logo-MG.webp'
-        );
-      },
-    });
-  }
-  // setupSEO(): void {
-  //   this._SeoService.updateSeoData(
-  //     {},
-  //     'Home - MG Travel',
-  //     'Welcome to MG Travel, your trusted travel partner for premium tours and exceptional travel experiences. Discover amazing destinations and create unforgettable memories.',
-  //     '../../../assets/image/logo-MG-Travel.webp'
-  //   );
-  // }
 
   makeTripForm = new FormGroup({
     city: new FormControl('', Validators.required),

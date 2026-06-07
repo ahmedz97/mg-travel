@@ -24,8 +24,16 @@ export class DataService extends BaseService {
 
   getToursSlug(slug: any): Observable<any> {
     return this.HttpClient.get(
-      `${this.baseUrl}/tours/${slug}?includes=destinations,categories,days`
+      `${this.baseUrl}/tours/${slug}?includes=destinations,categories,days,seo`
     );
+  }
+
+  getTourBySlug(slug: string): Observable<any> {
+    return this.getToursSlug(slug);
+  }
+
+  getBlogBySlug(slug: string): Observable<any> {
+    return this.HttpClient.get(`${this.baseUrl}/blogs/${slug}?includes=seo`);
   }
 
   /** Destinations that belong to a parent (child / regional rows only). */
@@ -45,7 +53,9 @@ export class DataService extends BaseService {
   }
 
   getDestinationBySlug(slug: string): Observable<any> {
-    return this.HttpClient.get(`${this.baseUrl}/destinations/${slug}`);
+    return this.HttpClient.get(`${this.baseUrl}/destinations/${slug}`, {
+      params: { includes: 'seo' },
+    });
   }
 
   getCategories(): Observable<any> {
@@ -115,5 +125,11 @@ export class DataService extends BaseService {
   // settings
   getSetting(): Observable<any> {
     return this.HttpClient.get(`${this.baseUrl}/settings`);
+  }
+
+  getPages(): Observable<any> {
+    return this.HttpClient.get(`${this.baseUrl}/pages`, {
+      params: { includes: 'seo' },
+    });
   }
 }

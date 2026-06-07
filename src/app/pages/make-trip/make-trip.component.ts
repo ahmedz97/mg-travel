@@ -27,6 +27,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { BannerComponent } from '../../components/banner/banner.component';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-make-trip',
@@ -57,7 +58,8 @@ export class MakeTripComponent implements OnInit {
     private _MaketripService: MaketripService,
     private _BookingService: BookingService,
     private toaster: ToastrService,
-    private _Router: Router
+    private _Router: Router,
+    private _SeoService: SeoService
   ) {}
 
   @ViewChild('stepper') stepper!: MatStepper;
@@ -91,6 +93,11 @@ export class MakeTripComponent implements OnInit {
   maxBudget: number = 0;
 
   ngOnInit() {
+    this._SeoService.applyPageSeoByRoute('makeTrip', {
+      title: 'Make Your Trip - MG Travel',
+      description: 'Plan your custom trip with MG Travel. Tell us your preferences and we will create the perfect itinerary.',
+      image: '/assets/image/logo-MG-Travel.webp',
+    });
     this.showCountries();
     this.buildForms();
 

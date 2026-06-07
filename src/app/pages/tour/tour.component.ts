@@ -82,13 +82,12 @@ export class TourComponent implements OnInit {
   isDestinationExpanded: boolean = false;
 
   ngOnInit(): void {
-    // 1. Update SEO
-    this._SeoService.updateSeoData(
-      {},
-      'Tour Search - MG Travel',
-      'Find the perfect tour for your next adventure with MG Travel. Browse our wide selection of tours and destinations.',
-      '../../../assets/image/logo-MG-Travel.webp'
-    );
+    this._SeoService.applySettingsSeo({
+      title: 'Tour Search - MG Travel',
+      description:
+        'Find the perfect tour for your next adventure with MG Travel. Browse our wide selection of tours and destinations.',
+      image: '/assets/image/logo-MG-Travel.webp',
+    });
 
     // 2. Fetch base data
     this.getAllTours();
