@@ -216,7 +216,7 @@ export class TourDetailsComponent implements OnInit, AfterViewInit {
         this.getReview(); // Fetch reviews for this specific tour
 
         // Update SEO
-        this.updateTourSEO(response.data);
+        this._SeoService.applyEntitySeo(response.data?.seo);
       },
       error: (err) => {
         this.toaster.error(err.error.message);
@@ -224,31 +224,6 @@ export class TourDetailsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  updateTourSEO(tour: any): void {
-    const tourSeo = tour?.seo;
-    this._SeoService.applyEntitySeo(tourSeo, {
-      title: tourSeo?.meta_title || tourSeo?.og_title || `${tour.title} - MG Travel`,
-      description:
-        tourSeo?.meta_description ||
-        tourSeo?.og_description ||
-        tour.short_description ||
-        tour.description ||
-        `Book ${tour.title} tour with MG Travel. Experience amazing destinations and create unforgettable memories.`,
-      image:
-        tourSeo?.og_image ||
-        tourSeo?.twitter_image ||
-        tour.featured_image ||
-        tour.image ||
-        tour.gallery?.[0]?.image ||
-        '/assets/image/logo-MG-Travel.webp',
-      keywords: tourSeo?.meta_keywords || '',
-      canonical: tourSeo?.canonical || '',
-      robots: tourSeo?.robots || '',
-      structure_schema: tourSeo?.structure_schema || '',
-    });
-  }
-
-  // check pricing
   getTourPricing(adultNum: number) {
     if (!this.tourData) {
       this.toaster.error('No data available.');

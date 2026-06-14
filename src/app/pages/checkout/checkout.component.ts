@@ -65,12 +65,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   couponData: any = null;
 
   ngOnInit(): void {
-    this._SeoService.applySettingsSeo({
-      title: 'Checkout - MG Travel',
-      description: 'Complete your tour booking with MG Travel.',
-      image: '/assets/image/logo-MG-Travel.webp',
-      robots: 'noindex, nofollow',
-    });
+    this._SeoService.applyPageSeoByRoute('checkout');
     this._BookingService.getCountries().subscribe({
       next: (response) => {
         // console.log(response.data);
@@ -80,22 +75,58 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     this.getListCart();
   }
 
-  // must start with 0 and must be 10 digits
-  phonePattern = '^01[0-2][0-9]{8}$';
+  phonePattern = '^[0-9]{8,22}$';
   checkoutForm: FormGroup = new FormGroup({
-    first_name: new FormControl(''),
-    last_name: new FormControl(''),
-    phone: new FormControl('', Validators.pattern(this.phonePattern)),
-    email: new FormControl('', [Validators.email]),
-    // start_date: new FormControl(''),
-    country: new FormControl(''),
-    // state: new FormControl(''),
-    // street_addres: new FormControl(''),
-    payment_method: new FormControl(''),
+    first_name: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
+    last_name: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
+    phone: new FormControl('', [
+      Validators.required,
+      Validators.pattern(this.phonePattern),
+    ]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    country: new FormControl('', Validators.required),
+    payment_method: new FormControl('cash', Validators.required),
     notes: new FormControl(''),
     currency_id: new FormControl(1),
     coupon_id: new FormControl(''),
   });
+
+  isFieldInvalid(controlName: string): boolean {
+    const control = this.checkoutForm.get(controlName);
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched)
+    );
+  }
+
+  getFieldError(controlName: string): string {
+    const control = this.checkoutForm.get(controlName);
+    if (!control?.errors) {
+      return '';
+    }
+
+    if (control.errors['required']) {
+      return 'checkout.errors.required';
+    }
+    if (control.errors['minlength']) {
+      return 'checkout.errors.minLength';
+    }
+    if (control.errors['email']) {
+      return 'checkout.errors.email';
+    }
+    if (control.errors['pattern']) {
+      return 'checkout.errors.phone';
+    }
+
+    return 'checkout.errors.invalid';
+  }
 
   getCheckoutData(): void {
     this.checkoutData = this.checkoutForm.value;
@@ -120,6 +151,9 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
           this.toaster.error(err.error.message);
         },
       });
+    }else{
+      this.toaster.error('Please fill in all the fields');
+      this.checkoutForm.markAllAsTouched();
     }
   }
 

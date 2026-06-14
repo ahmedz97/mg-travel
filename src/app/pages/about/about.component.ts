@@ -37,11 +37,6 @@ export class AboutComponent implements OnInit {
   constructor(private _SeoService: SeoService) {}
 
   ngOnInit(): void {
-    this._SeoService.applyPageSeoByRoute('about', {
-      title: 'About Us - MG Travel',
-      description:
-        'Learn more about MG Travel, your trusted travel partner for premium tours and exceptional travel experiences.',
-      image: '/assets/image/logo-MG-Travel.webp',
-    });
+    this._SeoService.applyPageSeoByRoute('about');
   }
 }

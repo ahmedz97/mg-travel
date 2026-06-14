@@ -146,7 +146,16 @@
     "stay": "Estancia",
     "totalPrice": "Precio Total",
     "total": "TOTAL",
-    "cartIsEmpty": "El carrito está vacío"
+    "cartIsEmpty": "El carrito está vacío",
+    "discount": "Descuento",
+    "finalTotal": "Total Final",
+    "errors": {
+      "required": "Este campo es obligatorio",
+      "minLength": "Debe tener al menos 3 caracteres",
+      "email": "Por favor ingrese un correo electrónico válido",
+      "phone": "Por favor ingrese un número de teléfono válido (8-22 dígitos)",
+      "invalid": "Valor inválido"
+    }
   },
   "about": {
     "aboutUs": "Acerca de Nosotros",

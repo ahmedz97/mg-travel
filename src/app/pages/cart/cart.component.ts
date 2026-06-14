@@ -29,12 +29,7 @@ export class CartComponent implements OnInit {
   totalPrice: number = 0;
 
   ngOnInit(): void {
-    this._SeoService.applySettingsSeo({
-      title: 'Cart - MG Travel',
-      description: 'Review your selected tours before checkout with MG Travel.',
-      image: '/assets/image/logo-MG-Travel.webp',
-      robots: 'noindex, nofollow',
-    });
+    this._SeoService.applyPageSeoByRoute('cart');
     this.getListCart();
   }
 

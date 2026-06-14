@@ -7,8 +7,9 @@
     <!--  -->
     <form
       [formGroup]="checkoutForm"
-      (ngSubmit)="(checkoutForm)"
+      (ngSubmit)="getCheckoutData()"
       class="row g-3"
+      novalidate
     >
       <div class="col-lg-8">
         <div class="sideBar p-3 rounded-3">
@@ -30,9 +31,15 @@
                     formControlName="first_name"
                     placeholder="{{ 'checkout.firstName' | translate }}"
                     class="form-control p-2 ps-5 rounded-3"
+                    [class.is-invalid]="isFieldInvalid('first_name')"
                   />
                   <i class="fa-regular fa-user textMainColor"></i>
                 </div>
+                @if (isFieldInvalid('first_name')) {
+                <small class="text-danger d-block mt-1">
+                  {{ getFieldError('first_name') | translate }}
+                </small>
+                }
               </div>
             </div>
             <div class="col-md-6">
@@ -49,9 +56,15 @@
                     formControlName="last_name"
                     placeholder="{{ 'checkout.lastName' | translate }}"
                     class="form-control p-2 ps-5 rounded-3"
+                    [class.is-invalid]="isFieldInvalid('last_name')"
                   />
                   <i class="fa-regular fa-user textMainColor"></i>
                 </div>
+                @if (isFieldInvalid('last_name')) {
+                <small class="text-danger d-block mt-1">
+                  {{ getFieldError('last_name') | translate }}
+                </small>
+                }
               </div>
             </div>
             <div class="col-md-6">
@@ -63,14 +76,20 @@
                 >
                 <div class="item position-relative">
                   <input
-                    type="number"
+                    type="tel"
                     id="phone"
                     formControlName="phone"
                     placeholder="{{ 'contact.yourPhone' | translate }}"
                     class="form-control p-2 ps-5 rounded-3"
+                    [class.is-invalid]="isFieldInvalid('phone')"
                   />
                   <i class="fa fa-phone textMainColor"></i>
                 </div>
+                @if (isFieldInvalid('phone')) {
+                <small class="text-danger d-block mt-1">
+                  {{ getFieldError('phone') | translate }}
+                </small>
+                }
               </div>
             </div>
             <div class="col-md-6">
@@ -87,9 +106,15 @@
                     formControlName="email"
                     placeholder="{{ 'contact.yourEmail' | translate }}"
                     class="form-control p-2 ps-5 rounded-3"
+                    [class.is-invalid]="isFieldInvalid('email')"
                   />
                   <i class="fa-regular fa-envelope textMainColor"></i>
                 </div>
+                @if (isFieldInvalid('email')) {
+                <small class="text-danger d-block mt-1">
+                  {{ getFieldError('email') | translate }}
+                </small>
+                }
               </div>
             </div>
 
@@ -105,17 +130,22 @@
                     id="country"
                     formControlName="country"
                     class="form-control p-2 ps-5 rounded-3"
+                    [class.is-invalid]="isFieldInvalid('country')"
                   >
-                    @for (item of countries; track $index) {
-
-                    <option disabled selected>
+                    <option value="" disabled>
                       {{ "checkout.selectCountry" | translate }}
                     </option>
+                    @for (item of countries; track $index) {
                     <option [value]="item.name">{{ item.name }}</option>
                     }
                   </select>
                   <i class="fa fa-globe textMainColor"></i>
                 </div>
+                @if (isFieldInvalid('country')) {
+                <small class="text-danger d-block mt-1">
+                  {{ getFieldError('country') | translate }}
+                </small>
+                }
               </div>
             </div>
 
@@ -191,21 +221,20 @@
               aria-label="payment_method"
               formControlName="payment_method"
             >
-              <mat-radio-button value="cash">{{
+              <mat-radio-button checked value="cash">{{
                 "checkout.cash" | translate
               }}</mat-radio-button>
-              <mat-radio-button value="visa master">
+
+              <!-- <mat-radio-button value="visa master">
                 {{ "checkout.visaMaster" | translate }}</mat-radio-button
-              >
-              <mat-radio-button value="paypal">{{
+              > -->
+              <!-- <mat-radio-button value="paypal">{{
                 "checkout.paypal" | translate
-              }}</mat-radio-button>
+              }}</mat-radio-button> -->
             </mat-radio-group>
             <!-- -->
             <button
-              (click)="getCheckoutData()"
               type="submit"
-              [disabled]="!checkoutForm.valid"
               class="mainBtn Btn w-100 mt-2"
             >
               {{ "checkout.placeOrder" | translate }}

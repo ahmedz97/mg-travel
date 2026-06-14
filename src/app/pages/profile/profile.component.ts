@@ -76,12 +76,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   selectedTab: string = 'dashboard';
 
   ngOnInit(): void {
-    this._SeoService.applySettingsSeo({
-      title: 'My Account - MG Travel',
-      description: 'Manage your MG Travel profile, bookings, and wishlist.',
-      image: '/assets/image/logo-MG-Travel.webp',
-      robots: 'noindex, nofollow',
-    });
+    this._SeoService.applyPageSeoByRoute('profile');
     if (this._AuthService.getToken()) {
       // console.log('done', this._AuthService.getToken());
 

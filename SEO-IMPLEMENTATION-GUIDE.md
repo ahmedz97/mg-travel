@@ -1,361 +1,355 @@
-# دليل تنفيذ SEO — Splendor Journeys / Majestic
+# SEO Implementation Guide — Angular + CMS (Portable)
 
-> **الغرض:** مرجع واحد لنظام SEO في المشروع — مصادر البيانات، الدوال، وربط الصفحات بالـ CMS.
+> **Purpose:** Reusable SEO system spec. Attach this file to any Angular project — an AI agent or developer should **discover project data dynamically** and apply the patterns below without hardcoded site names, routes, or CMS keys.
 
 ---
 
-## 1. نظرة عامة على البنية
+## 0. Instructions for AI Agent (read first)
+
+When this guide is provided in **any** project, follow this workflow **before** writing code:
+
+### Step 1 — Discover project files
+
+| What | Where to look |
+|------|----------------|
+| SEO service | `**/seo.service.ts` |
+| Route → CMS mapping | `**/page-seo.config.ts` |
+| API layer | `**/data.service.ts` (or equivalent) |
+| Routes | `**/*.routes.ts`, `app.routes.ts` |
+| Environment | `**/environment*.ts` |
+| Static SEO fallback | `src/index.html`, `public/robots.txt`, `public/sitemap.xml` |
+
+### Step 2 — Discover routes (dynamic)
+
+```bash
+# Find all Angular route paths
+rg "path:\s*['\"]" --glob "*.routes.ts"
+```
+
+Build a list: `{ routePath, componentFile }` for every static page (ignore `:slug`, `:id` param routes for CMS page SEO — those use entity SEO).
+
+### Step 3 — Discover current SEO wiring (dynamic)
+
+```bash
+rg "applyHomeSeo|applyPageSeoByRoute|applyPageSeo|applyEntitySeo|applySettingsSeo" src/
+```
+
+For each component found, record: **component → SEO method → route argument**.
+
+### Step 4 — Discover CMS page keys (dynamic)
+
+From the project's API (usually `GET /pages?includes=seo`):
+
+- Read `DataService.getPages()` (or equivalent) — note response path (e.g. `res.data.data[]`).
+- Each page item has `key` and `seo` object.
+- Optionally call `SeoService.getCmsPageKeys()` at runtime during dev.
+
+Build list: `{ cmsKey, hasSeoData }`.
+
+### Step 5 — Build route → CMS key mapping (dynamic)
+
+For each static route, compare **route segment** vs **CMS key**:
+
+| Condition | Action |
+|-----------|--------|
+| Route equals CMS key (case-insensitive) | No mapping entry needed |
+| Route differs from CMS key | Add to `PAGE_SEO_ROUTE_KEYS` in `page-seo.config.ts` |
+| Route has no CMS key | SEO stays **empty** until admin adds page in CMS |
+| Dynamic detail route (`/tours/:slug`) | Use `applyEntitySeo(entity.seo)` — not `/pages` |
+
+**Auto-mapping algorithm:**
+
+```
+for each staticRoute in routes:
+  cmsKey = find pages[].key where normalize(key) == normalize(route)
+  if not found:
+    cmsKey = find best match in CMS keys (manual review)
+  if route != cmsKey:
+    PAGE_SEO_ROUTE_KEYS[route] = cmsKey
+```
+
+`normalize(s)` = trim, lowercase, spaces → hyphens.
+
+### Step 6 — Apply missing wiring
+
+| Page type | Call in `ngOnInit` (or after API success) |
+|-----------|-------------------------------------------|
+| Home (`path: ''`) | `seoService.applyHomeSeo()` |
+| Static CMS page | `seoService.applyPageSeoByRoute('<routeSegment>')` |
+| Entity detail | `seoService.applyEntitySeo(data.seo)` after fetch |
+
+**Do not** hardcode fallbacks (`title`, `description`, `image`) in components — SEO comes from API only (except Home defaults).
+
+### Step 7 — Verify
+
+- DevTools → `<head>` on each page type
+- Confirm null API fields → empty meta tags (no injected defaults on CMS/entity pages)
+
+---
+
+## 1. Architecture (fixed pattern)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│  environment.ts          siteUrl (+ seo defaults مُوصى به مستقبلاً)        │
-│  index.html              meta أولية قبل تحميل Angular                    │
-│  public/robots.txt + sitemap.xml                                           │
+│  environment.siteUrl          index.html (initial crawl fallback)        │
+│  public/robots.txt            public/sitemap.xml                         │
 └────────────────────────────────┬─────────────────────────────────────────┘
                                  │
 ┌────────────────────────────────▼─────────────────────────────────────────┐
-│  SeoService (src/app/services/seo.service.ts)                              │
-│  • updateSeoData()              ← تحديث <head> (داخلي)                    │
-│  • applyHomeSeo()               ← Home فقط                                 │
-│  • applyPageSeo() / applyPageSeoByRoute()  ← صفحات CMS                    │
-│  • applySettingsSeo()           ← صفحات بدون مفتاح CMS                    │
-│  • applyEntitySeo()             ← tour / blog / destination details       │
-└───────────────┬──────────────────────┬──────────────────────┬──────────────┘
+│  SeoService                                                              │
+│  • updateSeoData(seoData)         ← updates <head> (internal)            │
+│  • applyHomeSeo()                 ← Home only                            │
+│  • applyPageSeoByRoute(route)     ← static pages via /pages              │
+│  • applyPageSeo(cmsKey)           ← direct CMS key lookup                │
+│  • applyEntitySeo(rawSeo)         ← detail pages (tour/blog/…)           │
+└───────────────┬──────────────────────┬──────────────────────┬──────────┘
                 │                      │                      │
      ┌──────────▼──────────┐  ┌────────▼────────┐  ┌─────────▼─────────┐
-     │ GET /settings       │  │ GET /pages      │  │ GET entity by slug │
-     │ option_key: 'seo'   │  │ ?includes=seo   │  │ includes=seo       │
-     │ (Home + fallback)   │  │ match by `key`  │  │ data.seo + title   │
+     │ GET /settings       │  │ GET /pages      │  │ GET /{entity}/:slug│
+     │ option_key: 'seo'   │  │ ?includes=seo   │  │ ?includes=seo      │
+     │ (Home only)         │  │ match by `key`  │  │ response.seo       │
      └─────────────────────┘  └─────────────────┘  └────────────────────┘
                 │
      ┌──────────▼──────────────────────────────────────────┐
-     │  page-seo.config.ts                                │
-     │  route segment → CMS key (مثال: about → about-us)  │
+     │  page-seo.config.ts                                 │
+     │  PAGE_SEO_ROUTE_KEYS: route → cmsKey (when different)│
      └────────────────────────────────────────────────────┘
 ```
 
-### 1.1 قواعد مصدر SEO (ملخص)
+---
 
-| نوع الصفحة | الدالة | مصدر البيانات |
-|------------|--------|----------------|
-| **Home** (`/`) | `applyHomeSeo()` | `GET /settings` فقط — **لا** يستخدم `/pages` |
-| **صفحات CMS** (about, blog, contact, faq, rent-car…) | `applyPageSeoByRoute()` | `GET /pages?includes=seo` حسب `key` → إن لم تُوجد → `settings` |
-| **تفاصيل** (tour / blog / destination) | `applyEntitySeo()` | `data.seo` من استجابة التفاصيل |
-| **باقي الصفحات** (tour list, login, cart…) | `applySettingsSeo()` | `GET /settings` + fallbacks محلية |
+## 2. SEO source rules (never change)
 
-### 1.2 أولوية الحقول داخل `updateSeoData`
+| Page type | Method | Data source | If missing |
+|-----------|--------|-------------|------------|
+| **Home** | `applyHomeSeo()` | `GET /settings` → `option_key === 'seo'` | Home defaults from service/env |
+| **Static pages** | `applyPageSeoByRoute(route)` | `GET /pages` → match `key` via config | **Empty** SEO fields |
+| **Entity details** | `applyEntitySeo(seo)` | Entity API response `data.seo` | **Empty** SEO fields |
 
-| الحقل | الأولوية (من الأعلى للأقل) |
-|--------|---------------------------|
-| **Title** | `meta_title` → `og_title` → `fallbackTitle` → `defaultTitle` |
-| **Description** | `meta_description` → `og_description` → `fallbackDescription` → `defaultDescription` |
-| **Image** | `og_image` → `twitter_image` → `fallbackImage` → `defaultImage` |
-| **Canonical / og:url** | `canonical` من `seoData` → `window.location.href` (أو `siteUrl` على السيرفر) |
-| **Robots** | `seoData.robots` → `'index, follow'` |
+**Never** use `/settings` as fallback for CMS or entity pages.
 
 ---
 
-## 2. الملفات الأساسية
+## 3. Supported SEO fields (apply all from API)
 
-| الملف | الدور |
-|-------|------|
-| `src/app/services/seo.service.ts` | الخدمة المركزية + cache لقائمة `/pages` |
-| `src/app/config/page-seo.config.ts` | ربط مسار Angular → مفتاح CMS `pages[].key` |
-| `src/app/services/data.service.ts` | `getSetting()`, `getPages()`, `getTourBySlug()`, … |
-| `src/environments/environment*.ts` | `siteUrl` |
-| `src/index.html` | قيم أولية للزحف |
-| `public/robots.txt` | قواعد الزحف |
-| `public/sitemap.xml` | خريطة الموقع |
+These fields must be read from API and written to `<head>` when present:
+
+```
+meta_title, meta_description, meta_keywords,
+og_title, og_description, og_image, og_type,
+viewport, robots, canonical,
+twitter_title, twitter_description, twitter_card, twitter_image, twitter_creator,
+structure_schema
+```
+
+| Rule | Behavior |
+|------|----------|
+| API value is `null` / empty | Meta tag content = `''` (empty string) |
+| CMS / entity pages | **No** hardcoded title/description/image fallbacks |
+| Home page only | May use `defaultTitle`, `defaultDescription`, `defaultImage` |
+| `canonical` empty | Remove `<link rel="canonical">` |
+| `structure_schema` empty | Remove JSON-LD script |
+| Relative image paths | Prefix with `environment.siteUrl` |
+
+### Meta tags written by `updateSeoData`
+
+| Tag | Source field(s) |
+|-----|-----------------|
+| `<title>` | `meta_title` → `og_title` |
+| `meta[name=description]` | `meta_description` → `og_description` |
+| `meta[name=keywords]` | `meta_keywords` |
+| `meta[name=robots]` | `robots` |
+| `meta[name=viewport]` | `viewport` (only if set) |
+| `meta[property=og:*]` | og fields |
+| `meta[name=twitter:*]` | twitter fields |
+| `link[rel=canonical]` | `canonical` |
+| `script[type=application/ld+json]` | `structure_schema` |
 
 ---
 
-## 3. `page-seo.config.ts` — ربط المسارات بالـ CMS
+## 4. Core files (create or adapt per project)
 
-**المسار:** `src/app/config/page-seo.config.ts`
+| File | Role |
+|------|------|
+| `src/app/services/seo.service.ts` | Central SEO logic + `/pages` cache |
+| `src/app/config/page-seo.config.ts` | `PAGE_SEO_ROUTE_KEYS` + `resolveCmsKeyFromRoute()` |
+| `src/app/services/data.service.ts` | `getPages()`, `getSetting()`, entity fetch methods |
+| `src/environments/environment*.ts` | `siteUrl`, optional `seo` defaults |
+| `src/index.html` | Initial meta before Angular boot |
+| `public/robots.txt` | Crawl rules |
+| `public/sitemap.xml` | Sitemap URL |
+
+---
+
+## 5. `page-seo.config.ts` — dynamic mapping
+
+Only add entries when **Angular route ≠ CMS key**. Unlisted routes use the route string as key (case-insensitive match).
 
 ```typescript
+/**
+ * Maps Angular route segment → CMS pages[].key (when they differ).
+ * Discover mappings by comparing *.routes.ts paths with GET /pages keys.
+ */
 export const PAGE_SEO_ROUTE_KEYS: Record<string, string> = {
-  about: 'about-us',      // route /about  → CMS key "about-us"
-  blog: 'blog',
-  contact: 'contact-us',
-  faq: 'faqs',
-  'rent-car': 'car-rental',
-  gallery: 'Gallery',
-  // ...
+  // GENERATED: routeSegment: 'cms-key',
+  // Example pattern (replace with project data):
+  // about: 'about-us',
+  // contact: 'contact-us',
 };
+
+export function resolveCmsKeyFromRoute(routePath: string): string {
+  return PAGE_SEO_ROUTE_KEYS[routePath] ?? routePath;
+}
 ```
 
-### متى تحتاج تعديل الكود؟
+### How to generate mappings in a new project
 
-| الحالة | ماذا تفعل |
-|--------|-----------|
-| الأدمن يحدّث SEO لصفحة موجودة (about, blog…) | **لا شيء** — البيانات من API عند التحميل |
-| الأدمن يضيف `key` جديد في الـ dashboard **ورابط Angular موجود** | سطر واحد في `PAGE_SEO_ROUTE_KEYS` إن كان اسم الـ route ≠ الـ key |
-| الأدمن يضيف صفحة **ورابط Angular جديد** | route في `data.routes.ts` + سطر في config + `applyPageSeoByRoute()` في الـ component |
-
-### مثال: صفحة `career` جديدة
-
-```typescript
-// 1. page-seo.config.ts
-career: 'career',
-
-// 2. career.component.ts — ngOnInit
-this.seoService.applyPageSeoByRoute('career', {
-  title: ' Career',
-  description: 'Join our team',
-  image: '/assets/image/splendor-logo.webp',
-});
-```
-
-إن تطابق اسم الـ route مع مفتاح CMS (`/gallery` و `gallery`)، يكفي:
-
-```typescript
-this.seoService.applyPageSeoByRoute('gallery', { ... });
-```
-
-بدون إضافة سطر في الـ config.
-
-### أدوات مساعدة (تطوير)
-
-```typescript
-// عرض كل مفاتيح الصفحات من الـ API
-this.seoService.getCmsPageKeys().subscribe((keys) => console.log(keys));
-
-// بعد تغيير الصفحات في الـ CMS أثناء التطوير
-this.seoService.clearPagesCache();
-```
+1. List routes: `rg "path:" --glob "*.routes.ts"`
+2. List CMS keys: from `/pages` API response `data[].key`
+3. For each static route, if `normalize(route) !== normalize(cmsKey)` but they represent the same page → add mapping
+4. Do **not** change Angular routes — only update config
 
 ---
 
-## 4. `SeoService` — الدوال العامة
+## 6. `SeoService` — public API
 
-**المسار:** `src/app/services/seo.service.ts`
-
-### 4.1 الواجهات
+### Interfaces
 
 ```typescript
 export interface SeoData {
-  meta_title?: string;
-  meta_description?: string;
-  meta_keywords?: string;
-  og_title?: string;
-  og_description?: string;
-  og_image?: string;
-  og_type?: string;
-  twitter_title?: string;
-  twitter_description?: string;
-  twitter_card?: string;
-  twitter_image?: string;
-  canonical?: string;
-  robots?: string;
-  structure_schema?: string; // JSON-LD كنص
-}
-
-export interface SeoFallbacks {
-  title?: string;
-  description?: string;
-  image?: string;
-  keywords?: string;
-  canonical?: string;
-  robots?: string;
-  structure_schema?: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
+  og_title?: string | null;
+  og_description?: string | null;
+  og_image?: string | null;
+  og_type?: string | null;
+  viewport?: string | null;
+  twitter_title?: string | null;
+  twitter_description?: string | null;
+  twitter_card?: string | null;
+  twitter_image?: string | null;
+  twitter_creator?: string | null;
+  canonical?: string | null;
+  robots?: string | null;
+  structure_schema?: string | null;
 }
 ```
 
-### 4.2 دوال التطبيق (استخدمها من الـ Components)
+### Methods
 
-| الدالة | الاستخدام |
-|--------|-----------|
-| `applyHomeSeo(fallbacks?)` | الصفحة الرئيسية — من `/settings` فقط |
-| `applyPageSeoByRoute(routePath, fallbacks?)` | صفحة CMS عبر مسار Angular (يقرأ `page-seo.config.ts`) |
-| `applyPageSeo(pageKey, fallbacks?)` | صفحة CMS بمفتاح CMS مباشر (مثال `'about-us'`) |
-| `applySettingsSeo(fallbacks?)` | صفحات بدون مفتاح في `/pages` |
-| `applyEntitySeo(rawSeo, fallbacks?)` | tour-details / blog-details / destination-details |
-| `updateSeoData(seoData, title?, desc?, image?)` | تحديث يدوي منخفض المستوى (نادر) |
-
-### 4.3 دوال مساعدة
-
-| الدالة | الوظيفة |
-|--------|---------|
-| `normalizeApiSeo(raw)` | تحويل `seo` من API مع تجاهل null والقيم الفارغة |
-| `extractSeoFromSettings(settings[], lang)` | استخراج SEO من `option_key === 'seo'` |
-| `findPageByKey(pages[], key)` | بحث case-insensitive عن صفحة CMS |
-| `getCurrentLanguage()` | `localStorage.language` أو `'en'` |
-| `getCmsPageKeys()` | Observable بكل مفاتيح الصفحات من API |
-| `clearPagesCache()` | إعادة جلب `/pages` |
-| `resetToDefaults()` | إعادة العنوان والوصف الافتراضي (غير مستخدم حالياً) |
-
-### 4.4 `updateSeoData` — ما يُحدَّث في `<head>`
-
-- `<title>`
-- `meta`: description, keywords, robots
-- Open Graph: og:title, og:description, og:image, og:type, og:url
-- Twitter: card, title, description, image
-- `<link rel="canonical">`
-- `<script type="application/ld+json">` عند وجود `structure_schema`
-
-**الصور:** `getFullImageUrl()` يضيف `environment.siteUrl` للمسارات النسبية (`/assets/...`).
+| Method | When to use |
+|--------|-------------|
+| `applyHomeSeo(fallbacks?)` | Home route only — `/settings` |
+| `applyPageSeoByRoute(routePath)` | Static page — pass **route segment** from `*.routes.ts` |
+| `applyPageSeo(cmsKey)` | Direct CMS key (rare — prefer `ByRoute`) |
+| `applyEntitySeo(rawSeo)` | After entity API success — pass `response.seo` |
+| `normalizeApiSeo(raw)` | Normalize any API seo object |
+| `getCmsPageKeys()` | Dev: list all CMS keys from API |
+| `clearPagesCache()` | Dev: refresh `/pages` cache after CMS changes |
 
 ---
 
-## 5. أنماط الاستدعاء في الصفحات (4 أنماط)
+## 7. Wiring patterns (3 types)
 
-### النمط 1 — Home (`applyHomeSeo`)
-
-**الملف:** `pages/home/home.component.ts`
+### Pattern A — Home
 
 ```typescript
-ngOnInit(): void {
-  this.seoService.applyHomeSeo();
-}
+// home.component.ts — ngOnInit
+this.seoService.applyHomeSeo();
 ```
 
-- يستدعي `DataService.getSetting()` (مع cache في DataService).
-- يقرأ `option_key === 'seo'` حسب اللغة الحالية.
+- Source: `GET /settings` where `option_key === 'seo'`
+- Language: read from project i18n (e.g. `localStorage.language` or `'en'`)
 
----
-
-### النمط 2 — صفحات CMS (`applyPageSeoByRoute`)
-
-**أمثلة:** about, blog, contact, faq, rent-car
+### Pattern B — Static CMS page
 
 ```typescript
-ngOnInit(): void {
-  this.seoService.applyPageSeoByRoute('about', {
-    title: ' About Us',
-    description: 'Learn more about us',
-    image: '/assets/image/splendor-logo.webp',
-  });
-}
+// {page}.component.ts — ngOnInit
+// Use the route segment exactly as defined in *.routes.ts
+this.seoService.applyPageSeoByRoute('<routeSegment>');
 ```
 
-**التدفق:**
+Flow:
 
-1. `routePath` → `PAGE_SEO_ROUTE_KEYS` → مفتاح CMS (مثال `about-us`)
-2. `GET /pages?includes=seo` → إيجاد الصفحة بـ `key`
-3. إن وُجدت → `page.seo` + fallbacks
-4. إن لم تُوجد → `extractSeoFromSettings` + fallbacks
+1. `routeSegment` → `resolveCmsKeyFromRoute()` → CMS `key`
+2. `GET /pages?includes=seo` → find page by `key` (case-insensitive)
+3. Found → apply all `page.seo` fields
+4. Not found → empty SEO
 
-**Endpoint:** `DataService.getPages()` → `res.data.data[]`
-
----
-
-### النمط 3 — صفحات بدون مفتاح CMS (`applySettingsSeo`)
-
-**أمثلة:** tour list, destination list, login, cart, make-trip, profile…
+### Pattern C — Entity detail
 
 ```typescript
-ngOnInit(): void {
-  this.seoService.applySettingsSeo({
-    title: ' Tours',
-    description: 'Search and discover amazing tours…',
-    image: '/assets/image/splendor-logo.webp',
-  });
-}
+// After successful API subscribe:
+this.seoService.applyEntitySeo(response.data.seo);
 ```
 
-يستخدم إعدادات الموقع العامة من `/settings` عندما لا توجد صفحة مطابقة في `/pages`.
+- Discover entity methods in `DataService` (e.g. `getTourBySlug`, `getBlogBySlug`)
+- Ensure API request includes `seo` in query/includes params
+- Call **after** data is loaded, not in `ngOnInit` before fetch
 
 ---
 
-### النمط 4 — تفاصيل كيان (`applyEntitySeo`)
+## 8. Dynamic page inventory template
 
-**أمثلة:** tour-details, blog-details, destination-details
+> **AI:** Generate this table from the target project — do not copy from another project.
 
-**بعد نجاح API:**
+| # | Route | Component | SEO method | CMS key / source |
+|---|-------|-----------|------------|------------------|
+| 1 | `/` | `{HomeComponent}` | `applyHomeSeo()` | `/settings` |
+| 2 | `/{route}` | `{Component}` | `applyPageSeoByRoute('{route}')` | `/pages` → `{cmsKey}` |
+| … | `/{entity}/:slug` | `{DetailComponent}` | `applyEntitySeo(data.seo)` | `GET /{entities}/:slug` |
 
-```typescript
-const tourSeo = this.tour?.seo;
-this.seoService.applyEntitySeo(tourSeo, {
-  title: this.tour?.title,
-  description:
-    tourSeo?.meta_description ||
-    tourSeo?.og_description ||
-    'Explore the tour details',
-  image:
-    tourSeo?.og_image ||
-    tourSeo?.twitter_image ||
-    this.tour?.featured_image ||
-    '/assets/image/splendor-logo.webp',
-  keywords: tourSeo?.meta_keywords || '',
-  canonical: tourSeo?.canonical || '',
-  robots: tourSeo?.robots || '',
-  structure_schema: tourSeo?.structure_schema || '',
-});
+**Generation steps:**
+
+```bash
+# 1. Routes + components
+rg "path:\s*['\"]([^'\"]+)['\"]" --glob "*.routes.ts" -o
+
+# 2. Current SEO calls
+rg "apply(Page|Home|Entity)Seo" src/app/pages -l
+
+# 3. Gaps = routes without SEO call → add wiring
+# 4. Wrong method = fix to match page type (Home / Page / Entity)
 ```
 
-**Endpoints:**
-
-| Component | DataService |
-|-----------|-------------|
-| tour-details | `getTourBySlug(slug)` — `includes=…,seo,…` |
-| blog-details | `getBlogBySlug(slug)` |
-| destination-details | `getDestinationBySlug(slug)?includes=seo` |
-
-`applyEntitySeo` يدمج `data.seo` من API مع `SeoFallbacks` ثم يستدعي `updateSeoData`.
-
 ---
 
-## 6. جدول الصفحات — الدالة المستخدمة حالياً
+## 9. API contracts (adapt paths to project)
 
-| # | Component | الدالة | مصدر SEO |
-|---|-----------|--------|----------|
-| 1 | Home | `applyHomeSeo()` | `/settings` |
-| 2 | About | `applyPageSeoByRoute('about')` | `/pages` → `about-us` |
-| 3 | Blog | `applyPageSeoByRoute('blog')` | `/pages` → `blog` |
-| 4 | Contact | `applyPageSeoByRoute('contact')` | `/pages` → `contact-us` |
-| 5 | FAQ | `applyPageSeoByRoute('faq')` | `/pages` → `faqs` |
-| 6 | Rent car | `applyPageSeoByRoute('rent-car')` | `/pages` → `car-rental` |
-| 7 | Tour list | `applySettingsSeo()` | `/settings` |
-| 8 | Tour details | `applyEntitySeo(tour.seo, …)` | `GET /tours/:slug` |
-| 9 | Destination list | `applySettingsSeo()` | `/settings` |
-| 10 | Destination details | `applyEntitySeo(data.seo, …)` | `GET /destinations/:slug` |
-| 11 | Blog details | `applyEntitySeo(data.seo, …)` | `GET /blogs/:slug` |
-| 12 | Blog category | `applySettingsSeo()` | `/settings` |
-| 13 | Category (tours) | `applySettingsSeo()` | `/settings` |
-| 14 | Make trip | `applySettingsSeo()` | `/settings` |
-| 15 | Guest experience | `applySettingsSeo()` | `/settings` |
-| 16 | Best time to visit | `applySettingsSeo()` | `/settings` |
-| 17 | Login / Signup / Forget password | `applySettingsSeo()` | `/settings` |
-| 18 | Profile / Cart | `applySettingsSeo()` | `/settings` |
-
----
-
-## 7. شكل بيانات API
-
-### 7.1 إعدادات الموقع — Home و fallback عام
+### 9.1 Settings — Home SEO
 
 ```http
-GET /settings
+GET {apiUrl}/settings
 ```
 
 ```json
 {
-  "option_key": "seo",
-  "option_value": {
-    "en": {
-      "meta_title": "…",
-      "meta_description": "…",
-      "meta_keywords": "…",
-      "og_title": "…",
-      "og_description": "…",
-      "twitter_title": "…",
-      "twitter_description": "…",
-      "canonical": "https://splendorjourneys.com/",
-      "structure_schema": "{ … }"
-    },
-    "ar": { "…": "…" },
-    "robots": "index, follow",
-    "og_type": "website",
-    "twitter_card": "summary_large_image"
-  }
+  "data": [
+    {
+      "option_key": "seo",
+      "option_value": {
+        "en": {
+          "meta_title": "...",
+          "meta_description": "...",
+          "canonical": "{siteUrl}/"
+        },
+        "ar": { "...": "..." },
+        "robots": "index, follow",
+        "og_type": "website",
+        "twitter_card": "summary_large_image"
+      }
+    }
+  ]
 }
 ```
 
-### 7.2 صفحات CMS
+> Adapt: `option_key` name, language keys, response wrapper (`data` vs array).
+
+### 9.2 CMS pages — static page SEO
 
 ```http
-GET /pages?includes=seo
+GET {apiUrl}/pages?includes=seo
 ```
 
 ```json
@@ -363,16 +357,18 @@ GET /pages?includes=seo
   "data": {
     "data": [
       {
-        "id": 2,
-        "key": "about-us",
-        "title": "About Us",
-        "short_description": "…",
+        "id": 1,
+        "key": "{cms-key}",
+        "title": "...",
         "seo": {
-          "meta_title": "…",
-          "meta_description": "…",
-          "og_image": "…",
-          "canonical": "…",
+          "meta_title": "...",
+          "meta_description": "...",
+          "og_image": "...",
+          "og_type": "article",
+          "viewport": "width=device-width, initial-scale=1",
           "robots": "index, follow",
+          "canonical": "{siteUrl}/{path}",
+          "twitter_card": null,
           "structure_schema": null
         }
       }
@@ -381,166 +377,137 @@ GET /pages?includes=seo
 }
 ```
 
-**مفاتيح موجودة في الـ CMS (أمثلة):** `home`, `about-us`, `blog`, `contact-us`, `faqs`, `car-rental`, `Gallery`, `privacy-policy`, `terms-and-conditions`, `travel-policy`, `privacy-and-cookies`, …
+> Adapt: response path (`res?.data?.data` vs `res?.data`), pagination wrapper.
 
-> **ملاحظة:** `home` في `/pages` **لا يُستخدم** للصفحة الرئيسية — Home يأخذ SEO من `/settings` فقط.
+> **`home` key in `/pages` is NOT used for Home route** — Home uses `/settings` only.
 
-### 7.3 كيان (Tour / Blog / Destination)
+### 9.3 Entity detail SEO
 
 ```json
 {
-  "title": "Swimming with Dolphins…",
-  "featured_image": "https://backend…/image.jpg",
+  "title": "...",
+  "featured_image": "...",
   "seo": {
-    "meta_title": "…",
-    "meta_description": "…",
-    "og_image": "…",
-    "canonical": "…",
-    "meta_keywords": "…",
+    "meta_title": "...",
+    "meta_description": "...",
+    "og_image": "...",
+    "canonical": "...",
     "robots": "index, follow",
-    "structure_schema": "{ … }"
+    "structure_schema": "{ ... }"
   }
 }
 ```
 
+> Adapt: entity name, slug param, includes query on fetch method.
+
 ---
 
-## 8. `environment` و `index.html`
+## 10. Environment & static files
 
-### 8.1 environment
+### environment.ts
 
 ```typescript
 export const environment = {
   production: false,
-  siteUrl: 'https://splendorjourneys.com', // بدون / في الآخر
-  apiUrl: 'https://…/api',
+  siteUrl: '{SITE_URL}',   // no trailing slash
+  apiUrl: '{API_URL}',
+  // optional:
+  seo: {
+    defaultTitle: '{SITE_NAME}',
+    defaultDescription: '...',
+    defaultImage: '/assets/...',
+  },
 };
 ```
 
-القيم الافتراضية (`defaultTitle`, `defaultDescription`, `defaultImage`) حالياً داخل `seo.service.ts`. **مُوصى به:** نقلها إلى `environment.seo` (انظر القسم 10).
-
-### 8.2 index.html
+### index.html (fallback before Angular)
 
 ```html
-<title>Splendor Journeys</title>
-<meta name="description" content="…" />
+<title>{SITE_NAME}</title>
+<meta name="description" content="..." />
 <meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://splendorjourneys.com/" />
+<link rel="canonical" href="{SITE_URL}/" />
 <base href="/" />
 ```
 
-`<base href="/">` **مطلوب** لـ Angular — لا تحذفه.
-
-### 8.3 robots.txt
+### robots.txt
 
 ```
 User-agent: *
 Allow: /
 
 Disallow: /login
-Disallow: /signup
-Disallow: /forget-password
 Disallow: /profile
 Disallow: /cart
-Disallow: /checkout
 
-Sitemap: https://splendorjourneys.com/sitemap.xml
+Sitemap: {SITE_URL}/sitemap.xml
 ```
+
+> Discover auth/private routes from `*.routes.ts` and add to `Disallow`.
 
 ---
 
-## 9. Checklist — مشروع جديد أو صفحة جديدة
+## 11. Checklist — new project or new page
 
-### إعداد أولي
+### Initial setup
 
-- [ ] `environment.siteUrl`
-- [ ] نسخ `seo.service.ts` + `page-seo.config.ts`
-- [ ] `index.html` + `public/robots.txt` + `public/sitemap.xml`
-- [ ] `DataService.getPages()` و `getSetting()`
+- [ ] Copy/adapt `seo.service.ts` + `page-seo.config.ts`
+- [ ] Set `environment.siteUrl`
+- [ ] Wire `DataService.getPages()` + `getSetting()` (+ entity methods)
+- [ ] Configure `index.html`, `robots.txt`, `sitemap.xml`
 
-### لكل صفحة
+### Per page (dynamic discovery)
 
-- [ ] حدد النمط (Home / CMS / Settings / Entity)
-- [ ] استدعِ الدالة المناسبة في `ngOnInit` أو بعد `subscribe` ناجح
-- [ ] إن CMS: تأكد من `key` في الـ dashboard + سطر في `page-seo.config.ts` إن لزم
+- [ ] Classify: **Home** / **Static** / **Entity detail**
+- [ ] Static: add `applyPageSeoByRoute('<route>')` in component
+- [ ] Entity: add `applyEntitySeo(data.seo)` after API success
+- [ ] If route ≠ CMS key: add mapping in `page-seo.config.ts`
+- [ ] Verify CMS key exists in `/pages` (or accept empty until admin adds it)
 
-### تحقق
+### QA
 
-- [ ] DevTools → Elements → `<head>`
+- [ ] DevTools → `<head>` per page type
 - [ ] [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/)
-- [ ] [Google Rich Results Test](https://search.google.com/test/rich-results) عند JSON-LD
-- [ ] `curl …/robots.txt` و `/sitemap.xml`
+- [ ] [Google Rich Results Test](https://search.google.com/test/rich-results) if JSON-LD used
 
 ---
 
-## 10. تحسين مُوصى به — defaults من `environment`
+## 12. SPA & SSR notes
 
-```typescript
-// environment.ts
-seo: {
-  siteName: 'Splendor Journeys',
-  defaultTitle: 'Splendor Journeys',
-  defaultDescription: 'Discover amazing tours…',
-  defaultImage: '/assets/image/splendor-logo.webp',
-},
-```
-
-```typescript
-// seo.service.ts — بداية الكلاس
-private defaultTitle = environment.seo.defaultTitle;
-private defaultDescription = environment.seo.defaultDescription;
-private defaultImage = environment.seo.defaultImage;
-```
+- **SPA:** Crawlers depend on JS — `index.html` is fallback until `SeoService` runs.
+- **SSR:** `getCurrentUrl()` returns `siteUrl` on server — set explicit `canonical` in CMS for important pages.
+- **OG images:** Must be absolute URLs — service prefixes relative paths with `siteUrl`.
 
 ---
 
-## 11. SPA و SSR
-
-- **SPA:** محركات البحث تعتمد على JavaScript؛ `index.html` = fallback حتى يعمل `SeoService`.
-- **SSR:** على السيرفر `getCurrentUrl()` يرجع `siteUrl` — ضع `canonical` صريحاً في `seoData` للصفحات المهمة.
-- **صور OG:** يجب أن تكون URLs مطلقة — `getFullImageUrl` يحول المسارات النسبية.
-
----
-
-## 12. أخطاء Console شائعة (ليست من المشروع)
-
-رسائل مثل:
+## 13. Quick reference
 
 ```text
-content_script.js:726 Tag not handled: base
-content_script.js:726 Tag not handled: style
-```
+Home          → applyHomeSeo()                      → GET /settings
+Static page   → applyPageSeoByRoute('<route>')      → GET /pages (key via config) → else empty
+Entity detail → applyEntitySeo(entity.seo)            → entity API → else empty
 
-تأتي من **إضافة متصفح** (أداة SEO، مدير كلمات مرور، …) وليست من Angular. للتأكيد: افتح الموقع في **نافذة خاصة بدون إضافات** — الرسائل تختفي.
-
-لا تحذف `<base href="/">` من `index.html`.
-
----
-
-## 13. نسخة مختصرة للمطور
-
-```text
-Home          → applyHomeSeo()                    → GET /settings
-CMS pages     → applyPageSeoByRoute('about', …)   → GET /pages (key) → else settings
-Other pages   → applySettingsSeo({ fallbacks })   → GET /settings
-Details       → applyEntitySeo(entity.seo, …)     → entity API (tour/blog/destination)
-
-Config        → src/app/config/page-seo.config.ts (route → CMS key)
-New CMS page  → admin updates dashboard only (no deploy) OR add route + config line
+Mapping       → page-seo.config.ts (only when route ≠ cms key)
 Dev tools     → getCmsPageKeys(), clearPagesCache()
+All fields    → full seo object from API, null = empty tag
 ```
 
 ---
 
-## 14. استبدال سريع عند نقل المشروع
+## 14. AI prompt template (copy when starting a new project)
 
-| ابحث عن | استبدل بـ |
-|---------|-----------|
-| `Splendor Journeys` | `{{SITE_NAME}}` |
-| `splendorjourneys.com` | `{{DOMAIN}}` |
-| `https://splendorjourneys.com` | `{{SITE_URL}}` |
-| `/assets/image/splendor-logo.webp` | `{{DEFAULT_OG_IMAGE}}` |
+```
+Apply docs/SEO-IMPLEMENTATION-GUIDE.md to this project:
+
+1. Discover all routes from *.routes.ts
+2. Discover current SEO wiring (grep applyHomeSeo, applyPageSeoByRoute, applyEntitySeo)
+3. Read seo.service.ts, page-seo.config.ts, data.service.ts
+4. Build PAGE_SEO_ROUTE_KEYS by comparing routes vs /pages CMS keys
+5. Wire missing pages with the correct pattern (Home / Page / Entity)
+6. Use API seo fields only — no hardcoded fallbacks on CMS/entity pages
+7. Output the generated page inventory table
+```
 
 ---
 
-*آخر تحديث: نظام SEO المركزي — `applyHomeSeo` / `applyPageSeoByRoute` / `applySettingsSeo` / `applyEntitySeo` + `page-seo.config.ts` — مشروع Majestic / Splendor Journeys.*
+*Portable SEO guide — dynamic discovery over hardcoded project data. Version: Angular CMS pattern (Home=settings, Pages=/pages, Details=entity.seo).*

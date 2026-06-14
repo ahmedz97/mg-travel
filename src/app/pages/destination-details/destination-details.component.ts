@@ -112,7 +112,7 @@ export class DestinationDetailsComponent implements OnInit, AfterViewInit {
             // console.log('destination Details:', this.destinationDetails);
 
             // Update SEO
-            this.updateDestinationSEO(response.data);
+            this._SeoService.applyEntitySeo(response.data?.seo);
 
             // Initialize swiper after data loads
             if (isPlatformBrowser(this.platformId)) {
@@ -162,33 +162,6 @@ export class DestinationDetailsComponent implements OnInit, AfterViewInit {
       error: (err) => {
         console.error('Error fetching tours:', err);
       },
-    });
-  }
-
-  updateDestinationSEO(destination: any): void {
-    const destinationSeo = destination?.seo;
-    this._SeoService.applyEntitySeo(destinationSeo, {
-      title:
-        destinationSeo?.meta_title ||
-        destinationSeo?.og_title ||
-        `${destination.title} - MG Travel`,
-      description:
-        destinationSeo?.meta_description ||
-        destinationSeo?.og_description ||
-        destination.short_description ||
-        destination.description ||
-        `Explore ${destination.title} with MG Travel. Discover tours and experiences in this amazing destination.`,
-      image:
-        destinationSeo?.og_image ||
-        destinationSeo?.twitter_image ||
-        destination.featured_image ||
-        destination.image ||
-        destination.gallery?.[0]?.image ||
-        '/assets/image/logo-MG-Travel.webp',
-      keywords: destinationSeo?.meta_keywords || '',
-      canonical: destinationSeo?.canonical || '',
-      robots: destinationSeo?.robots || '',
-      structure_schema: destinationSeo?.structure_schema || '',
     });
   }
 }

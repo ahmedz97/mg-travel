@@ -5,33 +5,29 @@ import { Observable, shareReplay } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DataService } from './data.service';
-import { PAGE_SEO_ROUTE_KEYS } from '../../config/page-seo.config';
+import { resolveCmsKeyFromRoute } from '../../config/page-seo.config';
 
 export interface SeoData {
-  meta_title?: string;
-  meta_description?: string;
-  meta_keywords?: string;
-  og_title?: string;
-  og_description?: string;
-  og_image?: string;
-  og_type?: string;
-  twitter_title?: string;
-  twitter_description?: string;
-  twitter_card?: string;
-  twitter_image?: string;
-  canonical?: string;
-  robots?: string;
-  structure_schema?: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
+  og_title?: string | null;
+  og_description?: string | null;
+  og_image?: string | null;
+  og_type?: string | null;
+  viewport?: string | null;
+  twitter_title?: string | null;
+  twitter_description?: string | null;
+  twitter_card?: string | null;
+  twitter_image?: string | null;
+  twitter_creator?: string | null;
+  canonical?: string | null;
+  robots?: string | null;
+  structure_schema?: string | null;
 }
 
-export interface SeoFallbacks {
-  title?: string;
-  description?: string;
-  image?: string;
-  keywords?: string;
-  canonical?: string;
-  robots?: string;
-  structure_schema?: string;
+interface UpdateSeoOptions {
+  useHomeDefaults?: boolean;
 }
 
 @Injectable({
@@ -51,137 +47,118 @@ export class SeoService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  applyHomeSeo(fallbacks: SeoFallbacks = {}): void {
+  applyHomeSeo(): void {
     this.dataService.getSetting().subscribe({
       next: (res) => {
         const settings = res?.data;
         const seoData = Array.isArray(settings)
           ? this.extractSeoFromSettings(settings, this.getCurrentLanguage())
           : {};
-        this.updateSeoData(seoData, fallbacks);
+        this.updateSeoData(seoData, { useHomeDefaults: true });
       },
-      error: () => this.updateSeoData({}, fallbacks),
+      error: () => this.updateSeoData({}, { useHomeDefaults: true }),
     });
   }
 
-  applyPageSeoByRoute(routePath: string, fallbacks: SeoFallbacks = {}): void {
-    const pageKey = PAGE_SEO_ROUTE_KEYS[routePath] ?? routePath;
-    this.applyPageSeo(pageKey, fallbacks);
+  applyPageSeoByRoute(routePath: string): void {
+    this.applyPageSeo(resolveCmsKeyFromRoute(routePath));
   }
 
-  applyPageSeo(pageKey: string, fallbacks: SeoFallbacks = {}): void {
+  applyPageSeo(pageKey: string): void {
     this.getPages().subscribe({
       next: (pages) => {
         const page = this.findPageByKey(pages, pageKey);
         if (page?.seo) {
-          this.updateSeoData(
-            this.normalizeApiSeo(page.seo),
-            {
-              title: page.title ? `${page.title} - ${environment.seo.siteName}` : fallbacks.title,
-              description: page.short_description || fallbacks.description,
-              ...fallbacks,
-            }
-          );
-          return;
+          this.updateSeoData(this.normalizeApiSeo(page.seo), {
+            useHomeDefaults: false,
+          });
+        } else {
+          this.updateSeoData({}, { useHomeDefaults: false });
         }
-        this.applySettingsSeo(fallbacks);
       },
-      error: () => this.applySettingsSeo(fallbacks),
+      error: () => this.updateSeoData({}, { useHomeDefaults: false }),
     });
   }
 
-  applySettingsSeo(fallbacks: SeoFallbacks = {}): void {
-    this.dataService.getSetting().subscribe({
-      next: (res) => {
-        const settings = res?.data;
-        const seoData = Array.isArray(settings)
-          ? this.extractSeoFromSettings(settings, this.getCurrentLanguage())
-          : {};
-        this.updateSeoData(seoData, fallbacks);
-      },
-      error: () => this.updateSeoData({}, fallbacks),
-    });
+  applyEntitySeo(rawSeo: unknown): void {
+    this.updateSeoData(this.normalizeApiSeo(rawSeo), { useHomeDefaults: false });
   }
 
-  applyEntitySeo(rawSeo: unknown, fallbacks: SeoFallbacks = {}): void {
-    this.updateSeoData(this.normalizeApiSeo(rawSeo), fallbacks);
+  applyEmptySeo(): void {
+    this.updateSeoData({}, { useHomeDefaults: false });
   }
 
-  updateSeoData(seoData: SeoData, fallbacks: SeoFallbacks = {}): void {
+  updateSeoData(seoData: SeoData, options: UpdateSeoOptions = {}): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
+    const useHomeDefaults = options.useHomeDefaults ?? false;
+
     const title =
       seoData.meta_title ||
       seoData.og_title ||
-      fallbacks.title ||
-      this.defaultTitle;
+      (useHomeDefaults ? this.defaultTitle : '');
     const description =
       seoData.meta_description ||
       seoData.og_description ||
-      fallbacks.description ||
-      this.defaultDescription;
-    const image =
+      (useHomeDefaults ? this.defaultDescription : '');
+    const keywords = seoData.meta_keywords ?? '';
+    const robots = seoData.robots ?? (useHomeDefaults ? 'index, follow' : '');
+    const canonical = seoData.canonical ?? '';
+
+    const ogTitle = seoData.og_title || title;
+    const ogDescription = seoData.og_description || description;
+    const ogImageRaw =
       seoData.og_image ||
       seoData.twitter_image ||
-      fallbacks.image ||
-      this.defaultImage;
-    const keywords = seoData.meta_keywords || fallbacks.keywords || '';
-    const canonical = seoData.canonical || fallbacks.canonical || '';
-    const robots = seoData.robots || fallbacks.robots || 'index, follow';
+      (useHomeDefaults ? this.defaultImage : '');
+    const ogType = seoData.og_type ?? (useHomeDefaults ? 'website' : '');
+    const ogUrl = canonical || (useHomeDefaults ? this.getCurrentUrl() : '');
+
+    const twitterCard =
+      seoData.twitter_card ?? (useHomeDefaults ? 'summary_large_image' : '');
+    const twitterTitle = seoData.twitter_title || title;
+    const twitterDescription = seoData.twitter_description || description;
+    const twitterImageRaw = seoData.twitter_image || ogImageRaw;
+    const twitterCreator = seoData.twitter_creator ?? '';
 
     this.title.setTitle(title);
 
-    this.meta.updateTag({ name: 'description', content: description });
-    this.meta.updateTag({ name: 'keywords', content: keywords });
-    this.meta.updateTag({ name: 'robots', content: robots });
+    this.setMetaTag('name', 'description', description);
+    this.setMetaTag('name', 'keywords', keywords);
+    this.setMetaTag('name', 'robots', robots);
 
-    this.meta.updateTag({
-      property: 'og:title',
-      content: seoData.og_title || title,
-    });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: seoData.og_description || description,
-    });
-    this.meta.updateTag({
-      property: 'og:image',
-      content: this.getFullImageUrl(image),
-    });
-    this.meta.updateTag({
-      property: 'og:type',
-      content: seoData.og_type || 'website',
-    });
-    this.meta.updateTag({
-      property: 'og:url',
-      content: canonical || this.getCurrentUrl(),
-    });
+    if (seoData.viewport) {
+      this.setMetaTag('name', 'viewport', seoData.viewport);
+    }
 
-    this.meta.updateTag({
-      name: 'twitter:card',
-      content: seoData.twitter_card || 'summary_large_image',
-    });
-    this.meta.updateTag({
-      name: 'twitter:title',
-      content: seoData.twitter_title || title,
-    });
-    this.meta.updateTag({
-      name: 'twitter:description',
-      content: seoData.twitter_description || description,
-    });
-    this.meta.updateTag({
-      name: 'twitter:image',
-      content: this.getFullImageUrl(seoData.twitter_image || image),
-    });
+    this.setMetaTag('property', 'og:title', ogTitle);
+    this.setMetaTag('property', 'og:description', ogDescription);
+    this.setMetaTag('property', 'og:image', this.getFullImageUrl(ogImageRaw));
+    this.setMetaTag('property', 'og:type', ogType);
+    this.setMetaTag('property', 'og:url', ogUrl);
+
+    this.setMetaTag('name', 'twitter:card', twitterCard);
+    this.setMetaTag('name', 'twitter:title', twitterTitle);
+    this.setMetaTag('name', 'twitter:description', twitterDescription);
+    this.setMetaTag(
+      'name',
+      'twitter:image',
+      this.getFullImageUrl(twitterImageRaw)
+    );
+    this.setMetaTag('name', 'twitter:creator', twitterCreator);
 
     if (canonical) {
       this.updateCanonicalUrl(canonical);
+    } else {
+      this.removeCanonicalUrl();
     }
 
-    const schema = seoData.structure_schema || fallbacks.structure_schema;
-    if (schema) {
-      this.updateStructuredData(schema);
+    if (seoData.structure_schema) {
+      this.updateStructuredData(seoData.structure_schema);
+    } else {
+      this.removeStructuredData();
     }
   }
 
@@ -201,10 +178,12 @@ export class SeoService {
       'og_description',
       'og_image',
       'og_type',
+      'viewport',
       'twitter_title',
       'twitter_description',
       'twitter_card',
       'twitter_image',
+      'twitter_creator',
       'canonical',
       'robots',
       'structure_schema',
@@ -228,9 +207,12 @@ export class SeoService {
       return {};
     }
 
-    const seoSetting = (settingsResponse as Array<{ option_key?: string; option_value?: Record<string, unknown> }>).find(
-      (item) => item.option_key === 'seo'
-    );
+    const seoSetting = (
+      settingsResponse as Array<{
+        option_key?: string;
+        option_value?: Record<string, unknown>;
+      }>
+    ).find((item) => item.option_key === 'seo');
 
     if (!seoSetting?.option_value) {
       return {};
@@ -254,6 +236,8 @@ export class SeoService {
       'twitter_description',
       'canonical',
       'structure_schema',
+      'viewport',
+      'twitter_creator',
     ];
 
     for (const field of langFields) {
@@ -272,15 +256,19 @@ export class SeoService {
     return seoData;
   }
 
-  findPageByKey(pages: unknown[], key: string): { key?: string; title?: string; short_description?: string; seo?: unknown } | null {
+  findPageByKey(
+    pages: unknown[],
+    key: string
+  ): { key?: string; seo?: unknown } | null {
     if (!pages?.length) {
       return null;
     }
 
     const normalizedKey = key.toLowerCase();
-    const typedPages = pages as Array<{ key?: string; title?: string; short_description?: string; seo?: unknown }>;
+    const typedPages = pages as Array<{ key?: string; seo?: unknown }>;
     return (
-      typedPages.find((page) => page.key?.toLowerCase() === normalizedKey) ?? null
+      typedPages.find((page) => page.key?.toLowerCase() === normalizedKey) ??
+      null
     );
   }
 
@@ -306,7 +294,7 @@ export class SeoService {
   }
 
   resetToDefaults(): void {
-    this.updateSeoData({}, {});
+    this.updateSeoData({}, { useHomeDefaults: true });
   }
 
   private getPages(): Observable<any[]> {
@@ -317,6 +305,14 @@ export class SeoService {
       );
     }
     return this.pagesCache$;
+  }
+
+  private setMetaTag(
+    attr: 'name' | 'property',
+    key: string,
+    content: string
+  ): void {
+    this.meta.updateTag({ [attr]: key, content: content ?? '' });
   }
 
   private updateCanonicalUrl(url: string): void {
@@ -335,17 +331,19 @@ export class SeoService {
     link.setAttribute('href', url);
   }
 
+  private removeCanonicalUrl(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    document.querySelector("link[rel='canonical']")?.remove();
+  }
+
   private updateStructuredData(schema: string): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    const existingScript = document.querySelector(
-      'script[type="application/ld+json"]'
-    );
-    if (existingScript) {
-      existingScript.remove();
-    }
+    this.removeStructuredData();
 
     try {
       const script = document.createElement('script');
@@ -357,9 +355,18 @@ export class SeoService {
     }
   }
 
+  private removeStructuredData(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    document
+      .querySelector('script[type="application/ld+json"]')
+      ?.remove();
+  }
+
   private getFullImageUrl(image: string): string {
     if (!image) {
-      return `${this.siteUrl}${this.defaultImage}`;
+      return '';
     }
     if (image.startsWith('http://') || image.startsWith('https://')) {
       return image;

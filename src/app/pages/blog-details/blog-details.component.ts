@@ -95,7 +95,7 @@ export class BlogDetailsComponent implements OnInit {
               // this.writeReview.patchValue({ tour_id: response.data.id });
 
               // Update SEO
-              this.updateBlogSEO(response.data);
+              this._SeoService.applyEntitySeo(response.data?.seo);
             },
           });
         }
@@ -165,32 +165,6 @@ export class BlogDetailsComponent implements OnInit {
       error: (err) => {
         // console.log(err);
       },
-    });
-  }
-
-  updateBlogSEO(blog: any): void {
-    const blogSeo = blog?.seo;
-    this._SeoService.applyEntitySeo(blogSeo, {
-      title:
-        blogSeo?.meta_title ||
-        blogSeo?.og_title ||
-        `${blog.title} - MG Travel`,
-      description:
-        blogSeo?.meta_description ||
-        blogSeo?.og_description ||
-        blog.short_description ||
-        blog.description ||
-        `Read ${blog.title} on the MG Travel blog.`,
-      image:
-        blogSeo?.og_image ||
-        blogSeo?.twitter_image ||
-        blog.featured_image ||
-        blog.image ||
-        '/assets/image/logo-MG-Travel.webp',
-      keywords: blogSeo?.meta_keywords || '',
-      canonical: blogSeo?.canonical || '',
-      robots: blogSeo?.robots || '',
-      structure_schema: blogSeo?.structure_schema || '',
     });
   }
 }

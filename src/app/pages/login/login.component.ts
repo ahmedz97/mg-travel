@@ -49,12 +49,7 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this._SeoService.applySettingsSeo({
-      title: 'Login - MG Travel',
-      description: 'Sign in to your MG Travel account to manage bookings and profile.',
-      image: '/assets/image/logo-MG-Travel.webp',
-      robots: 'noindex, nofollow',
-    });
+    this._SeoService.applyPageSeoByRoute('login');
     this.getSettings();
     this.getCountries();
   }

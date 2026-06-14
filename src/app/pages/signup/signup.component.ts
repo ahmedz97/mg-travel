@@ -53,12 +53,7 @@ export class SignupComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this._SeoService.applySettingsSeo({
-      title: 'Sign Up - MG Travel',
-      description: 'Create your MG Travel account to book tours and manage your trips.',
-      image: '/assets/image/logo-MG-Travel.webp',
-      robots: 'noindex, nofollow',
-    });
+    this._SeoService.applyPageSeoByRoute('signup');
     this.getSettings();
     this.getCountries();
   }

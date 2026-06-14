@@ -99,7 +99,7 @@ export class DataService extends BaseService {
   // blogs
   getBlogs(slug?: string): Observable<any> {
     const url = slug
-      ? `${this.baseUrl}/blogs/${slug}`
+      ? `${this.baseUrl}/blogs/${slug}?includes=seo`
       : `${this.baseUrl}/blogs`;
     return this.HttpClient.get(url);
   }

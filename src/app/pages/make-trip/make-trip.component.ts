@@ -93,11 +93,7 @@ export class MakeTripComponent implements OnInit {
   maxBudget: number = 0;
 
   ngOnInit() {
-    this._SeoService.applyPageSeoByRoute('makeTrip', {
-      title: 'Make Your Trip - MG Travel',
-      description: 'Plan your custom trip with MG Travel. Tell us your preferences and we will create the perfect itinerary.',
-      image: '/assets/image/logo-MG-Travel.webp',
-    });
+    this._SeoService.applyPageSeoByRoute('makeTrip');
     this.showCountries();
     this.buildForms();
 

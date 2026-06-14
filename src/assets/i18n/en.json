@@ -146,7 +146,16 @@
     "stay": "Stay",
     "totalPrice": "Total Price",
     "total": "TOTAL",
-    "cartIsEmpty": "Cart is empty"
+    "cartIsEmpty": "Cart is empty",
+    "discount": "Discount",
+    "finalTotal": "Final Total",
+    "errors": {
+      "required": "This field is required",
+      "minLength": "Must be at least 3 characters",
+      "email": "Please enter a valid email address",
+      "phone": "Please enter a valid phone number (8-22 digits)",
+      "invalid": "Invalid value"
+    }
   },
   "about": {
     "aboutUs": "About Us",

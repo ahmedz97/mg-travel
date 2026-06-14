@@ -48,12 +48,7 @@ export class ForgetPasswordComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this._SeoService.applySettingsSeo({
-      title: 'Forgot Password - MG Travel',
-      description: 'Reset your MG Travel account password.',
-      image: '/assets/image/logo-MG-Travel.webp',
-      robots: 'noindex, nofollow',
-    });
+    this._SeoService.applyPageSeoByRoute('forgetPassword');
     this.getSettings();
     this.getCountries();
   }
